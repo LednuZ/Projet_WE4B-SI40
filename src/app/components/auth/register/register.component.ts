@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -6,10 +9,52 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-
-  constructor() { }
+  registerForm!: FormGroup;
+  errorMessage: string = '';
+  loading: boolean = false;
+  private apiUrl = 'http://localhost/automarket/api';
+  constructor(private formBuilder: FormBuilder, private router: Router, private http: HttpClient) { }
 
   ngOnInit(): void {
+    this.registerForm = this.formBuilder.group({
+      nom: ['', [Validators.required]],
+      prenom: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      numero_phone: [''],
+      role: ['particulier', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', [Validators.required]]
+    }, {
+      validators: this.passwordMatchValidator
+    });
+  }
+
+  passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
+
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
+    } else {
+      confirmPassword?.setErrors(null);
+      return null;
+    }
+  }
+  onSubmit(): void {
+    if (this.registerForm.valid) {
+      this.loading = true;
+      const { nom, prenom, email, numero_phone, role, password } = this.registerForm.value;
+      this.http.post<any>(`${this.apiUrl}/auth/register.php`, { nom, prenom, email, numero_phone, role, password }).subscribe({
+        next: () => {
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          this.errorMessage = error.error.message;
+          this.loading = false;
+        }
+      });
+    }
   }
 
 }

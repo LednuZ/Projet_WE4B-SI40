@@ -4,7 +4,7 @@ export interface Utilisateur {
   prenom: string;
   email: string;
   mdp?: string;
-  role: 'admin' | 'vendeur' | 'entreprise';
+  role: 'admin' | 'particulier' | 'entreprise';
   numero_phone?: string;
   date_inscription: string;
 }

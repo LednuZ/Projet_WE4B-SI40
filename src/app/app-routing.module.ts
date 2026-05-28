@@ -27,8 +27,8 @@ const routes: Routes = [
   { path: 'avis', component: AvisComponent, canActivate: [AuthGuard] },
 
   // Pages annonces
-  { path: 'annonce/new', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['vendeur', 'entreprise', 'admin'] } },
-  { path: 'annonce/edit/:id', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['vendeur', 'entreprise', 'admin'] } },
+  { path: 'annonce/new', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['particulier', 'entreprise', 'admin'] } },
+  { path: 'annonce/edit/:id', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['particulier', 'entreprise', 'admin'] } },
   { path: 'annonce/:id', component: AnnonceDetailComponent },
 
   // Admin
