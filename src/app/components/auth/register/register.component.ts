@@ -12,7 +12,7 @@ export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   errorMessage: string = '';
   loading: boolean = false;
-  private apiUrl = 'http://localhost/automarket/api';
+  private apiUrl = 'http://localhost:8000/api';
   constructor(private formBuilder: FormBuilder, private router: Router, private http: HttpClient) { }
 
   ngOnInit(): void {

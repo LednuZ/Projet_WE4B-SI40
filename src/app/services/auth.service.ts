@@ -8,7 +8,7 @@ import { Utilisateur } from '../models/utilisateur.model';
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost/automarket/api';
+  private apiUrl = 'http://localhost:8000/api';
   private currentUserSubject = new BehaviorSubject<Utilisateur | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
