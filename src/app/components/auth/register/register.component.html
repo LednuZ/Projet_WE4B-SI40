@@ -1,4 +1,3 @@
-<p>register works!</p>
 <div class="auth-container">
   <div class="auth-card">
     <h2>Inscription</h2>
@@ -20,7 +19,7 @@
         <div class="form-group">
             <label for="role">Vous êtes</label>
             <select id="role" formControlName="role">
-            <option value="acheteur">Particulier</option>
+            <option value="particulier">Particulier</option>
             <option value="entreprise">Entreprise</option>
             </select>
         </div>
@@ -30,11 +29,11 @@
       </div>
         <div class="form-group">
             <label for="mdp">Mot de passe</label>
-            <input type="password" id="mdp" formControlName="mdp" placeholder="••••••">
+            <input type="password" id="mdp" formControlName="password" placeholder="••••••">
         </div>
         <div class="form-group">
             <label for="confirmMdp">Confirmer le mot de passe</label>
-            <input type="password" id="confirmMdp" formControlName="confirmMdp" placeholder="••••••">
+            <input type="password" id="confirmMdp" formControlName="confirmPassword" placeholder="••••••">
         </div>
         <button type="submit" [disabled]="registerForm.invalid || loading">
             {{ loading ? 'Inscription...' : "S'inscrire" }}

@@ -21,7 +21,7 @@ export class RegisterComponent implements OnInit {
       prenom: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       numero_phone: [''],
-      role: ['particulier', [Validators.required]],
+      role: ['acheteur', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]]
     }, {
@@ -45,12 +45,12 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.valid) {
       this.loading = true;
       const { nom, prenom, email, numero_phone, role, password } = this.registerForm.value;
-      this.http.post<any>(`${this.apiUrl}/auth/register.php`, { nom, prenom, email, numero_phone, role, password }).subscribe({
+      this.http.post<any>(`${this.apiUrl}/auth/register`, { nom, prenom, email, numero_phone, role, mdp: password }).subscribe({
         next: () => {
           this.router.navigate(['/login']);
         },
         error: (error) => {
-          this.errorMessage = error.error.message;
+          this.errorMessage = error.error?.message || 'Erreur lors de l\'inscription';
           this.loading = false;
         }
       });

@@ -13,7 +13,6 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
-
     const stored = localStorage.getItem('currentUser');
     if (stored) {
       this.currentUserSubject.next(JSON.parse(stored));
@@ -21,8 +20,11 @@ export class AuthService {
   }
 
   login(email: string, mdp: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/auth/login.php`, { email, mdp }).pipe(
+    return this.http.post<any>(`${this.apiUrl}/auth/login`, { email, mdp }).pipe(
       tap(response => {
+        if (response.token) {
+          localStorage.setItem('authToken', response.token);
+        }
         if (response.utilisateur) {
           localStorage.setItem('currentUser', JSON.stringify(response.utilisateur));
           this.currentUserSubject.next(response.utilisateur);
@@ -31,8 +33,13 @@ export class AuthService {
     );
   }
 
+  getToken(): string | null {
+    return localStorage.getItem('authToken');
+  }
+
   logout(): void {
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
     this.currentUserSubject.next(null);
   }
 

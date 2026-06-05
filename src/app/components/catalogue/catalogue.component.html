@@ -1,1 +1,112 @@
-<p>catalogue works!</p>
+<div class="catalogue-container">
+
+  <!-- Header -->
+  <div class="catalogue-header">
+    <h1>Annonces</h1>
+    <div class="header-actions">
+      <button class="btn-filter" (click)="toggleFilters()">
+        {{ showFilters ? 'Masquer les filtres' : 'Filtrer' }}
+      </button>
+      <select class="sort-select" [ngModel]="sort" (ngModelChange)="onSortChange($event)">
+        <option value="recent">Plus récentes</option>
+        <option value="price_asc">Prix croissant</option>
+        <option value="price_desc">Prix décroissant</option>
+        <option value="km_asc">Kilométrage croissant</option>
+        <option value="rating_desc">Meilleure note vendeur</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-panel" *ngIf="showFilters">
+    <div class="filters-grid">
+
+      <div class="filter-group">
+        <label>Marque</label>
+        <select [(ngModel)]="filters.marque_id" (ngModelChange)="onFilterChange()">
+          <option value="">Toutes</option>
+          <option *ngFor="let m of marques" [value]="m.id_marque">{{ m.nom }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Prix min (€)</label>
+        <input type="number" [(ngModel)]="filters.prix_min" (change)="onFilterChange()" placeholder="0">
+      </div>
+
+      <div class="filter-group">
+        <label>Prix max (€)</label>
+        <input type="number" [(ngModel)]="filters.prix_max" (change)="onFilterChange()" placeholder="100 000">
+      </div>
+
+      <div class="filter-group">
+        <label>Km max</label>
+        <input type="number" [(ngModel)]="filters.km_max" (change)="onFilterChange()" placeholder="200 000">
+      </div>
+
+      <div class="filter-group">
+        <label>Année min</label>
+        <input type="number" [(ngModel)]="filters.annee_min" (change)="onFilterChange()" placeholder="2010">
+      </div>
+
+      <div class="filter-group">
+        <label>Année max</label>
+        <input type="number" [(ngModel)]="filters.annee_max" (change)="onFilterChange()" placeholder="2026">
+      </div>
+
+    </div>
+    <button class="btn-reset" (click)="resetFilters()">Réinitialiser</button>
+  </div>
+
+  <!-- Résultats -->
+  <p class="results-count" *ngIf="!loading">{{ annonces.length }} annonce{{ annonces.length > 1 ? 's' : '' }} trouvée{{ annonces.length > 1 ? 's' : '' }}</p>
+
+  <!-- Loading -->
+  <div class="loading" *ngIf="loading">
+    <p>Chargement des annonces...</p>
+  </div>
+
+  <!-- Liste des annonces -->
+  <div class="annonces-grid" *ngIf="!loading">
+
+    <a *ngFor="let annonce of annonces"
+       [routerLink]="['/annonce', annonce.id_annonce]"
+       class="annonce-card">
+
+      <div class="card-image">
+        <img [src]="getPhotoUrl(annonce)" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
+        <span class="card-badge" *ngIf="annonce.premiere_main">1ère main</span>
+      </div>
+
+      <div class="card-body">
+        <h3 class="card-title">{{ annonce.marque_nom }} {{ annonce.modele_nom }}</h3>
+        <p class="card-version">{{ annonce.version_nom }}</p>
+
+        <div class="card-specs">
+          <span>{{ annonce.annee_circulation }}</span>
+          <span>{{ formatKm(annonce.kilometrage) }}</span>
+          <span>{{ annonce.carburant }}</span>
+          <span>{{ annonce.boite_vitesse }}</span>
+        </div>
+
+        <div class="card-footer">
+          <span class="card-price">{{ formatPrix(annonce.prix) }}</span>
+          <span class="card-location" *ngIf="annonce.localisation">{{ annonce.localisation }}</span>
+        </div>
+
+        <div class="card-seller" *ngIf="annonce.vendeur_note">
+          ★ {{ annonce.vendeur_note }}/5 — {{ annonce.vendeur_prenom }}
+        </div>
+      </div>
+
+    </a>
+
+  </div>
+
+  <!-- Aucun résultat -->
+  <div class="no-results" *ngIf="!loading && annonces.length === 0">
+    <p>Aucune annonce ne correspond à vos critères.</p>
+    <button class="btn-reset" (click)="resetFilters()">Réinitialiser les filtres</button>
+  </div>
+
+</div>

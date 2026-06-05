@@ -38,10 +38,12 @@ class ApiAuthController extends AbstractController
             return $this->json(['message' => 'Email ou mot de passe incorrect'], 401);
         }
 
+        $token = base64_encode($row['id_utilisateur'] . ':' . $row['email']);
         unset($row['mdp']);
 
         return $this->json([
             'message' => 'Connexion réussie',
+            'token' => $token,
             'utilisateur' => $row,
         ]);
     }

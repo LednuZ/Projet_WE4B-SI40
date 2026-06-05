@@ -17,7 +17,6 @@ import { RoleGuard } from './guards/role.guard';
 const routes: Routes = [
   // Pages publiques
   { path: '', component: CatalogueComponent },
-  { path: 'annonce/:id', component: AnnonceDetailComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
 
@@ -26,7 +25,7 @@ const routes: Routes = [
   { path: 'messagerie', component: MessagerieComponent, canActivate: [AuthGuard] },
   { path: 'avis', component: AvisComponent, canActivate: [AuthGuard] },
 
-  // Pages annonces
+  // Pages annonces — routes spécifiques AVANT la route dynamique :id
   { path: 'annonce/new', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['particulier', 'entreprise', 'admin'] } },
   { path: 'annonce/edit/:id', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['particulier', 'entreprise', 'admin'] } },
   { path: 'annonce/:id', component: AnnonceDetailComponent },

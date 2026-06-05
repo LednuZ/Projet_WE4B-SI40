@@ -1,0 +1,298 @@
+.detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* Retour */
+.btn-back {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+.btn-back:hover {
+  color: #f97316;
+}
+
+/* Layout principal */
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+/* Photos */
+.photos-section {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
+.main-photo {
+  width: 100%;
+  height: 400px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eee;
+  margin-bottom: 12px;
+}
+
+.main-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnails {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.thumbnails img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.thumbnails img:hover,
+.thumbnails img.active {
+  border-color: #f97316;
+}
+
+/* Infos */
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.info-header h1 {
+  font-size: 28px;
+  color: #1a2744;
+  margin: 0;
+}
+
+.version-name {
+  color: #777;
+  font-size: 15px;
+  margin: 4px 0 0;
+}
+
+.price {
+  font-size: 28px;
+  font-weight: 700;
+  color: #f97316;
+  white-space: nowrap;
+}
+
+/* Badges */
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge {
+  background: #f0f2f5;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #555;
+}
+
+.badge.highlight {
+  background: #fff3e0;
+  color: #f97316;
+  font-weight: 600;
+}
+
+/* Description */
+.description-block h3 {
+  font-size: 16px;
+  color: #1a2744;
+  margin: 0 0 8px;
+}
+
+.description-block p {
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Infos grille */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.info-label {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+}
+
+.info-value {
+  font-size: 15px;
+  color: #1a2744;
+  font-weight: 500;
+}
+
+/* Carte vendeur */
+.seller-card {
+  background: #f8f9fb;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.seller-info h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #1a2744;
+}
+
+.seller-rating {
+  color: #f97316;
+  font-size: 14px;
+}
+
+.btn-contact {
+  padding: 12px 24px;
+  background: #f97316;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-contact:hover {
+  background: #ea680c;
+}
+
+/* Fiche technique */
+.specs-section {
+  margin-top: 20px;
+}
+
+.specs-section h2 {
+  font-size: 22px;
+  color: #1a2744;
+  margin: 0 0 20px;
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.spec-card {
+  background: #f8f9fb;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.spec-card h4 {
+  font-size: 15px;
+  color: #1a2744;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.spec-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spec-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.spec-row span:first-child {
+  color: #777;
+}
+
+.spec-row span:last-child {
+  color: #1a2744;
+  font-weight: 500;
+}
+
+/* Loading / Erreur */
+.loading, .error-container {
+  text-align: center;
+  padding: 60px 0;
+  color: #777;
+}
+
+.error-container button {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: #f97316;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .photos-section {
+    position: static;
+  }
+
+  .main-photo {
+    height: 280px;
+  }
+
+  .info-header {
+    flex-direction: column;
+  }
+
+  .seller-card {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .specs-grid {
+    grid-template-columns: 1fr;
+  }
+}

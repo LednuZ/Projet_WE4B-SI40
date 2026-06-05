@@ -1,1 +1,162 @@
-<p>annonce-form works!</p>
+<div class="form-container">
+  <div class="form-card">
+    <h2>{{ isEdit ? 'Modifier l\'annonce' : 'Publier une annonce' }}</h2>
+
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="annonceForm" (ngSubmit)="onSubmit()">
+
+      <!-- Sélection véhicule -->
+      <h3 class="section-title">Véhicule</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Marque *</label>
+          <select formControlName="marque_id" (change)="onMarqueChange()">
+            <option value="">Sélectionner une marque</option>
+            <option *ngFor="let m of catalog" [value]="m.id">{{ m.nom }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Modèle *</label>
+          <select formControlName="modele_id" (change)="onModeleChange()">
+            <option value="">Sélectionner un modèle</option>
+            <option *ngFor="let m of modeles" [value]="m.id">{{ m.nom }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Génération *</label>
+          <select formControlName="generation_id" (change)="onGenerationChange()">
+            <option value="">Sélectionner une génération</option>
+            <option *ngFor="let g of generations" [value]="g.id">{{ g.nom }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Version *</label>
+          <select formControlName="id_version">
+            <option value="">Sélectionner une version</option>
+            <option *ngFor="let v of versions" [value]="v.id">{{ v.nom }} ({{ v.bv }})</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Infos principales -->
+      <h3 class="section-title">Informations principales</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Prix (€) *</label>
+          <input type="number" formControlName="prix" placeholder="Ex: 15000">
+          <span class="error" *ngIf="annonceForm.get('prix')?.touched && annonceForm.get('prix')?.errors?.['required']">
+            Le prix est requis
+          </span>
+          <span class="error" *ngIf="annonceForm.get('prix')?.touched && annonceForm.get('prix')?.errors?.['min']">
+            Le prix doit être supérieur à 0
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Année de circulation *</label>
+          <input type="number" formControlName="annee_circulation" placeholder="Ex: 2020">
+          <span class="error" *ngIf="annonceForm.get('annee_circulation')?.touched && annonceForm.get('annee_circulation')?.errors?.['required']">
+            L'année est requise
+          </span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Kilométrage (km) *</label>
+          <input type="number" formControlName="kilometrage" placeholder="Ex: 50000">
+        </div>
+
+        <div class="form-group">
+          <label>État</label>
+          <select formControlName="etat">
+            <option value="">Non précisé</option>
+            <option value="Excellent">Excellent</option>
+            <option value="Très bon">Très bon</option>
+            <option value="Bon">Bon</option>
+            <option value="Correct">Correct</option>
+            <option value="À rénover">À rénover</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Détails -->
+      <h3 class="section-title">Détails</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Couleur</label>
+          <input type="text" formControlName="couleur" placeholder="Ex: Noir métallisé">
+        </div>
+
+        <div class="form-group">
+          <label>Sellerie</label>
+          <input type="text" formControlName="sellerie" placeholder="Ex: Cuir noir">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Finition</label>
+          <input type="text" formControlName="finition" placeholder="Ex: Sport Line">
+        </div>
+
+        <div class="form-group">
+          <label>Provenance</label>
+          <input type="text" formControlName="provenance" placeholder="Ex: France">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Localisation</label>
+          <input type="text" formControlName="localisation" placeholder="Ex: Mulhouse">
+        </div>
+
+        <div class="form-group">
+          <label>Nombre de propriétaires</label>
+          <input type="number" formControlName="nombre_proprietaire" placeholder="Ex: 2">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contrôle technique</label>
+          <input type="date" formControlName="controle_technique">
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="premiere_main">
+            Première main
+          </label>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group full-width">
+        <label>Description</label>
+        <textarea formControlName="description" rows="5" placeholder="Décrivez votre véhicule..."></textarea>
+      </div>
+
+      <!-- Boutons -->
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="router.navigate(['/'])">Annuler</button>
+        <button type="submit" class="btn-submit" [disabled]="annonceForm.invalid || loading">
+          {{ loading ? 'Publication...' : (isEdit ? 'Modifier' : 'Publier l\'annonce') }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
