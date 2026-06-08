@@ -1,0 +1,15 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+
+$primaire: #1A2744;
+
+
+
+$custom-colors: (
+    // "etudiant": $bleu,
+    "primary": $primaire
+);
+
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+@import "bootstrap/scss/bootstrap";
