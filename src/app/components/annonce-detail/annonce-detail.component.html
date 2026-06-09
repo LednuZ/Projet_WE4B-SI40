@@ -1,0 +1,239 @@
+<!-- Loading -->
+<div class="loading" *ngIf="loading">
+  <p>Chargement de l'annonce...</p>
+</div>
+
+<!-- Erreur -->
+<div class="error-container" *ngIf="error">
+  <p>{{ error }}</p>
+  <button (click)="goBack()">Retour au catalogue</button>
+</div>
+
+<!-- Contenu -->
+<div class="detail-container" *ngIf="annonce && !loading">
+
+  <!-- Retour -->
+  <button class="btn-back" (click)="goBack()">← Retour</button>
+
+  <div class="detail-layout">
+
+    <!-- Colonne gauche : photos -->
+    <div class="photos-section">
+      <div class="main-photo">
+        <img [src]="selectedPhoto || 'assets/no-photo.png'" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
+      </div>
+      <div class="thumbnails" *ngIf="annonce.photos && annonce.photos.length > 1">
+        <img *ngFor="let photo of annonce.photos"
+             [src]="getPhotoUrl(photo.url_photo)"
+             [class.active]="getPhotoUrl(photo.url_photo) === selectedPhoto"
+             (click)="selectPhoto(photo.url_photo)"
+             alt="Miniature">
+      </div>
+    </div>
+
+    <!-- Colonne droite : infos principales -->
+    <div class="info-section">
+
+      <div class="info-header">
+        <div>
+          <h1>{{ annonce.marque_nom }} {{ annonce.modele_nom }}</h1>
+          <p class="version-name">{{ annonce.version_nom }}</p>
+        </div>
+        <span class="price">{{ formatPrix(annonce.prix) }}</span>
+      </div>
+
+      <!-- Badges -->
+      <div class="badges">
+        <span class="badge">{{ annonce.annee_circulation }}</span>
+        <span class="badge">{{ formatKm(annonce.kilometrage) }}</span>
+        <span class="badge" *ngIf="annonce.carburant">{{ annonce.carburant }}</span>
+        <span class="badge" *ngIf="annonce.boite_vitesse">{{ annonce.boite_vitesse }}</span>
+        <span class="badge" *ngIf="annonce.transmission">{{ annonce.transmission }}</span>
+        <span class="badge highlight" *ngIf="annonce.premiere_main">1ère main</span>
+        <span class="badge" *ngIf="annonce.etat">{{ annonce.etat }}</span>
+      </div>
+
+      <!-- Description -->
+      <div class="description-block" *ngIf="annonce.description">
+        <h3>Description</h3>
+        <p>{{ annonce.description }}</p>
+      </div>
+
+      <!-- Infos véhicule -->
+      <div class="info-grid">
+        <div class="info-item" *ngIf="annonce.couleur">
+          <span class="info-label">Couleur</span>
+          <span class="info-value">{{ annonce.couleur }}</span>
+        </div>
+        <div class="info-item" *ngIf="annonce.nombre_proprietaire">
+          <span class="info-label">Propriétaires</span>
+          <span class="info-value">{{ annonce.nombre_proprietaire }}</span>
+        </div>
+        <div class="info-item" *ngIf="annonce.controle_technique">
+          <span class="info-label">Contrôle technique</span>
+          <span class="info-value">{{ annonce.controle_technique }}</span>
+        </div>
+        <div class="info-item" *ngIf="annonce.localisation">
+          <span class="info-label">Localisation</span>
+          <span class="info-value">{{ annonce.localisation }}</span>
+        </div>
+        <div class="info-item" *ngIf="annonce.provenance">
+          <span class="info-label">Provenance</span>
+          <span class="info-value">{{ annonce.provenance }}</span>
+        </div>
+        <div class="info-item" *ngIf="annonce.sellerie">
+          <span class="info-label">Sellerie</span>
+          <span class="info-value">{{ annonce.sellerie }}</span>
+        </div>
+        <div class="info-item" *ngIf="annonce.finition">
+          <span class="info-label">Finition</span>
+          <span class="info-value">{{ annonce.finition }}</span>
+        </div>
+      </div>
+
+      <!-- Vendeur -->
+      <div class="seller-card">
+        <div class="seller-info">
+          <h3>{{ annonce.vendeur_prenom }} {{ annonce.vendeur_nom }}</h3>
+          <span class="seller-rating" *ngIf="annonce.vendeur_note">★ {{ annonce.vendeur_note }}/5</span>
+        </div>
+        <button class="btn-contact" (click)="contacterVendeur()">Contacter le vendeur</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Fiche technique -->
+  <div class="specs-section">
+    <h2>Fiche technique</h2>
+    <div class="specs-grid">
+
+      <!-- Moteur -->
+      <div class="spec-card" *ngIf="annonce.moteur_nom">
+        <h4>Moteur</h4>
+        <div class="spec-list">
+          <div class="spec-row">
+            <span>Moteur</span><span>{{ annonce.moteur_nom }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.puissance_DIN">
+            <span>Puissance</span><span>{{ annonce.puissance_DIN }} ch</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.puissance_fiscale">
+            <span>Puissance fiscale</span><span>{{ annonce.puissance_fiscale }} CV</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.cylindree">
+            <span>Cylindrée</span><span>{{ annonce.cylindree }} cm³</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.couple_cumul">
+            <span>Couple</span><span>{{ annonce.couple_cumul }} Nm</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.nombre_cylindre">
+            <span>Cylindres</span><span>{{ annonce.nombre_cylindre }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.alimentation">
+            <span>Alimentation</span><span>{{ annonce.alimentation }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.type_suralimentation">
+            <span>Suralimentation</span><span>{{ annonce.type_suralimentation }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance -->
+      <div class="spec-card">
+        <h4>Performance & Consommation</h4>
+        <div class="spec-list">
+          <div class="spec-row" *ngIf="annonce.vitesse_max">
+            <span>Vitesse max</span><span>{{ annonce.vitesse_max }} km/h</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.consomation_mixte">
+            <span>Conso. mixte</span><span>{{ annonce.consomation_mixte }} L/100km</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.consommation_urbaine">
+            <span>Conso. urbaine</span><span>{{ annonce.consommation_urbaine }} L/100km</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.consommation_extra_urbaine">
+            <span>Conso. extra-urbaine</span><span>{{ annonce.consommation_extra_urbaine }} L/100km</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.emission_CO2">
+            <span>Émissions CO₂</span><span>{{ annonce.emission_CO2 }} g/km</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.Norme_euro">
+            <span>Norme Euro</span><span>{{ annonce.Norme_euro }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.Crit_air != null">
+            <span>Crit'Air</span><span>{{ annonce.Crit_air }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transmission -->
+      <div class="spec-card">
+        <h4>Transmission</h4>
+        <div class="spec-list">
+          <div class="spec-row" *ngIf="annonce.boite_vitesse">
+            <span>Boîte de vitesse</span><span>{{ annonce.boite_vitesse }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.nombre_rapport">
+            <span>Nombre de rapports</span><span>{{ annonce.nombre_rapport }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.transmission">
+            <span>Transmission</span><span>{{ annonce.transmission }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dimensions -->
+      <div class="spec-card">
+        <h4>Dimensions & Poids</h4>
+        <div class="spec-list">
+          <div class="spec-row" *ngIf="annonce.nombre_places">
+            <span>Places</span><span>{{ annonce.nombre_places }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.nombre_portes">
+            <span>Portes</span><span>{{ annonce.nombre_portes }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.poids_vide">
+            <span>Poids à vide</span><span>{{ annonce.poids_vide }} kg</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.empattement">
+            <span>Empattement</span><span>{{ annonce.empattement }} mm</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.hauteur">
+            <span>Hauteur</span><span>{{ annonce.hauteur }} mm</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.coffre_volume">
+            <span>Volume coffre</span><span>{{ annonce.coffre_volume }} L</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.reservoir_volume">
+            <span>Réservoir</span><span>{{ annonce.reservoir_volume }} L</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Châssis -->
+      <div class="spec-card" *ngIf="annonce.suspension_avant || annonce.freins_avant">
+        <h4>Châssis & Freins</h4>
+        <div class="spec-list">
+          <div class="spec-row" *ngIf="annonce.suspension_avant">
+            <span>Suspension AV</span><span>{{ annonce.suspension_avant }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.suspension_arriere">
+            <span>Suspension AR</span><span>{{ annonce.suspension_arriere }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.freins_avant">
+            <span>Freins AV</span><span>{{ annonce.freins_avant }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.freins_arriere">
+            <span>Freins AR</span><span>{{ annonce.freins_arriere }}</span>
+          </div>
+          <div class="spec-row" *ngIf="annonce.diametre_braquage">
+            <span>Diamètre braquage</span><span>{{ annonce.diametre_braquage }} m</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
