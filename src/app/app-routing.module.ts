@@ -26,9 +26,9 @@ const routes: Routes = [
   { path: 'avis', component: AvisComponent, canActivate: [AuthGuard] },
 
   // Pages annonces — routes spécifiques AVANT la route dynamique :id
-  { path: 'annonce/new', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['particulier', 'entreprise', 'admin'] } },
-  { path: 'annonce/edit/:id', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['particulier', 'entreprise', 'admin'] } },
-  { path: 'annonce/:id', component: AnnonceDetailComponent },
+  { path: 'annonces/new', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['particulier', 'entreprise', 'admin'] } },
+  { path: 'annonces/edit/:id', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['particulier', 'entreprise', 'admin'] } },
+  { path: 'annonces/:id', component: AnnonceDetailComponent },
 
   // Admin
   { path: 'admin', component: DashboardAdminComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
