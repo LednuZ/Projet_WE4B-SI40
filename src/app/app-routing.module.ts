@@ -13,10 +13,12 @@ import { DashboardAdminComponent } from './components/dashboard-admin/dashboard-
 
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
+import { HomeComponent } from './components/home/home.component';
 
 const routes: Routes = [
   // Pages publiques
-  { path: '', component: CatalogueComponent },
+  { path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: 'annonces', component: CatalogueComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
 
