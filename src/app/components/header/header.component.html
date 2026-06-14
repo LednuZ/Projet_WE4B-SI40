@@ -7,8 +7,14 @@
                 <li class="nav-item"><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" routerLink="/annonces/new">Vendre Ma Voiture</a></li> <!--TODO: Rajouter le lien vers la page-->
             </ul>
             <ul class="d-flex align-items-center gap-4 m-0 ms-auto list-unstyled">
-                <li class="nav-item "><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" routerLink="/login">Se connecter</a></li> 
-                <li class="nav-item "><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" routerLink="/register">S'inscrire</a></li> 
+                <ng-container *ngIf="!authService.isLoggedIn()">
+                    <li class="nav-item"><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" routerLink="/login">Se connecter</a></li>
+                    <li class="nav-item"><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" routerLink="/register">S'inscrire</a></li>
+                </ng-container>
+                <ng-container *ngIf="authService.isLoggedIn()">
+                    <li class="nav-item"><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" routerLink="/profil">Mon profil</a></li>
+                    <li class="nav-item"><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" role="button" (click)="logout()">Se déconnecter</a></li>
+                </ng-container>
             </ul>
         </div>
     </nav>
