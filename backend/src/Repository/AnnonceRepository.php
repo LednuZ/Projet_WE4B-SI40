@@ -326,6 +326,16 @@ class AnnonceRepository
         $stmt->execute([$idPhoto]);
     }
 
+    public function findPhoto(int $idPhoto): ?array
+    {
+        $stmt = $this->db->getConnection()->prepare(
+            'SELECT id_photo, id_annonce, url_photo FROM photo WHERE id_photo = ?'
+        );
+        $stmt->execute([$idPhoto]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
     public function deletePhotos(int $idAnnonce): void
     {
         $stmt = $this->db->getConnection()->prepare(

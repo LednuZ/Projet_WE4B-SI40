@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnnonceService } from '../../services/annonce.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-annonce-form',
@@ -21,6 +22,11 @@ export class AnnonceFormComponent implements OnInit {
   modeles: any[] = [];
   generations: any[] = [];
   versions: any[] = [];
+
+  // Photos
+  selectedFiles: File[] = [];
+  previews: string[] = [];
+  existingPhotos: { id_photo: number; url_photo: string }[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -101,6 +107,8 @@ export class AnnonceFormComponent implements OnInit {
           nombre_proprietaire: annonce.nombre_proprietaire || '',
           controle_technique: annonce.controle_technique || ''
         });
+
+        this.existingPhotos = annonce.photos || [];
       },
       error: () => this.errorMessage = 'Annonce introuvable'
     });
@@ -130,18 +138,60 @@ export class AnnonceFormComponent implements OnInit {
     this.annonceForm.patchValue({ id_version: '' });
   }
 
+  onFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files) return;
+
+    Array.from(input.files).forEach(file => {
+      if (file.size > 5 * 1024 * 1024) {
+        this.errorMessage = `"${file.name}" dépasse 5 Mo et a été ignorée`;
+        return;
+      }
+      this.selectedFiles.push(file);
+      const reader = new FileReader();
+      reader.onload = (e) => this.previews.push(e.target?.result as string);
+      reader.readAsDataURL(file);
+    });
+
+    input.value = '';
+  }
+
+  removePreview(index: number): void {
+    this.selectedFiles.splice(index, 1);
+    this.previews.splice(index, 1);
+  }
+
+  supprimerPhotoExistante(photoId: number): void {
+    this.annonceService.supprimerPhoto(photoId).subscribe({
+      next: () => this.existingPhotos = this.existingPhotos.filter(p => p.id_photo !== photoId),
+      error: () => this.errorMessage = 'Erreur lors de la suppression de la photo'
+    });
+  }
+
+  private uploadPhotos(annonceId: number, callback: () => void): void {
+    if (this.selectedFiles.length === 0) { callback(); return; }
+    forkJoin(this.selectedFiles.map(f => this.annonceService.uploadPhoto(annonceId, f))).subscribe({
+      next: () => callback(),
+      error: (err) => {
+        this.loading = false;
+        this.errorMessage = err.error?.message || `Erreur ${err.status} lors de l'upload`;
+        this.annonceId = annonceId;
+        this.isEdit = true;
+      }
+    });
+  }
+
   onSubmit(): void {
     if (this.annonceForm.invalid) return;
 
     this.loading = true;
     this.errorMessage = '';
 
-    // Préparer les données (sans les champs de sélection cascade)
     const { marque_id, modele_id, generation_id, ...formData } = this.annonceForm.value;
 
     if (this.isEdit && this.annonceId) {
       this.annonceService.updateAnnonce(this.annonceId, formData).subscribe({
-        next: () => this.router.navigate(['/annonces', this.annonceId]),
+        next: () => this.uploadPhotos(this.annonceId!, () => this.router.navigate(['/annonces', this.annonceId])),
         error: (err) => {
           this.loading = false;
           this.errorMessage = err.error?.message || 'Erreur lors de la modification';
@@ -149,7 +199,7 @@ export class AnnonceFormComponent implements OnInit {
       });
     } else {
       this.annonceService.createAnnonce(formData).subscribe({
-        next: (res) => this.router.navigate(['/annonces', res.id_annonce]),
+        next: (res) => this.uploadPhotos(res.id_annonce, () => this.router.navigate(['/annonces', res.id_annonce])),
         error: (err) => {
           this.loading = false;
           this.errorMessage = err.error?.message || 'Erreur lors de la création';

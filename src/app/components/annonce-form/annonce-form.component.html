@@ -149,6 +149,34 @@
         <textarea formControlName="description" rows="5" placeholder="Décrivez votre véhicule..."></textarea>
       </div>
 
+      <!-- Photos -->
+      <h3 class="section-title">Photos</h3>
+
+      <!-- Photos existantes (mode édition) -->
+      <div class="existing-photos" *ngIf="existingPhotos.length > 0">
+        <div class="photo-thumb" *ngFor="let photo of existingPhotos">
+          <img [src]="'http://localhost:8000' + photo.url_photo" alt="Photo annonce">
+          <button type="button" class="photo-delete" (click)="supprimerPhotoExistante(photo.id_photo)" title="Supprimer">✕</button>
+        </div>
+      </div>
+
+      <!-- Nouvelles photos sélectionnées -->
+      <div class="existing-photos" *ngIf="previews.length > 0">
+        <div class="photo-thumb" *ngFor="let preview of previews; let i = index">
+          <img [src]="preview" alt="Aperçu">
+          <button type="button" class="photo-delete" (click)="removePreview(i)" title="Retirer">✕</button>
+        </div>
+      </div>
+
+      <div class="photo-upload-zone">
+        <label for="photos" class="photo-upload-label">
+          <span>+ Ajouter des photos</span>
+          <small>JPG, PNG, WEBP · 5 Mo max par photo</small>
+        </label>
+        <input id="photos" type="file" accept="image/jpeg,image/png,image/webp"
+               multiple (change)="onFilesSelected($event)" style="display:none">
+      </div>
+
       <!-- Boutons -->
       <div class="form-actions">
         <button type="button" class="btn-cancel" (click)="router.navigate(['/'])">Annuler</button>

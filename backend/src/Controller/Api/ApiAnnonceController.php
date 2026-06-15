@@ -174,6 +174,82 @@ class ApiAnnonceController extends AbstractController
         return $this->json(['message' => 'Annonce mise à jour']);
     }
 
+    #[Route('/{id}/photos', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function uploadPhoto(int $id, Request $request, AnnonceRepository $repo): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['message' => 'Non authentifié'], 401);
+        }
+
+        $owner = $repo->getOwner($id);
+        if ($owner !== $user->getId()) {
+            return $this->json(['message' => 'Non autorisé'], 403);
+        }
+
+        $file = $request->files->get('photo');
+        if (!$file) {
+            return $this->json(['message' => 'Aucun fichier reçu (limite PHP: ' . ini_get('upload_max_filesize') . ')'], 400);
+        }
+
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
+        $mime = $file->getMimeType();
+        if (!in_array($mime, $allowedMimes)) {
+            return $this->json(['message' => 'Format non supporté: ' . $mime . ' (JPG, PNG, WEBP uniquement)'], 400);
+        }
+
+        if ($file->getSize() > 20 * 1024 * 1024) {
+            return $this->json(['message' => 'La photo ne doit pas dépasser 20 Mo'], 400);
+        }
+
+        try {
+            $projectDir = $this->getParameter('kernel.project_dir');
+            $dir = rtrim($projectDir, '/\\') . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'photos' . DIRECTORY_SEPARATOR;
+
+            if (!is_dir($dir) && !mkdir($dir, 0777, true) && !is_dir($dir)) {
+                return $this->json(['message' => 'Impossible de créer le dossier uploads: ' . $dir], 500);
+            }
+
+            $ext = $file->guessExtension() ?? pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION) ?? 'jpg';
+            $filename = uniqid('photo_') . '.' . $ext;
+            $file->move($dir, $filename);
+
+            $url = '/uploads/photos/' . $filename;
+            $repo->addPhoto($id, $url);
+
+            return $this->json(['url' => $url], 201);
+        } catch (\Exception $e) {
+            return $this->json(['message' => 'Erreur serveur: ' . $e->getMessage()], 500);
+        }
+    }
+
+    #[Route('/photos/{photoId}', methods: ['DELETE'], requirements: ['photoId' => '\d+'])]
+    public function deletePhoto(int $photoId, AnnonceRepository $repo): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['message' => 'Non authentifié'], 401);
+        }
+
+        $photo = $repo->findPhoto($photoId);
+        if (!$photo) {
+            return $this->json(['message' => 'Photo introuvable'], 404);
+        }
+
+        $owner = $repo->getOwner($photo['id_annonce']);
+        if ($owner !== $user->getId() && !$this->isGranted('ROLE_ADMIN')) {
+            return $this->json(['message' => 'Non autorisé'], 403);
+        }
+
+        $filepath = $this->getParameter('kernel.project_dir') . '/public' . $photo['url_photo'];
+        if (file_exists($filepath)) {
+            unlink($filepath);
+        }
+
+        $repo->deletePhoto($photoId);
+        return $this->json(['message' => 'Photo supprimée']);
+    }
+
     #[Route('/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function delete(int $id, AnnonceRepository $repo): JsonResponse
     {

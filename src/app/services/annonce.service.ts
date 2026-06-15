@@ -65,4 +65,14 @@ export class AnnonceService {
   marquerVendu(id: number): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${id}/vendu`, {});
   }
+
+  uploadPhoto(annonceId: number, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('photo', file);
+    return this.http.post<any>(`${this.apiUrl}/${annonceId}/photos`, formData);
+  }
+
+  supprimerPhoto(photoId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/photos/${photoId}`);
+  }
 }

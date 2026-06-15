@@ -58,7 +58,7 @@
 
   <div class="annonces-grid" *ngIf="!loading">
     <a *ngFor="let annonce of annoncesRecentes"
-       [routerLink]="['/annonce', annonce.id_annonce]"
+       [routerLink]="['/annonces', annonce.id_annonce]"
        class="annonce-card">
 
       <div class="card-image">
@@ -84,5 +84,5 @@
 <section class="cta-section">
   <h2>Vous vendez votre véhicule ?</h2>
   <p>Publiez votre annonce gratuitement et touchez des milliers d'acheteurs potentiels.</p>
-  <a routerLink="/annonce/new" class="btn-cta">Publier une annonce</a>
+  <a routerLink="/annonces/new" class="btn-cta">Publier une annonce</a>
 </section>

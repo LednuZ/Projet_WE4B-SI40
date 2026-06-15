@@ -70,7 +70,7 @@
   <div class="annonces-grid" *ngIf="!loading">
 
     <a *ngFor="let annonce of annonces"
-       [routerLink]="['/annonce', annonce.id_annonce]"
+       [routerLink]="['/annonces', annonce.id_annonce]"
        class="annonce-card">
 
       <div class="card-image">

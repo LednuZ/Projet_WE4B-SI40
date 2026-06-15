@@ -49,8 +49,6 @@ class TokenAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        // Retourner null permet à la requête de continuer en anonyme.
-        // Les routes protégées vérifient $this->getUser() dans leurs contrôleurs.
         return null;
     }
 }
