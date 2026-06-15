@@ -15,6 +15,7 @@ import { VitrineComponent } from './vitrine/vitrine.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { MesAnnoncesComponent } from './components/mes-annonces/mes-annonces.component';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
@@ -31,9 +32,11 @@ import { HomeComponent } from './components/home/home.component';
     MessagerieComponent,
     AvisComponent,
     DashboardAdminComponent,
+    NavbarComponent,
+    FooterComponent,
+    MesAnnoncesComponent,
     VitrineComponent,
     HeaderComponent,
-    FooterComponent,
     HomeComponent,
   ],
   imports: [

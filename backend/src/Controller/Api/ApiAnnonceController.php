@@ -30,6 +30,71 @@ class ApiAnnonceController extends AbstractController
 
         return $this->json($annonces);
     }
+    #[Route('/mes-annonces', methods: ['GET'])]
+    public function mesAnnonces(AnnonceRepository $repo): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['message' => 'Non authentifié'], 401);
+        }
+
+        return $this->json($repo->findByVendeur($user->getId()));
+    }
+
+    #[Route('/{id}/pause', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function pause(int $id, AnnonceRepository $repo): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['message' => 'Non authentifié'], 401);
+        }
+
+        $owner = $repo->getOwner($id);
+        if ($owner !== $user->getId()) {
+            return $this->json(['message' => 'Non autorisé'], 403);
+        }
+
+        $repo->updateStatut($id, 'pause', null);
+        return $this->json(['message' => 'Annonce mise en pause']);
+    }
+
+    #[Route('/{id}/reprendre', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function reprendre(int $id, AnnonceRepository $repo): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['message' => 'Non authentifié'], 401);
+        }
+
+        $annonce = $repo->findById($id);
+        if (!$annonce || (int)$annonce['vendeur_id'] !== $user->getId()) {
+            return $this->json(['message' => 'Non autorisé'], 403);
+        }
+
+        if (!empty($annonce['commentaire_admin'])) {
+            return $this->json(['message' => 'Annonce suspendue par l\'administration'], 403);
+        }
+
+        $repo->updateStatut($id, 'active', null);
+        return $this->json(['message' => 'Annonce remise en ligne']);
+    }
+
+    #[Route('/{id}/vendu', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function vendu(int $id, AnnonceRepository $repo): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['message' => 'Non authentifié'], 401);
+        }
+
+        $owner = $repo->getOwner($id);
+        if ($owner !== $user->getId()) {
+            return $this->json(['message' => 'Non autorisé'], 403);
+        }
+
+        $repo->marquerVendu($id);
+        return $this->json(['message' => 'Annonce marquée comme vendue']);
+    }
 
     #[Route('/{id}', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function detail(int $id, AnnonceRepository $repo): JsonResponse

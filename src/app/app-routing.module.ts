@@ -10,6 +10,7 @@ import { ProfilComponent } from './components/profil/profil.component';
 import { MessagerieComponent } from './components/messagerie/messagerie.component';
 import { AvisComponent } from './components/avis/avis.component';
 import { DashboardAdminComponent } from './components/dashboard-admin/dashboard-admin.component';
+import { MesAnnoncesComponent } from './components/mes-annonces/mes-annonces.component';
 
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
@@ -26,10 +27,11 @@ const routes: Routes = [
   { path: 'profil', component: ProfilComponent, canActivate: [AuthGuard] },
   { path: 'messagerie', component: MessagerieComponent, canActivate: [AuthGuard] },
   { path: 'avis', component: AvisComponent, canActivate: [AuthGuard] },
+  { path: 'mes-annonces', component: MesAnnoncesComponent, canActivate: [AuthGuard] },
 
   // Pages annonces — routes spécifiques AVANT la route dynamique :id
-  { path: 'annonces/new', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['particulier', 'entreprise', 'admin'] } },
-  { path: 'annonces/edit/:id', component: AnnonceFormComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['particulier', 'entreprise', 'admin'] } },
+  { path: 'annonces/new', component: AnnonceFormComponent, canActivate: [AuthGuard] },
+  { path: 'annonces/edit/:id', component: AnnonceFormComponent, canActivate: [AuthGuard] },
   { path: 'annonces/:id', component: AnnonceDetailComponent },
 
   // Admin
