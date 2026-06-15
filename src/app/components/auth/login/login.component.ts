@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.errorMessage = error.error.message;
+          this.errorMessage = error.error?.message || 'Identifiants incorrects ou serveur indisponible';
           this.loading = false;
         }
       });

@@ -1,0 +1,36 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap");
+
+
+// Import des différents fonts
+$font-family-sans-serif: 'Inter', sans-serif; // Pour le texte général
+$headings-font-family: 'Manrope', sans-serif; // Pour TOUS les titres (h1, h2, h3...)
+
+
+
+// Définition des couleurs
+$primary: #1A2744;
+$secondary: #F97316;
+
+$custom-colors: (
+    // "etudiant": $bleu,
+    "primary": $primary,
+    "secondary": $secondary
+);
+
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+@import "bootstrap/scss/bootstrap";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #EFF1F3;
+}

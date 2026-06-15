@@ -1,0 +1,88 @@
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Trouvez votre prochaine voiture sur <span class="brand">AutoMarket</span></h1>
+    <p>Des milliers d'annonces de véhicules d'occasion vérifiées par notre communauté.</p>
+    <a routerLink="/annonces" class="btn-hero">Voir les annonces</a>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="stats-bar">
+  <div class="stat">
+    <span class="stat-number">{{ annoncesRecentes.length }}+</span>
+    <span class="stat-label">Annonces en ligne</span>
+  </div>
+  <div class="stat">
+    <span class="stat-number">100%</span>
+    <span class="stat-label">Gratuit</span>
+  </div>
+  <div class="stat">
+    <span class="stat-number">24/7</span>
+    <span class="stat-label">Disponible</span>
+  </div>
+</section>
+
+<!-- Comment ça marche -->
+<section class="how-it-works">
+  <h2>Comment ça marche ?</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-icon">🔍</div>
+      <h3>Cherchez</h3>
+      <p>Parcourez nos annonces et utilisez les filtres pour trouver le véhicule idéal.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">💬</div>
+      <h3>Contactez</h3>
+      <p>Échangez directement avec le vendeur via notre messagerie intégrée.</p>
+    </div>
+    <div class="step">
+      <div class="step-icon">🚗</div>
+      <h3>Achetez</h3>
+      <p>Rencontrez le vendeur, vérifiez le véhicule et concluez la vente en toute sérénité.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Annonces récentes -->
+<section class="recent-section">
+  <div class="section-header">
+    <h2>Annonces récentes</h2>
+    <a routerLink="/annonces" class="link-all">Voir toutes les annonces →</a>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Chargement...</p>
+  </div>
+
+  <div class="annonces-grid" *ngIf="!loading">
+    <a *ngFor="let annonce of annoncesRecentes"
+       [routerLink]="['/annonce', annonce.id_annonce]"
+       class="annonce-card">
+
+      <div class="card-image">
+        <img [src]="getPhotoUrl(annonce)" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
+      </div>
+
+      <div class="card-body">
+        <h3>{{ annonce.marque_nom }} {{ annonce.modele_nom }}</h3>
+        <p class="card-version">{{ annonce.version_nom }}</p>
+        <div class="card-specs">
+          <span>{{ annonce.annee_circulation }}</span>
+          <span>{{ formatKm(annonce.kilometrage) }}</span>
+          <span>{{ annonce.carburant }}</span>
+        </div>
+        <span class="card-price">{{ formatPrix(annonce.prix) }}</span>
+      </div>
+
+    </a>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Vous vendez votre véhicule ?</h2>
+  <p>Publiez votre annonce gratuitement et touchez des milliers d'acheteurs potentiels.</p>
+  <a routerLink="/annonce/new" class="btn-cta">Publier une annonce</a>
+</section>
