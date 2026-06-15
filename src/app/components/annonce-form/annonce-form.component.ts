@@ -141,7 +141,7 @@ export class AnnonceFormComponent implements OnInit {
 
     if (this.isEdit && this.annonceId) {
       this.annonceService.updateAnnonce(this.annonceId, formData).subscribe({
-        next: () => this.router.navigate(['/annonce', this.annonceId]),
+        next: () => this.router.navigate(['/annonces', this.annonceId]),
         error: (err) => {
           this.loading = false;
           this.errorMessage = err.error?.message || 'Erreur lors de la modification';
@@ -149,7 +149,7 @@ export class AnnonceFormComponent implements OnInit {
       });
     } else {
       this.annonceService.createAnnonce(formData).subscribe({
-        next: (res) => this.router.navigate(['/annonce', res.id_annonce]),
+        next: (res) => this.router.navigate(['/annonces', res.id_annonce]),
         error: (err) => {
           this.loading = false;
           this.errorMessage = err.error?.message || 'Erreur lors de la création';

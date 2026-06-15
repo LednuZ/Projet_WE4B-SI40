@@ -10,7 +10,8 @@
 </div>
 
 <!-- Contenu -->
-<div class="detail-container" *ngIf="annonce && !loading">
+<ng-container *ngIf="annonce; let annonce">
+<div class="detail-container" *ngIf="!loading">
 
   <!-- Retour -->
   <button class="btn-back" (click)="goBack()">← Retour</button>
@@ -237,3 +238,4 @@
   </div>
 
 </div>
+</ng-container>

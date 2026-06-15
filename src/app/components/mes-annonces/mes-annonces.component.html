@@ -38,7 +38,7 @@
 
     <div *ngFor="let annonce of annonces" class="annonce-row">
 
-      <a [routerLink]="['/annonce', annonce.id_annonce]" class="annonce-info">
+      <a [routerLink]="['/annonces', annonce.id_annonce]" class="annonce-info">
         <div class="annonce-photo">
           <img [src]="getPhotoUrl(annonce)" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
         </div>

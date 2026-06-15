@@ -32,7 +32,6 @@ import { HomeComponent } from './components/home/home.component';
     MessagerieComponent,
     AvisComponent,
     DashboardAdminComponent,
-    NavbarComponent,
     FooterComponent,
     MesAnnoncesComponent,
     VitrineComponent,
