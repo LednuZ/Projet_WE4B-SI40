@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/auth/login/login.component';
@@ -17,7 +16,7 @@ import { FooterComponent } from './components/shared/footer/footer.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
-
+import { MesAnnoncesComponent } from './components/mes-annonces/mes-annonces.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +31,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     AvisComponent,
     DashboardAdminComponent,
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+    MesAnnoncesComponent,
   ],
   imports: [
     BrowserModule,

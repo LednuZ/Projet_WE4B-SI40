@@ -49,4 +49,20 @@ export class AnnonceService {
   deleteAnnonce(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
+  
+  getMesAnnonces(): Observable<Annonce[]> {
+    return this.http.get<Annonce[]>(`${this.apiUrl}/mes-annonces`);
+  }
+
+  pauseAnnonce(id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${id}/pause`, {});
+  }
+
+  reprendreAnnonce(id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${id}/reprendre`, {});
+  }
+
+  marquerVendu(id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${id}/vendu`, {});
+  }
 }

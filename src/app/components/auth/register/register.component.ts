@@ -21,7 +21,7 @@ export class RegisterComponent implements OnInit {
       prenom: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       numero_phone: [''],
-      role: ['acheteur', [Validators.required]],
+      role: ['particulier', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]]
     }, {
@@ -32,29 +32,27 @@ export class RegisterComponent implements OnInit {
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
-
     if (password && confirmPassword && password.value !== confirmPassword.value) {
-      confirmPassword.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
-    } else {
-      confirmPassword?.setErrors(null);
-      return null;
     }
+    return null;
   }
   onSubmit(): void {
-    if (this.registerForm.valid) {
-      this.loading = true;
-      const { nom, prenom, email, numero_phone, role, password } = this.registerForm.value;
-      this.http.post<any>(`${this.apiUrl}/auth/register`, { nom, prenom, email, numero_phone, role, mdp: password }).subscribe({
-        next: () => {
-          this.router.navigate(['/login']);
-        },
-        error: (error) => {
-          this.errorMessage = error.error?.message || 'Erreur lors de l\'inscription';
-          this.loading = false;
-        }
-      });
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
     }
+    this.loading = true;
+    const { nom, prenom, email, numero_phone, role, password } = this.registerForm.value;
+    this.http.post<any>(`${this.apiUrl}/auth/register`, { nom, prenom, email, numero_phone, role, mdp: password }).subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Erreur lors de l\'inscription';
+        this.loading = false;
+      }
+    });
   }
 
 }

@@ -10,34 +10,45 @@
       <div class="form-group">
         <label for="nom">Nom</label>
         <input type="text" id="nom" formControlName="nom" placeholder="Votre nom">
+        <small *ngIf="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched" style="color:red">Le nom est requis</small>
       </div>
 
       <div class="form-group">
         <label for="prenom">Prénom</label>
         <input type="text" id="prenom" formControlName="prenom" placeholder="Votre prénom">
+        <small *ngIf="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched" style="color:red">Le prénom est requis</small>
       </div>
-        <div class="form-group">
-            <label for="role">Vous êtes</label>
-            <select id="role" formControlName="role">
-            <option value="particulier">Particulier</option>
-            <option value="entreprise">Entreprise</option>
-            </select>
-        </div>
+
+      <div class="form-group">
+        <label for="role">Vous êtes</label>
+        <select id="role" formControlName="role">
+          <option value="particulier">Particulier</option>
+          <option value="entreprise">Entreprise</option>
+        </select>
+      </div>
+
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" id="email" formControlName="email" placeholder="Votre email">
+        <small *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" style="color:red">Email invalide</small>
       </div>
-        <div class="form-group">
-            <label for="mdp">Mot de passe</label>
-            <input type="password" id="mdp" formControlName="password" placeholder="••••••">
-        </div>
-        <div class="form-group">
-            <label for="confirmMdp">Confirmer le mot de passe</label>
-            <input type="password" id="confirmMdp" formControlName="confirmPassword" placeholder="••••••">
-        </div>
-        <button type="submit" [disabled]="registerForm.invalid || loading">
-            {{ loading ? 'Inscription...' : "S'inscrire" }}
-        </button>
+
+      <div class="form-group">
+        <label for="mdp">Mot de passe</label>
+        <input type="password" id="mdp" formControlName="password" placeholder="••••••">
+        <small *ngIf="registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched" style="color:red">8 caractères minimum</small>
+        <small *ngIf="registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.touched" style="color:red">Le mot de passe est requis</small>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmMdp">Confirmer le mot de passe</label>
+        <input type="password" id="confirmMdp" formControlName="confirmPassword" placeholder="••••••">
+        <small *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched" style="color:red">Les mots de passe ne correspondent pas</small>
+      </div>
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Inscription...' : "S'inscrire" }}
+      </button>
     </form>
     <p class="auth-link">
       Déjà un compte ? <a routerLink="/login">Se connecter</a>

@@ -1,0 +1,103 @@
+<div class="confirm-overlay" *ngIf="confirmAction" (click)="annulerConfirmation()">
+  <div class="confirm-box" (click)="$event.stopPropagation()">
+    <p *ngIf="confirmAction.type === 'vendu'">Marquer cette annonce comme vendue ?</p>
+    <p *ngIf="confirmAction.type === 'supprimer'">Supprimer définitivement cette annonce ?</p>
+    <div class="confirm-buttons">
+      <button class="btn-action btn-cancel-confirm" (click)="annulerConfirmation()">Annuler</button>
+      <button class="btn-action"
+              [class.btn-sold]="confirmAction.type === 'vendu'"
+              [class.btn-delete]="confirmAction.type === 'supprimer'"
+              (click)="confirmer()">
+        {{ confirmAction.type === 'vendu' ? 'Oui, marquer vendu' : 'Oui, supprimer' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="mes-annonces-container">
+
+  <div class="page-header">
+    <h1>Mes annonces</h1>
+    <a routerLink="/annonces/new" class="btn-new">+ Nouvelle annonce</a>
+  </div>
+
+  <div class="alert" *ngIf="message" [ngClass]="messageType === 'success' ? 'alert-success' : 'alert-error'">
+    {{ message }}
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Chargement de vos annonces...</p>
+  </div>
+
+  <div class="empty" *ngIf="!loading && annonces.length === 0">
+    <p>Vous n'avez pas encore publié d'annonce.</p>
+    <a routerLink="/annonces/new" class="btn-new">Publier ma première annonce</a>
+  </div>
+
+  <div class="annonces-list" *ngIf="!loading && annonces.length > 0">
+
+    <div *ngFor="let annonce of annonces" class="annonce-row">
+
+      <a [routerLink]="['/annonce', annonce.id_annonce]" class="annonce-info">
+        <div class="annonce-photo">
+          <img [src]="getPhotoUrl(annonce)" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
+        </div>
+
+        <div class="annonce-details">
+          <div class="annonce-top">
+            <h3>{{ annonce.marque_nom }} {{ annonce.modele_nom }}</h3>
+            <span class="statut" [ngClass]="getStatutClass(annonce.statut)">
+              {{ getStatutLabel(annonce.statut) }}
+            </span>
+          </div>
+          <p class="annonce-version">{{ annonce.version_nom }}</p>
+          <div class="annonce-meta">
+            <span>{{ annonce.annee_circulation }}</span>
+            <span>{{ formatKm(annonce.kilometrage) }}</span>
+            <span class="annonce-price">{{ formatPrix(annonce.prix) }}</span>
+          </div>
+          <p class="annonce-date">Publiée le {{ annonce.date_publication | date:'dd/MM/yyyy' }}</p>
+
+          <div class="admin-comment" *ngIf="annonce.commentaire_admin">
+            Admin : {{ annonce.commentaire_admin }}
+          </div>
+        </div>
+      </a>
+
+      <!-- Actions -->
+      <div class="annonce-actions">
+        <button class="btn-action btn-edit"
+                *ngIf="annonce.statut !== 'vendu'"
+                (click)="router.navigate(['/annonces/edit', annonce.id_annonce])">
+          Modifier
+        </button>
+
+        <button class="btn-action btn-pause"
+                *ngIf="annonce.statut === 'active'"
+                (click)="pauseAnnonce(annonce.id_annonce)">
+          Mettre en pause
+        </button>
+
+        <button class="btn-action btn-resume"
+                *ngIf="annonce.statut === 'pause' && !annonce.commentaire_admin"
+                (click)="reprendreAnnonce(annonce.id_annonce)">
+          Remettre en ligne
+        </button>
+
+        <button class="btn-action btn-sold"
+                *ngIf="annonce.statut === 'active'"
+                (click)="marquerVendu(annonce.id_annonce)">
+          Marquer vendu
+        </button>
+
+        <button class="btn-action btn-delete"
+                (click)="supprimerAnnonce(annonce.id_annonce)">
+          Supprimer
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
