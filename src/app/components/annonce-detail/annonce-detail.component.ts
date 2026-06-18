@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnnonceService } from '../../services/annonce.service';
 import { AuthService } from '../../services/auth.service';
+import { FavoriService } from '../../services/favori.service';
 import { Annonce } from '../../models/annonce.model';
 
 @Component({
@@ -12,15 +13,17 @@ import { Annonce } from '../../models/annonce.model';
 export class AnnonceDetailComponent implements OnInit {
 
   annonce: Annonce | null = null;
-  loading: boolean = true;
-  selectedPhoto: string = '';
-  error: string = '';
+  loading = true;
+  selectedPhoto = '';
+  error = '';
+  isFavori = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private annonceService: AnnonceService,
-    public authService: AuthService
+    public authService: AuthService,
+    private favoriService: FavoriService
   ) {}
 
   ngOnInit(): void {
@@ -40,12 +43,34 @@ export class AnnonceDetailComponent implements OnInit {
           this.selectedPhoto = this.getPhotoUrl(data.photo_principale);
         }
         this.loading = false;
+        if (this.authService.isLoggedIn()) {
+          this.favoriService.checkFavori(id).subscribe({
+            next: (res: { isFavori: boolean }) => { this.isFavori = res.isFavori; },
+            error: () => {}
+          });
+        }
       },
       error: () => {
         this.error = 'Annonce introuvable';
         this.loading = false;
       }
     });
+  }
+
+  toggleFavori(): void {
+    if (!this.annonce) return;
+    const id = this.annonce.id_annonce;
+    if (this.isFavori) {
+      this.favoriService.removeFavori(id).subscribe({
+        next: () => { this.isFavori = false; },
+        error: (err: any) => console.error(err)
+      });
+    } else {
+      this.favoriService.addFavori(id).subscribe({
+        next: () => { this.isFavori = true; },
+        error: (err: any) => console.error(err)
+      });
+    }
   }
 
   getPhotoUrl(path: string): string {
@@ -59,9 +84,7 @@ export class AnnonceDetailComponent implements OnInit {
 
   formatPrix(prix: number): string {
     return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR',
-      maximumFractionDigits: 0
+      style: 'currency', currency: 'EUR', maximumFractionDigits: 0
     }).format(prix);
   }
 

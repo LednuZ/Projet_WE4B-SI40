@@ -40,7 +40,16 @@
           <h1>{{ annonce.marque_nom }} {{ annonce.modele_nom }}</h1>
           <p class="version-name">{{ annonce.version_nom }}</p>
         </div>
-        <span class="price">{{ formatPrix(annonce.prix) }}</span>
+        <div class="price-block">
+          <span class="price">{{ formatPrix(annonce.prix) }}</span>
+          <button *ngIf="authService.isLoggedIn()"
+                  class="btn-favori"
+                  [class.is-favori]="isFavori"
+                  (click)="toggleFavori()"
+                  [title]="isFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'">
+            {{ isFavori ? '♥' : '♡' }}
+          </button>
+        </div>
       </div>
 
       <!-- Badges -->

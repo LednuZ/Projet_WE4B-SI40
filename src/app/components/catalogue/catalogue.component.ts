@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AnnonceService } from '../../services/annonce.service';
+import { AuthService } from '../../services/auth.service';
+import { FavoriService } from '../../services/favori.service';
 import { Annonce } from '../../models/annonce.model';
 
 @Component({
@@ -11,88 +13,90 @@ export class CatalogueComponent implements OnInit {
 
   annonces: Annonce[] = [];
   marques: any[] = [];
-  loading: boolean = true;
-  showFilters: boolean = false;
+  loading = true;
+  showFilters = false;
+  favorisIds: Set<number> = new Set();
 
-  // Filtres
   filters: any = {
-    marque_id: '',
-    prix_min: '',
-    prix_max: '',
-    km_max: '',
-    annee_min: '',
-    annee_max: ''
+    marque_id: '', prix_min: '', prix_max: '',
+    km_max: '', annee_min: '', annee_max: ''
   };
+  sort = 'recent';
 
-  // Tri
-  sort: string = 'recent';
-
-  constructor(private annonceService: AnnonceService) {}
+  constructor(
+    private annonceService: AnnonceService,
+    public authService: AuthService,
+    private favoriService: FavoriService
+  ) {}
 
   ngOnInit(): void {
     this.loadMarques();
     this.loadAnnonces();
+    if (this.authService.isLoggedIn()) {
+      this.favoriService.getFavoris().subscribe({
+        next: (favs: any[]) => {
+          this.favorisIds = new Set(favs.map((f: any) => Number(f.id_annonce)));
+        },
+        error: () => {}
+      });
+    }
   }
 
   loadMarques(): void {
     this.annonceService.getMarques().subscribe({
-      next: (data) => this.marques = data,
-      error: (err) => console.error('Erreur chargement marques', err)
+      next: (data: any[]) => { this.marques = data; },
+      error: (err: any) => console.error(err)
     });
   }
 
   loadAnnonces(): void {
     this.loading = true;
     this.annonceService.getAnnonces(this.filters, this.sort).subscribe({
-      next: (data) => {
-        this.annonces = data;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Erreur chargement annonces', err);
-        this.loading = false;
-      }
+      next: (data: Annonce[]) => { this.annonces = data; this.loading = false; },
+      error: (err: any) => { console.error(err); this.loading = false; }
     });
   }
 
-  onFilterChange(): void {
-    this.loadAnnonces();
-  }
-
-  onSortChange(sort: string): void {
-    this.sort = sort;
-    this.loadAnnonces();
-  }
+  onFilterChange(): void  { this.loadAnnonces(); }
+  onSortChange(s: string): void { this.sort = s; this.loadAnnonces(); }
 
   resetFilters(): void {
-    this.filters = {
-      marque_id: '',
-      prix_min: '',
-      prix_max: '',
-      km_max: '',
-      annee_min: '',
-      annee_max: ''
-    };
+    this.filters = { marque_id: '', prix_min: '', prix_max: '', km_max: '', annee_min: '', annee_max: '' };
     this.sort = 'recent';
     this.loadAnnonces();
   }
 
-  toggleFilters(): void {
-    this.showFilters = !this.showFilters;
+  toggleFilters(): void { this.showFilters = !this.showFilters; }
+
+  isFavori(id: number): boolean { return this.favorisIds.has(id); }
+
+  toggleFavori(annonceId: number, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!this.authService.isLoggedIn()) return;
+
+    if (this.favorisIds.has(annonceId)) {
+      this.favoriService.removeFavori(annonceId).subscribe({
+        next: () => { this.favorisIds.delete(annonceId); this.favorisIds = new Set(this.favorisIds); },
+        error: (err: any) => console.error(err)
+      });
+    } else {
+      this.favoriService.addFavori(annonceId).subscribe({
+        next: () => { this.favorisIds.add(annonceId); this.favorisIds = new Set(this.favorisIds); },
+        error: (err: any) => console.error(err)
+      });
+    }
   }
 
   getPhotoUrl(annonce: any): string {
-    if (annonce.photo_principale) {
-      return 'http://localhost:8000' + annonce.photo_principale;
-    }
-    return 'assets/no-photo.svg';
+    return annonce.photo_principale
+      ? 'http://localhost:8000' + annonce.photo_principale
+      : 'assets/no-photo.svg';
   }
 
   formatPrix(prix: number): string {
     return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR',
-      maximumFractionDigits: 0
+      style: 'currency', currency: 'EUR', maximumFractionDigits: 0
     }).format(prix);
   }
 
