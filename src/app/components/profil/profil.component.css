@@ -175,6 +175,88 @@
   cursor: not-allowed;
 }
 
+/* Avis reçus */
+.avis-recus-card {}
+
+.avis-recus-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.avis-recus-header h3 {
+  font-size: 18px;
+  color: #1a2744;
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+
+.avis-recus-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.note-label {
+  font-size: 13px;
+  color: #777;
+}
+
+.avis-empty {
+  font-size: 14px;
+  color: #bbb;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.avis-list-profil {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.avis-item-profil {
+  background: #f8f9fb;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.avis-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.avis-auteur-profil {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a2744;
+  margin-bottom: 4px;
+}
+
+.avis-date-profil {
+  font-size: 12px;
+  color: #bbb;
+  white-space: nowrap;
+}
+
+.avis-texte {
+  font-size: 14px;
+  color: #444;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.avis-texte.vide { color: #bbb; }
+
 /* Zone de danger */
 .danger-card {
   background: #fff;

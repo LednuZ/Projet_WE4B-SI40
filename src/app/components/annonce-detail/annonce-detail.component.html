@@ -104,10 +104,61 @@
       <!-- Vendeur -->
       <div class="seller-card">
         <div class="seller-info">
-          <h3>{{ annonce.vendeur_prenom }} {{ annonce.vendeur_nom }}</h3>
-          <span class="seller-rating" *ngIf="annonce.vendeur_note">★ {{ annonce.vendeur_note }}/5</span>
+          <h3>
+            <a [routerLink]="['/vendeur', annonce.vendeur_id]" class="vendeur-link">
+              {{ annonce.vendeur_prenom }} {{ annonce.vendeur_nom }}
+            </a>
+          </h3>
+          <div class="seller-note-line" *ngIf="avisVendeur.stats?.note_moyenne">
+            <app-star-rating [rating]="avisVendeur.stats.note_moyenne" [editable]="false"></app-star-rating>
+            <span class="note-text">{{ avisVendeur.stats.note_moyenne }}/5 ({{ avisVendeur.stats.nb_avis }} avis)</span>
+          </div>
         </div>
         <button class="btn-contact" (click)="contacterVendeur()">Contacter le vendeur</button>
+      </div>
+
+      <!-- Avis vendeur -->
+      <div class="avis-section">
+        <div class="avis-section-header">
+          <h3>Avis sur ce vendeur</h3>
+          <button class="btn-laisser-avis"
+                  *ngIf="authService.isLoggedIn() && !isVendeur() && !showFormVendeur"
+                  (click)="showFormVendeur = true">
+            + Laisser un avis
+          </button>
+        </div>
+
+        <div class="alert-success" *ngIf="avisVendeurMsg">{{ avisVendeurMsg }}</div>
+
+        <!-- Formulaire inline -->
+        <div class="avis-form" *ngIf="showFormVendeur">
+          <p class="form-label">Votre note</p>
+          <app-star-rating [rating]="noteVendeur" [editable]="true"
+                           (ratingChange)="noteVendeur = $event"></app-star-rating>
+          <textarea [(ngModel)]="contenuVendeur" placeholder="Votre commentaire (optionnel)" rows="3"></textarea>
+          <div class="alert-error" *ngIf="avisVendeurError">{{ avisVendeurError }}</div>
+          <div class="form-actions">
+            <button class="btn-cancel-form" (click)="showFormVendeur = false; avisVendeurError = ''">Annuler</button>
+            <button class="btn-submit-avis" (click)="submitAvisVendeur()" [disabled]="noteVendeur < 1">Envoyer</button>
+          </div>
+        </div>
+
+        <!-- Liste des avis -->
+        <div class="avis-empty" *ngIf="avisVendeur.avis.length === 0 && !showFormVendeur">
+          Aucun avis pour ce vendeur.
+        </div>
+        <div class="avis-list">
+          <div class="avis-item" *ngFor="let a of avisVendeur.avis | slice:0:3">
+            <div class="avis-item-header">
+              <div>
+                <span class="avis-auteur">{{ a.redacteur_prenom }} {{ a.redacteur_nom }}</span>
+                <app-star-rating [rating]="a.note" [editable]="false"></app-star-rating>
+              </div>
+              <span class="avis-date">{{ a.date_avis | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <p class="avis-contenu" *ngIf="a.contenu">{{ a.contenu }}</p>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -243,6 +294,52 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Avis modèle -->
+  <div class="avis-section avis-section-modele">
+    <div class="avis-section-header">
+      <h3>Avis sur le modèle {{ annonce.marque_nom }} {{ annonce.modele_nom }}</h3>
+      <div class="modele-note" *ngIf="avisModele.stats?.note_moyenne">
+        <app-star-rating [rating]="avisModele.stats.note_moyenne" [editable]="false"></app-star-rating>
+        <span class="note-text">{{ avisModele.stats.note_moyenne }}/5 ({{ avisModele.stats.nb_avis }} avis)</span>
+      </div>
+      <button class="btn-laisser-avis"
+              *ngIf="authService.isLoggedIn() && !showFormModele"
+              (click)="showFormModele = true">
+        + Laisser un avis
+      </button>
+    </div>
+
+    <div class="alert-success" *ngIf="avisModeleMsg">{{ avisModeleMsg }}</div>
+
+    <div class="avis-form" *ngIf="showFormModele">
+      <p class="form-label">Votre note</p>
+      <app-star-rating [rating]="noteModele" [editable]="true"
+                       (ratingChange)="noteModele = $event"></app-star-rating>
+      <textarea [(ngModel)]="contenuModele" placeholder="Votre commentaire (optionnel)" rows="3"></textarea>
+      <div class="alert-error" *ngIf="avisModeleError">{{ avisModeleError }}</div>
+      <div class="form-actions">
+        <button class="btn-cancel-form" (click)="showFormModele = false; avisModeleError = ''">Annuler</button>
+        <button class="btn-submit-avis" (click)="submitAvisModele()" [disabled]="noteModele < 1">Envoyer</button>
+      </div>
+    </div>
+
+    <div class="avis-empty" *ngIf="avisModele.avis.length === 0 && !showFormModele">
+      Aucun avis pour ce modèle.
+    </div>
+    <div class="avis-list">
+      <div class="avis-item" *ngFor="let a of avisModele.avis | slice:0:3">
+        <div class="avis-item-header">
+          <div>
+            <span class="avis-auteur">{{ a.redacteur_prenom }} {{ a.redacteur_nom }}</span>
+            <app-star-rating [rating]="a.note" [editable]="false"></app-star-rating>
+          </div>
+          <span class="avis-date">{{ a.date_avis | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <p class="avis-contenu" *ngIf="a.contenu">{{ a.contenu }}</p>
+      </div>
     </div>
   </div>
 

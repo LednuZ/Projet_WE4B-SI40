@@ -1,0 +1,12 @@
+<span class="stars" [class.editable]="editable" (mouseleave)="onLeave()">
+  <span *ngFor="let star of stars"
+        class="star"
+        [class.full]="getFill(star) === 'full'"
+        [class.half]="getFill(star) === 'half'"
+        (click)="select(star)"
+        (mouseenter)="onHover(star)">
+    <span class="star-bg">★</span>
+    <span class="star-fg" *ngIf="getFill(star) !== 'empty'"
+          [style.width]="getFill(star) === 'half' ? '50%' : '100%'">★</span>
+  </span>
+</span>

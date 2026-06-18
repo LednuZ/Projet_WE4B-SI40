@@ -1,0 +1,35 @@
+.stars {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.star {
+  position: relative;
+  display: inline-block;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.stars.editable .star {
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.star-bg {
+  color: #ddd;
+  display: block;
+}
+
+.star-fg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  color: #f97316;
+  white-space: nowrap;
+}
+
+.stars.editable .star:hover .star-bg,
+.stars.editable .star:hover ~ .star .star-bg {
+  color: #f0c080;
+}
