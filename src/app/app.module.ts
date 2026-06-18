@@ -19,6 +19,7 @@ import { MesAnnoncesComponent } from './components/mes-annonces/mes-annonces.com
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
+import { FavorisComponent } from './components/favoris/favoris.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { HomeComponent } from './components/home/home.component';
     VitrineComponent,
     HeaderComponent,
     HomeComponent,
+    FavorisComponent,
   ],
   imports: [
     BrowserModule,

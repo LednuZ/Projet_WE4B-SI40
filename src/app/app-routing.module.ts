@@ -11,6 +11,7 @@ import { MessagerieComponent } from './components/messagerie/messagerie.componen
 import { AvisComponent } from './components/avis/avis.component';
 import { DashboardAdminComponent } from './components/dashboard-admin/dashboard-admin.component';
 import { MesAnnoncesComponent } from './components/mes-annonces/mes-annonces.component';
+import { FavorisComponent } from './components/favoris/favoris.component';
 
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path: 'messagerie', component: MessagerieComponent, canActivate: [AuthGuard] },
   { path: 'avis', component: AvisComponent, canActivate: [AuthGuard] },
   { path: 'mes-annonces', component: MesAnnoncesComponent, canActivate: [AuthGuard] },
+  { path: 'favoris', component: FavorisComponent, canActivate: [AuthGuard] },
 
   // Pages annonces — routes spécifiques AVANT la route dynamique :id
   { path: 'annonces/new', component: AnnonceFormComponent, canActivate: [AuthGuard] },

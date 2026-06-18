@@ -96,6 +96,40 @@
   margin: 4px 0 0;
 }
 
+.price-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.btn-favori {
+  background: none;
+  border: 2px solid #dde1e9;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 20px;
+  color: #bbb;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-favori:hover {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.btn-favori.is-favori {
+  border-color: #e74c3c;
+  color: #e74c3c;
+  background: #fef2f2;
+}
+
 .price {
   font-size: 28px;
   font-weight: 700;

@@ -75,12 +75,18 @@
 
       <div class="card-image">
         <img [src]="getPhotoUrl(annonce)" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
-        <span class="card-badge" *ngIf="annonce.premiere_main">1ère main</span>
         <span class="card-badge-energy" *ngIf="annonce.carburant"
               [ngClass]="getCarburantClass(annonce.carburant)">
           {{ annonce.carburant }}
         </span>
         <div class="card-price-overlay">{{ formatPrix(annonce.prix) }}</div>
+        <button *ngIf="authService.isLoggedIn()"
+                class="card-favori-btn"
+                [class.is-favori]="isFavori(annonce.id_annonce)"
+                (click)="toggleFavori(annonce.id_annonce, $event)"
+                [title]="isFavori(annonce.id_annonce) ? 'Retirer des favoris' : 'Ajouter aux favoris'">
+          {{ isFavori(annonce.id_annonce) ? '♥' : '♡' }}
+        </button>
       </div>
 
       <div class="card-body">
