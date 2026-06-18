@@ -24,8 +24,9 @@ export class AnnonceDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (!id) {
+    const idStr = this.route.snapshot.paramMap.get('id');
+    const id = Number(idStr);
+    if (idStr === null || isNaN(id)) {
       this.router.navigate(['/']);
       return;
     }
@@ -48,7 +49,7 @@ export class AnnonceDetailComponent implements OnInit {
   }
 
   getPhotoUrl(path: string): string {
-    if (!path) return 'assets/no-photo.png';
+    if (!path) return 'assets/no-photo.svg';
     return 'http://localhost:8000' + path;
   }
 

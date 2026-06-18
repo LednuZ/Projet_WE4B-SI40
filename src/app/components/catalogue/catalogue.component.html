@@ -76,6 +76,11 @@
       <div class="card-image">
         <img [src]="getPhotoUrl(annonce)" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
         <span class="card-badge" *ngIf="annonce.premiere_main">1ère main</span>
+        <span class="card-badge-energy" *ngIf="annonce.carburant"
+              [ngClass]="getCarburantClass(annonce.carburant)">
+          {{ annonce.carburant }}
+        </span>
+        <div class="card-price-overlay">{{ formatPrix(annonce.prix) }}</div>
       </div>
 
       <div class="card-body">
@@ -85,17 +90,25 @@
         <div class="card-specs">
           <span>{{ annonce.annee_circulation }}</span>
           <span>{{ formatKm(annonce.kilometrage) }}</span>
-          <span>{{ annonce.carburant }}</span>
-          <span>{{ annonce.boite_vitesse }}</span>
+          <span *ngIf="annonce.puissance_DIN">{{ annonce.puissance_DIN }} ch</span>
+          <span *ngIf="annonce.boite_vitesse">{{ annonce.boite_vitesse }}</span>
+          <span *ngIf="annonce.transmission">{{ annonce.transmission }}</span>
+          <span *ngIf="annonce.etat" class="spec-etat">{{ annonce.etat }}</span>
+          <span *ngIf="annonce.nombre_proprietaire && annonce.nombre_proprietaire > 1">
+            {{ annonce.nombre_proprietaire }} prop.
+          </span>
         </div>
 
         <div class="card-footer">
-          <span class="card-price">{{ formatPrix(annonce.prix) }}</span>
-          <span class="card-location" *ngIf="annonce.localisation">{{ annonce.localisation }}</span>
+          <span class="card-location" *ngIf="annonce.localisation">📍 {{ annonce.localisation }}</span>
+          <span class="card-seller-inline" *ngIf="annonce.vendeur_note">
+            ★ {{ annonce.vendeur_note }}/5
+          </span>
         </div>
 
-        <div class="card-seller" *ngIf="annonce.vendeur_note">
-          ★ {{ annonce.vendeur_note }}/5 — {{ annonce.vendeur_prenom }}
+        <div class="card-seller" *ngIf="annonce.vendeur_prenom">
+          {{ annonce.vendeur_prenom }} {{ annonce.vendeur_nom }}
+          <span *ngIf="annonce.vendeur_note" class="seller-stars">★ {{ annonce.vendeur_note }}/5</span>
         </div>
       </div>
 

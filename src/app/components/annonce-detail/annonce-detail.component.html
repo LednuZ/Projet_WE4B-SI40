@@ -21,7 +21,7 @@
     <!-- Colonne gauche : photos -->
     <div class="photos-section">
       <div class="main-photo">
-        <img [src]="selectedPhoto || 'assets/no-photo.png'" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
+        <img [src]="selectedPhoto || 'assets/no-photo.svg'" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
       </div>
       <div class="thumbnails" *ngIf="annonce.photos && annonce.photos.length > 1">
         <img *ngFor="let photo of annonce.photos"

@@ -20,7 +20,13 @@ class MessagerieRepository
                 m_last.date_envoi   AS date_dernier_message,
                 m_last.id_annonce,
                 CONCAT(ma.nom, " ", mo.nom) AS annonce_titre,
-                COALESCE(unread.nb, 0) = 0  AS lu
+                CONCAT(ma.nom, " ", mo.nom, " ", v.nom) AS annonce_titre_complet,
+                a.prix,
+                a.localisation,
+                a.annee_circulation,
+                a.kilometrage,
+                (SELECT url_photo FROM photo p WHERE p.id_annonce = a.id_annonce ORDER BY p.id_photo LIMIT 1) AS photo_principale,
+                COALESCE(unread.nb, 0)      AS nb_non_lus
             FROM utilisateur u
             JOIN (
                 SELECT
