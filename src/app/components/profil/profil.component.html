@@ -1,1 +1,167 @@
-<p>profil works!</p>
+<div class="profil-container">
+
+  <div class="page-header">
+    <h1>Mon profil</h1>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <p>Chargement de votre profil...</p>
+  </div>
+
+  <ng-container *ngIf="!loading && utilisateur">
+
+    <!-- Carte info utilisateur -->
+    <div class="info-card">
+      <div class="info-avatar">
+        {{ utilisateur.prenom.charAt(0).toUpperCase() }}{{ utilisateur.nom.charAt(0).toUpperCase() }}
+      </div>
+      <div class="info-details">
+        <h2>{{ utilisateur.prenom }} {{ utilisateur.nom }}</h2>
+        <span class="role-badge">{{ getRoleLabel(utilisateur.role) }}</span>
+        <p class="info-meta">
+          <span>{{ utilisateur.email }}</span>
+          <span *ngIf="utilisateur.numero_phone">&nbsp;·&nbsp;{{ utilisateur.numero_phone }}</span>
+        </p>
+        <p class="info-date">Membre depuis le {{ formatDate(utilisateur.date_inscription) }}</p>
+      </div>
+    </div>
+
+    <!-- Formulaire modification infos -->
+    <div class="form-card">
+      <h3>Modifier mes informations</h3>
+
+      <div class="alert" *ngIf="profilMessage"
+           [ngClass]="profilMessageType === 'success' ? 'alert-success' : 'alert-error'">
+        {{ profilMessage }}
+      </div>
+
+      <form [formGroup]="profilForm" (ngSubmit)="updateProfil()">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="prenom">Prénom</label>
+            <input id="prenom" type="text" formControlName="prenom" placeholder="Votre prénom">
+            <span class="field-error"
+                  *ngIf="profilForm.get('prenom')?.invalid && profilForm.get('prenom')?.touched">
+              Le prénom est obligatoire
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="nom">Nom</label>
+            <input id="nom" type="text" formControlName="nom" placeholder="Votre nom">
+            <span class="field-error"
+                  *ngIf="profilForm.get('nom')?.invalid && profilForm.get('nom')?.touched">
+              Le nom est obligatoire
+            </span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input id="email" type="email" formControlName="email" placeholder="votre@email.com">
+            <span class="field-error"
+                  *ngIf="profilForm.get('email')?.invalid && profilForm.get('email')?.touched">
+              Adresse email invalide
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="numero_phone">Téléphone</label>
+            <input id="numero_phone" type="tel" formControlName="numero_phone" placeholder="06 XX XX XX XX">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="profilForm.invalid">
+            Enregistrer les modifications
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Formulaire mot de passe -->
+    <div class="form-card">
+      <h3>Changer mon mot de passe</h3>
+
+      <div class="alert" *ngIf="passwordMessage"
+           [ngClass]="passwordMessageType === 'success' ? 'alert-success' : 'alert-error'">
+        {{ passwordMessage }}
+      </div>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+        <div class="form-group">
+          <label for="ancien_mdp">Mot de passe actuel</label>
+          <input id="ancien_mdp" type="password" formControlName="ancien_mdp"
+                 placeholder="Votre mot de passe actuel">
+          <span class="field-error"
+                *ngIf="passwordForm.get('ancien_mdp')?.invalid && passwordForm.get('ancien_mdp')?.touched">
+            Ce champ est obligatoire
+          </span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nouveau_mdp">Nouveau mot de passe</label>
+            <input id="nouveau_mdp" type="password" formControlName="nouveau_mdp"
+                   placeholder="8 caractères minimum">
+            <span class="field-error"
+                  *ngIf="passwordForm.get('nouveau_mdp')?.invalid && passwordForm.get('nouveau_mdp')?.touched">
+              Minimum 8 caractères requis
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="confirmation_mdp">Confirmer le nouveau mot de passe</label>
+            <input id="confirmation_mdp" type="password" formControlName="confirmation_mdp"
+                   placeholder="Répétez le nouveau mot de passe">
+            <span class="field-error"
+                  *ngIf="passwordForm.get('confirmation_mdp')?.invalid && passwordForm.get('confirmation_mdp')?.touched">
+              Ce champ est obligatoire
+            </span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="passwordForm.invalid">
+            Changer le mot de passe
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Zone de danger -->
+    <div class="danger-card">
+      <h3>Zone de danger</h3>
+      <div class="danger-content">
+        <div>
+          <p class="danger-title">Supprimer mon compte</p>
+          <p class="danger-desc">Cette action est irréversible. Toutes vos annonces et messages seront supprimés définitivement.</p>
+        </div>
+        <button class="btn-danger" (click)="openDeleteModal()">Supprimer mon compte</button>
+      </div>
+    </div>
+
+  </ng-container>
+
+  <!-- Modal de confirmation suppression -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <h3>Confirmer la suppression</h3>
+      <p>Saisissez votre mot de passe pour confirmer la suppression définitive de votre compte.</p>
+
+      <div class="form-group">
+        <label for="delete-password">Mot de passe</label>
+        <input id="delete-password" type="password" [(ngModel)]="deletePassword"
+               placeholder="Votre mot de passe" (keyup.enter)="confirmDelete()">
+      </div>
+
+      <div class="alert alert-error" *ngIf="deleteError">{{ deleteError }}</div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="closeDeleteModal()">Annuler</button>
+        <button class="btn-danger" (click)="confirmDelete()" [disabled]="deleteLoading">
+          {{ deleteLoading ? 'Suppression...' : 'Supprimer définitivement' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
