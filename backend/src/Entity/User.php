@@ -12,7 +12,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $prenom;
     private string $email;
     private string $mdp;
-    private string $role; // 'admin' | 'vendeur' | 'acheteur' | 'entreprise'
+    private string $role; // 'admin' | 'particulier' | 'entreprise'
     private ?string $numeroPhone;
     private \DateTimeInterface $dateInscription;
 

@@ -165,7 +165,7 @@ export class ProfilComponent implements OnInit {
     const labels: { [key: string]: string } = {
       admin:       'Administrateur',
       particulier: 'Particulier',
-      entreprise:  'Entreprise',
+      entreprise:  'Professionnel',
     };
     return labels[role] || role;
   }

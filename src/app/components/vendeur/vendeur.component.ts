@@ -67,7 +67,7 @@ export class VendeurComponent implements OnInit {
 
   getRoleLabel(role: string): string {
     const map: { [k: string]: string } = {
-      admin: 'Administrateur', particulier: 'Particulier', entreprise: 'Entreprise'
+      admin: 'Administrateur', particulier: 'Particulier', entreprise: 'Professionnel'
     };
     return map[role] || role;
   }
