@@ -13,8 +13,27 @@
                 </ng-container>
                 <ng-container *ngIf="authService.isLoggedIn()">
                     <li class="nav-item"><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" routerLink="/mes-annonces">Mes annonces</a></li>
-                    <li class="nav-item"><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" routerLink="/messagerie">Messages</a></li>
-                    <li class="nav-item"><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" routerLink="/profil">Mon profil</a></li>
+                    <li class="nav-item nav-msg">
+                      <a routerLink="/messagerie" class="msg-icon-link" title="Messagerie">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                             width="22" height="22">
+                          <rect x="2" y="4" width="20" height="16" rx="2"/>
+                          <polyline points="2,4 12,13 22,4"/>
+                        </svg>
+                        <span class="msg-badge" *ngIf="nonLus > 0">{{ nonLus > 9 ? '9+' : nonLus }}</span>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a routerLink="/profil" class="profil-icon-link" title="Mon profil">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                             width="22" height="22">
+                          <circle cx="12" cy="8" r="4"/>
+                          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                        </svg>
+                      </a>
+                    </li>
                     <li class="nav-item"><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" role="button" (click)="logout()">Se déconnecter</a></li>
                 </ng-container>
             </ul>

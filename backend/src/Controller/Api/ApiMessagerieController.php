@@ -23,6 +23,18 @@ class ApiMessagerieController extends AbstractController
         return $this->json($repo->findConversations($user->getId()));
     }
 
+    /** GET /api/messages/non-lus — nombre total de messages non lus */
+    #[Route('/non-lus', methods: ['GET'])]
+    public function nonLus(MessagerieRepository $repo): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['count' => 0]);
+        }
+
+        return $this->json(['count' => $repo->countUnreadMessages($user->getId())]);
+    }
+
     /** GET /api/messages/{annonceId}/{userId} — messages d'une conversation */
     #[Route('/{annonceId}/{userId}', methods: ['GET'], requirements: ['annonceId' => '\d+', 'userId' => '\d+'])]
     public function conversation(int $annonceId, int $userId, MessagerieRepository $repo): JsonResponse

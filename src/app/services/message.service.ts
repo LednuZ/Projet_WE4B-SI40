@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,12 @@ export class MessageService {
 
   getConversations(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/messages`);
+  }
+
+  getNonLus(): Observable<number> {
+    return this.http.get<{ count: number }>(`${this.apiUrl}/messages/non-lus`).pipe(
+      map(r => r.count)
+    );
   }
 
   getMessages(annonceId: number, userId: number): Observable<any> {
