@@ -198,6 +198,16 @@ export class MessagerieComponent implements OnInit, AfterViewChecked {
     return ((prenom?.[0] ?? '') + (nom?.[0] ?? '')).toUpperCase();
   }
 
+  formatPrix(prix: number): string {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency', currency: 'EUR', maximumFractionDigits: 0
+    }).format(prix);
+  }
+
+  formatKm(km: number): string {
+    return new Intl.NumberFormat('fr-FR').format(km) + ' km';
+  }
+
   formatDate(dateStr: string): string {
     if (!dateStr) return '';
     const d = new Date(dateStr);

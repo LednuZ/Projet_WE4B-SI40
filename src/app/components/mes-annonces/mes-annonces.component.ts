@@ -42,7 +42,7 @@ export class MesAnnoncesComponent implements OnInit {
     if (annonce.photo_principale) {
       return 'http://localhost:8000' + annonce.photo_principale;
     }
-    return 'assets/no-photo.png';
+    return 'assets/no-photo.svg';
   }
 
   formatPrix(prix: number): string {

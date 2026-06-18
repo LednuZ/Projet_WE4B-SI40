@@ -169,6 +169,37 @@
   font-weight: 600;
 }
 
+/* Badge énergie — haut droite */
+.card-badge-energy {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.energy-elec    { background: #d1fae5; color: #065f46; }
+.energy-hybrid  { background: #d1fae5; color: #065f46; }
+.energy-diesel  { background: #dbeafe; color: #1e40af; }
+.energy-essence { background: #fff3cd; color: #92400e; }
+
+/* Prix overlay — bas de photo */
+.card-price-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+  padding: 28px 14px 10px;
+  text-align: right;
+}
+
 .card-body {
   padding: 16px;
   flex: 1;
@@ -204,11 +235,17 @@
   color: #555;
 }
 
+.spec-etat {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
 .card-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
+  padding-top: 10px;
 }
 
 .card-price {
@@ -218,16 +255,30 @@
 }
 
 .card-location {
-  font-size: 13px;
+  font-size: 12px;
   color: #999;
 }
 
+.card-seller-inline {
+  font-size: 12px;
+  color: #f97316;
+  font-weight: 600;
+}
+
 .card-seller {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #eee;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #f0f2f5;
   font-size: 13px;
-  color: #777;
+  color: #555;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+}
+
+.seller-stars {
+  color: #f97316;
+  font-size: 12px;
 }
 
 /* Loading */

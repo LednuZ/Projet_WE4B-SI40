@@ -61,14 +61,31 @@
     <!-- Conversation active -->
     <ng-container *ngIf="selectedConv">
 
-      <!-- En-tête conversation -->
-      <div class="msg-header">
-        <div class="msg-header-avatar">
-          {{ initiales(selectedConv.nom, selectedConv.prenom) }}
+      <!-- Mini-fiche annonce -->
+      <div class="annonce-banner">
+        <a [routerLink]="['/annonces', selectedConv.id_annonce]" class="annonce-banner-photo">
+          <img *ngIf="selectedConv.photo_principale"
+               [src]="'http://localhost:8000' + selectedConv.photo_principale"
+               alt="Photo annonce">
+          <div *ngIf="!selectedConv.photo_principale" class="photo-placeholder">🚗</div>
+        </a>
+        <div class="annonce-banner-info">
+          <a [routerLink]="['/annonces', selectedConv.id_annonce]" class="annonce-banner-title">
+            {{ selectedConv.annonce_titre_complet || selectedConv.annonce_titre }}
+          </a>
+          <div class="annonce-banner-specs">
+            <span *ngIf="selectedConv.annee_circulation">{{ selectedConv.annee_circulation }}</span>
+            <span *ngIf="selectedConv.kilometrage">{{ formatKm(selectedConv.kilometrage) }}</span>
+            <span *ngIf="selectedConv.localisation">📍 {{ selectedConv.localisation }}</span>
+          </div>
+          <span class="annonce-banner-prix" *ngIf="selectedConv.prix">
+            {{ formatPrix(selectedConv.prix) }}
+          </span>
         </div>
-        <div class="msg-header-info">
+        <!-- Interlocuteur -->
+        <div class="msg-header-user">
+          <div class="msg-header-avatar">{{ initiales(selectedConv.nom, selectedConv.prenom) }}</div>
           <span class="msg-header-name">{{ selectedConv.prenom }} {{ selectedConv.nom }}</span>
-          <span class="msg-header-annonce">{{ selectedConv.annonce_titre }}</span>
         </div>
       </div>
 

@@ -49,7 +49,7 @@ export class AnnonceDetailComponent implements OnInit {
   }
 
   getPhotoUrl(path: string): string {
-    if (!path) return 'assets/no-photo.png';
+    if (!path) return 'assets/no-photo.svg';
     return 'http://localhost:8000' + path;
   }
 

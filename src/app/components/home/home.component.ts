@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
     if (annonce.photo_principale) {
       return 'http://localhost:8000' + annonce.photo_principale;
     }
-    return 'assets/no-photo.png';
+    return 'assets/no-photo.svg';
   }
 
   formatPrix(prix: number): string {
@@ -41,5 +41,13 @@ export class HomeComponent implements OnInit {
 
   formatKm(km: number): string {
     return new Intl.NumberFormat('fr-FR').format(km) + ' km';
+  }
+
+  getCarburantClass(carburant: string): string {
+    const c = (carburant ?? '').toLowerCase();
+    if (c.includes('électr') || c.includes('electr')) return 'energy-elec';
+    if (c.includes('hybride'))                          return 'energy-hybrid';
+    if (c.includes('diesel'))                           return 'energy-diesel';
+    return 'energy-essence';
   }
 }
