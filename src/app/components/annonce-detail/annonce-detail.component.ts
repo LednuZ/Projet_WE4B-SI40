@@ -24,8 +24,9 @@ export class AnnonceDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    if (!id) {
+    const idStr = this.route.snapshot.paramMap.get('id');
+    const id = Number(idStr);
+    if (idStr === null || isNaN(id)) {
       this.router.navigate(['/']);
       return;
     }

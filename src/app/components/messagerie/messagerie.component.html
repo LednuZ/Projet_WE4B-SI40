@@ -1,1 +1,123 @@
-<p>messagerie works!</p>
+<div class="messagerie-wrapper">
+
+  <!-- Panneau gauche : liste des conversations -->
+  <aside class="conv-panel">
+    <div class="conv-panel-header">
+      <h2>Messages</h2>
+      <span class="badge-total" *ngIf="totalNonLus() > 0">{{ totalNonLus() }}</span>
+    </div>
+
+    <div class="loading-convs" *ngIf="loadingConvs">
+      <p>Chargement...</p>
+    </div>
+
+    <div class="no-conv" *ngIf="!loadingConvs && conversations.length === 0 && !selectedConv">
+      <p>Aucune conversation pour l'instant.</p>
+    </div>
+
+    <ul class="conv-list" *ngIf="!loadingConvs">
+      <li *ngFor="let conv of conversations"
+          class="conv-item"
+          [class.active]="selectedConv?.id_annonce == conv.id_annonce && selectedConv?.interlocuteur_id == conv.interlocuteur_id"
+          (click)="selectConversation(conv)">
+        <div class="conv-avatar">{{ initiales(conv.nom, conv.prenom) }}</div>
+        <div class="conv-info">
+          <div class="conv-top">
+            <span class="conv-name">{{ conv.prenom }} {{ conv.nom }}</span>
+            <span class="conv-date">{{ formatDate(conv.date_dernier_message) }}</span>
+          </div>
+          <p class="conv-annonce">{{ conv.annonce_titre }}</p>
+          <p class="conv-preview" [class.unread]="conv.nb_non_lus > 0">
+            {{ conv.dernier_message }}
+          </p>
+        </div>
+        <span class="badge-unread" *ngIf="conv.nb_non_lus > 0">{{ conv.nb_non_lus }}</span>
+      </li>
+
+      <!-- Conversation en attente (nouvelle depuis annonce-detail) -->
+      <li *ngIf="selectedConv && pendingAnnonceId && !conversations.length"
+          class="conv-item active">
+        <div class="conv-avatar">{{ initiales(selectedConv.nom, selectedConv.prenom) }}</div>
+        <div class="conv-info">
+          <div class="conv-top">
+            <span class="conv-name">{{ selectedConv.prenom }} {{ selectedConv.nom }}</span>
+          </div>
+          <p class="conv-annonce">{{ selectedConv.annonce_titre }}</p>
+          <p class="conv-preview">Nouvelle conversation</p>
+        </div>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Panneau droit : messages -->
+  <section class="msg-panel">
+
+    <!-- Aucune conversation sélectionnée -->
+    <div class="msg-empty" *ngIf="!selectedConv">
+      <div class="msg-empty-icon">✉</div>
+      <p>Sélectionnez une conversation pour lire vos messages</p>
+    </div>
+
+    <!-- Conversation active -->
+    <ng-container *ngIf="selectedConv">
+
+      <!-- En-tête conversation -->
+      <div class="msg-header">
+        <div class="msg-header-avatar">
+          {{ initiales(selectedConv.nom, selectedConv.prenom) }}
+        </div>
+        <div class="msg-header-info">
+          <span class="msg-header-name">{{ selectedConv.prenom }} {{ selectedConv.nom }}</span>
+          <span class="msg-header-annonce">{{ selectedConv.annonce_titre }}</span>
+        </div>
+      </div>
+
+      <!-- Zone messages -->
+      <div class="msg-list">
+        <div class="loading-msgs" *ngIf="loadingMessages">
+          <p>Chargement des messages...</p>
+        </div>
+
+        <div class="no-messages" *ngIf="!loadingMessages && messages.length === 0">
+          <p>Aucun message. Envoyez le premier !</p>
+        </div>
+
+        <ng-container *ngIf="!loadingMessages">
+          <div *ngFor="let msg of messages"
+               class="msg-bubble-row"
+               [class.sent]="isEnvoyePar(msg)"
+               [class.received]="!isEnvoyePar(msg)">
+            <div class="msg-bubble">
+              <p>{{ msg.contenu }}</p>
+              <span class="msg-time">{{ formatHeure(msg.date_envoi) }}</span>
+            </div>
+          </div>
+        </ng-container>
+
+        <div #messagesEnd></div>
+      </div>
+
+      <!-- Erreur -->
+      <div class="msg-error" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+      <!-- Formulaire d'envoi -->
+      <form class="msg-form" (ngSubmit)="sendMessage()">
+        <textarea
+          [(ngModel)]="newMessage"
+          name="newMessage"
+          placeholder="Écrire un message… (Entrée pour envoyer)"
+          rows="1"
+          (keydown)="onKeydown($event)"
+          [disabled]="sending">
+        </textarea>
+        <button type="submit" class="btn-send" [disabled]="!newMessage.trim() || sending">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </form>
+
+    </ng-container>
+  </section>
+
+</div>

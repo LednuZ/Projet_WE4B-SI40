@@ -20,7 +20,7 @@ class MessagerieRepository
                 m_last.date_envoi   AS date_dernier_message,
                 m_last.id_annonce,
                 CONCAT(ma.nom, " ", mo.nom) AS annonce_titre,
-                COALESCE(unread.nb, 0) = 0  AS lu
+                COALESCE(unread.nb, 0)      AS nb_non_lus
             FROM utilisateur u
             JOIN (
                 SELECT
