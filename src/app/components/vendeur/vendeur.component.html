@@ -1,0 +1,93 @@
+<div class="vendeur-container">
+
+  <div class="loading" *ngIf="loading"><p>Chargement du profil...</p></div>
+
+  <div class="error-block" *ngIf="error && !loading">
+    <p>{{ error }}</p>
+    <button (click)="router.navigate(['/'])">Retour à l'accueil</button>
+  </div>
+
+  <ng-container *ngIf="!loading && utilisateur">
+
+    <!-- En-tête profil -->
+    <div class="profil-header">
+      <div class="profil-avatar">
+        {{ utilisateur.prenom?.charAt(0).toUpperCase() }}{{ utilisateur.nom?.charAt(0).toUpperCase() }}
+      </div>
+      <div class="profil-info">
+        <h1>{{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+        <span class="role-badge">{{ getRoleLabel(utilisateur.role) }}</span>
+        <p class="membre-depuis">Membre depuis le {{ formatDate(utilisateur.date_inscription) }}</p>
+      </div>
+      <div class="profil-note" *ngIf="stats?.note_moyenne">
+        <app-star-rating [rating]="stats.note_moyenne" [editable]="false"></app-star-rating>
+        <p class="note-valeur">{{ stats.note_moyenne }}<span>/5</span></p>
+        <p class="note-nb">{{ stats.nb_avis }} avis</p>
+      </div>
+      <div class="profil-note aucun-avis" *ngIf="!stats?.note_moyenne">
+        <p>Aucun avis</p>
+      </div>
+    </div>
+
+    <!-- Annonces du vendeur -->
+    <section class="section">
+      <h2>Annonces <span class="section-count">{{ annonces.length }}</span></h2>
+
+      <div class="empty-section" *ngIf="annonces.length === 0">
+        Aucune annonce active pour ce vendeur.
+      </div>
+
+      <div class="annonces-grid" *ngIf="annonces.length > 0">
+        <a *ngFor="let a of annonces"
+           [routerLink]="['/annonces', a.id_annonce]"
+           class="annonce-card">
+
+          <div class="card-image">
+            <img [src]="getPhotoUrl(a)" [alt]="a.marque_nom + ' ' + a.modele_nom">
+            <span class="card-badge-energy" *ngIf="a.carburant" [ngClass]="getCarburantClass(a.carburant)">
+              {{ a.carburant }}
+            </span>
+            <div class="card-price-overlay">{{ formatPrix(a.prix) }}</div>
+          </div>
+
+          <div class="card-body">
+            <h3>{{ a.marque_nom }} {{ a.modele_nom }}</h3>
+            <p class="card-version">{{ a.version_nom }}</p>
+            <div class="card-specs">
+              <span>{{ a.annee_circulation }}</span>
+              <span>{{ formatKm(a.kilometrage) }}</span>
+              <span *ngIf="a.boite_vitesse">{{ a.boite_vitesse }}</span>
+              <span *ngIf="a.etat">{{ a.etat }}</span>
+            </div>
+            <p class="card-location" *ngIf="a.localisation">📍 {{ a.localisation }}</p>
+          </div>
+
+        </a>
+      </div>
+    </section>
+
+    <!-- Avis reçus -->
+    <section class="section">
+      <h2>Avis reçus <span class="section-count">{{ avis.length }}</span></h2>
+
+      <div class="empty-section" *ngIf="avis.length === 0">
+        Aucun avis sur ce vendeur pour l'instant.
+      </div>
+
+      <div class="avis-list" *ngIf="avis.length > 0">
+        <div class="avis-card" *ngFor="let av of avis">
+          <div class="avis-header">
+            <div>
+              <span class="avis-auteur">{{ av.redacteur_prenom }} {{ av.redacteur_nom }}</span>
+              <app-star-rating [rating]="av.note" [editable]="false"></app-star-rating>
+            </div>
+            <span class="avis-date">{{ av.date_avis | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <p class="avis-contenu" *ngIf="av.contenu">{{ av.contenu }}</p>
+          <p class="avis-contenu vide" *ngIf="!av.contenu"><em>Sans commentaire</em></p>
+        </div>
+      </div>
+    </section>
+
+  </ng-container>
+</div>

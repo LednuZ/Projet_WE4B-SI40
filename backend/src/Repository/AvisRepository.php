@@ -80,10 +80,52 @@ class AvisRepository
         )->execute(['id' => $id]);
     }
 
+    public function findByRedacteurVendeur(int $userId): array
+    {
+        $stmt = $this->db->getConnection()->prepare('
+            SELECT
+                a.id_avis_utilisateur, a.note, a.contenu, a.date_avis,
+                u.id_utilisateur AS vendeur_id,
+                u.nom AS vendeur_nom, u.prenom AS vendeur_prenom
+            FROM avis_utilisateur a
+            JOIN utilisateur u ON u.id_utilisateur = a.id_vendeur
+            WHERE a.id_redacteur = :uid
+            ORDER BY a.date_avis DESC
+        ');
+        $stmt->execute(['uid' => $userId]);
+        return $stmt->fetchAll();
+    }
+
+    public function findByRedacteurModele(int $userId): array
+    {
+        $stmt = $this->db->getConnection()->prepare('
+            SELECT
+                am.id_avis_modele, am.note, am.contenu, am.date_avis,
+                mo.id_modele, mo.nom AS modele_nom, ma.nom AS marque_nom
+            FROM avis_modele am
+            JOIN modele mo ON mo.id_modele = am.id_modele
+            JOIN marque ma ON ma.id_marque = mo.id_marque
+            WHERE am.id_redacteur = :uid
+            ORDER BY am.date_avis DESC
+        ');
+        $stmt->execute(['uid' => $userId]);
+        return $stmt->fetchAll();
+    }
+
     public function findVendeur(int $id): ?array
     {
         $stmt = $this->db->getConnection()->prepare(
             'SELECT id_utilisateur, nom, prenom FROM utilisateur WHERE id_utilisateur = :id'
+        );
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    public function findVendeurPublic(int $id): ?array
+    {
+        $stmt = $this->db->getConnection()->prepare(
+            'SELECT id_utilisateur, nom, prenom, role, date_inscription
+             FROM utilisateur WHERE id_utilisateur = :id'
         );
         $stmt->execute(['id' => $id]);
         return $stmt->fetch() ?: null;

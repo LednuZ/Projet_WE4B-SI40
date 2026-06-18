@@ -12,6 +12,7 @@ import { AvisComponent } from './components/avis/avis.component';
 import { DashboardAdminComponent } from './components/dashboard-admin/dashboard-admin.component';
 import { MesAnnoncesComponent } from './components/mes-annonces/mes-annonces.component';
 import { FavorisComponent } from './components/favoris/favoris.component';
+import { VendeurComponent } from './components/vendeur/vendeur.component';
 
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
@@ -35,6 +36,7 @@ const routes: Routes = [
   { path: 'annonces/new', component: AnnonceFormComponent, canActivate: [AuthGuard] },
   { path: 'annonces/edit/:id', component: AnnonceFormComponent, canActivate: [AuthGuard] },
   { path: 'annonces/:id', component: AnnonceDetailComponent },
+  { path: 'vendeur/:id', component: VendeurComponent },
 
   // Admin
   { path: 'admin', component: DashboardAdminComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },

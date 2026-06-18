@@ -26,6 +26,35 @@
       </div>
     </div>
 
+    <!-- Avis reçus -->
+    <div class="form-card avis-recus-card">
+      <div class="avis-recus-header">
+        <h3>Avis reçus</h3>
+        <div class="avis-recus-note" *ngIf="avisStats?.note_moyenne">
+          <app-star-rating [rating]="avisStats.note_moyenne" [editable]="false"></app-star-rating>
+          <span class="note-label">{{ avisStats.note_moyenne }}/5 · {{ avisStats.nb_avis }} avis</span>
+        </div>
+      </div>
+
+      <div class="avis-empty" *ngIf="avisRecus.length === 0">
+        Personne n'a encore laissé d'avis sur votre profil.
+      </div>
+
+      <div class="avis-list-profil">
+        <div class="avis-item-profil" *ngFor="let a of avisRecus">
+          <div class="avis-item-top">
+            <div>
+              <span class="avis-auteur-profil">{{ a.redacteur_prenom }} {{ a.redacteur_nom }}</span>
+              <app-star-rating [rating]="a.note" [editable]="false"></app-star-rating>
+            </div>
+            <span class="avis-date-profil">{{ a.date_avis | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <p class="avis-texte" *ngIf="a.contenu">{{ a.contenu }}</p>
+          <p class="avis-texte vide" *ngIf="!a.contenu"><em>Sans commentaire</em></p>
+        </div>
+      </div>
+    </div>
+
     <!-- Formulaire modification infos -->
     <div class="form-card">
       <h3>Modifier mes informations</h3>

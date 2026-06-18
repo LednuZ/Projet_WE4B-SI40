@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UtilisateurService } from '../../services/utilisateur.service';
 import { AuthService } from '../../services/auth.service';
+import { AvisService } from '../../services/avis.service';
 import { Utilisateur } from '../../models/utilisateur.model';
 
 @Component({
@@ -29,10 +30,14 @@ export class ProfilComponent implements OnInit {
   deleteError = '';
   deleteLoading = false;
 
+  avisRecus: any[] = [];
+  avisStats: any = null;
+
   constructor(
     private fb: FormBuilder,
     private utilisateurService: UtilisateurService,
     private authService: AuthService,
+    private avisService: AvisService,
     private router: Router
   ) {}
 
@@ -63,6 +68,13 @@ export class ProfilComponent implements OnInit {
           prenom:       user.prenom,
           email:        user.email,
           numero_phone: user.numero_phone ?? '',
+        });
+        this.avisService.getAvisVendeur(user.id_utilisateur).subscribe({
+          next: (data: any) => {
+            this.avisRecus = data.avis;
+            this.avisStats = data.stats;
+          },
+          error: () => {}
         });
       },
       error: () => {
@@ -153,7 +165,7 @@ export class ProfilComponent implements OnInit {
     const labels: { [key: string]: string } = {
       admin:       'Administrateur',
       particulier: 'Particulier',
-      entreprise:  'Entreprise',
+      entreprise:  'Professionnel',
     };
     return labels[role] || role;
   }
