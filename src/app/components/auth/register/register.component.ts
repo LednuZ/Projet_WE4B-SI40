@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { LogService } from '../../../services/log.service';
 
 @Component({
   selector: 'app-register',
@@ -13,7 +14,7 @@ export class RegisterComponent implements OnInit {
   errorMessage: string = '';
   loading: boolean = false;
   private apiUrl = 'http://localhost:8000/api';
-  constructor(private formBuilder: FormBuilder, private router: Router, private http: HttpClient) { }
+  constructor(private formBuilder: FormBuilder, private router: Router, private http: HttpClient, private logService: LogService) { }
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
@@ -46,6 +47,7 @@ export class RegisterComponent implements OnInit {
     const { nom, prenom, email, numero_phone, role, password } = this.registerForm.value;
     this.http.post<any>(`${this.apiUrl}/auth/register`, { nom, prenom, email, numero_phone, role, mdp: password }).subscribe({
       next: () => {
+        this.logService.log('REGISTER', { email, role });
         this.router.navigate(['/login']);
       },
       error: (error) => {

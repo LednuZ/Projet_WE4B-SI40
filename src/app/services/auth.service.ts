@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Utilisateur } from '../models/utilisateur.model';
+import { LogService } from './log.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<Utilisateur | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private logService: LogService) {
     const stored = localStorage.getItem('currentUser');
     if (stored) {
       this.currentUserSubject.next(JSON.parse(stored));
@@ -28,6 +29,7 @@ export class AuthService {
         if (response.utilisateur) {
           localStorage.setItem('currentUser', JSON.stringify(response.utilisateur));
           this.currentUserSubject.next(response.utilisateur);
+          this.logService.log('LOGIN', { email: response.utilisateur.email, role: response.utilisateur.role });
         }
       })
     );
@@ -38,6 +40,7 @@ export class AuthService {
   }
 
   logout(): void {
+    this.logService.log('LOGOUT');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('authToken');
     this.currentUserSubject.next(null);

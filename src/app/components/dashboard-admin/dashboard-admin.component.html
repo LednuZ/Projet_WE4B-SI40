@@ -1,1 +1,112 @@
-<p>dashboard-admin works!</p>
+<div class="container-fluid py-4">
+
+  <!-- En-tête -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Dashboard Admin — Journaux d'activité</h2>
+    <span class="badge bg-dark fs-6">{{ statsTotal }} actions totales</span>
+  </div>
+
+  <!-- Cartes de stats clés -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-xl-2" *ngFor="let s of keyStats">
+      <div class="card h-100 border-start border-3 {{ s.css }}">
+        <div class="card-body py-3">
+          <div class="text-muted small mb-1">{{ s.label }}</div>
+          <div class="fs-4 fw-bold">
+            <span *ngIf="!statsLoading">{{ getStatCount(s.action) }}</span>
+            <span *ngIf="statsLoading" class="spinner-border spinner-border-sm"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="card mb-3">
+    <div class="card-body py-2">
+      <div class="row g-2 align-items-center">
+        <div class="col-auto">
+          <label class="col-form-label fw-semibold">Filtrer par action :</label>
+        </div>
+        <div class="col-auto">
+          <select class="form-select form-select-sm"
+                  [(ngModel)]="selectedAction"
+                  (change)="onFilterChange()">
+            <option value="">Toutes les actions</option>
+            <option *ngFor="let a of allActions" [value]="a">{{ a }}</option>
+          </select>
+        </div>
+        <div class="col-auto" *ngIf="selectedAction">
+          <button class="btn btn-sm btn-outline-secondary" (click)="resetFilter()">
+            Réinitialiser
+          </button>
+        </div>
+        <div class="col-auto ms-auto text-muted small">
+          {{ total }} résultat(s)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau des logs -->
+  <div class="card">
+    <div class="card-body p-0">
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary"></div>
+        <p class="mt-2 text-muted">Chargement des logs…</p>
+      </div>
+
+      <div *ngIf="!loading && logs.length === 0" class="text-center py-5 text-muted">
+        Aucun log trouvé.
+      </div>
+
+      <div class="table-responsive" *ngIf="!loading && logs.length > 0">
+        <table class="table table-hover table-sm mb-0 align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th style="width:160px">Date / Heure</th>
+              <th style="width:160px">Action</th>
+              <th style="width:200px">Utilisateur</th>
+              <th>Détails</th>
+              <th style="width:130px">IP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let log of logs">
+              <td class="text-nowrap text-muted small">
+                {{ log.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}
+              </td>
+              <td>
+                <span [class]="getActionBadgeClass(log.action)">{{ log.action }}</span>
+              </td>
+              <td class="small">
+                <span *ngIf="log.userEmail">{{ log.userEmail }}</span>
+                <span *ngIf="!log.userEmail" class="text-muted">Anonyme</span>
+                <span *ngIf="log.userId" class="text-muted ms-1">(#{{ log.userId }})</span>
+              </td>
+              <td class="small text-muted">{{ formatDetails(log.details) }}</td>
+              <td class="small text-muted">{{ log.ip || '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="card-footer d-flex justify-content-between align-items-center py-2"
+         *ngIf="!loading && totalPages > 1">
+      <button class="btn btn-sm btn-outline-secondary"
+              [disabled]="currentPage === 1"
+              (click)="prevPage()">
+        &laquo; Précédent
+      </button>
+      <span class="text-muted small">Page {{ currentPage }} / {{ totalPages }}</span>
+      <button class="btn btn-sm btn-outline-secondary"
+              [disabled]="currentPage === totalPages"
+              (click)="nextPage()">
+        Suivant &raquo;
+      </button>
+    </div>
+  </div>
+
+</div>
