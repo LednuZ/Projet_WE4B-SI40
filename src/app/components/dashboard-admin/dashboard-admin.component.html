@@ -1,1 +1,423 @@
-<p>dashboard-admin works!</p>
+<div class="admin-container">
+
+  <div class="admin-header">
+    <h1>Dashboard</h1>
+    <p class="admin-sub">Vue d'ensemble de la plateforme</p>
+  </div>
+
+  <!-- Onglets -->
+  <div class="tabs">
+    <button class="tab" [class.active]="onglet === 'stats'"        (click)="onglet = 'stats'">Statistiques</button>
+    <button class="tab" [class.active]="onglet === 'utilisateurs'" (click)="onglet = 'utilisateurs'">Utilisateurs</button>
+    <button class="tab" [class.active]="onglet === 'annonces'"     (click)="onglet = 'annonces'">Annonces</button>
+    <button class="tab" [class.active]="onglet === 'avis'"         (click)="onglet = 'avis'">Avis</button>
+  </div>
+
+  <!-- ═══════════════════════════ STATS ═════════════════════════════════════ -->
+  <div *ngIf="onglet === 'stats'">
+
+    <div class="loading-block" *ngIf="loadingStats"><p>Chargement des statistiques...</p></div>
+
+    <ng-container *ngIf="!loadingStats && stats">
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card" style="--accent:#2563eb">
+          <div class="kpi-accent"></div>
+          <div class="kpi-body">
+            <p class="kpi-value">{{ stats.total_utilisateurs }}</p>
+            <p class="kpi-label">Utilisateurs inscrits</p>
+          </div>
+        </div>
+        <div class="kpi-card" style="--accent:#16a34a">
+          <div class="kpi-accent"></div>
+          <div class="kpi-body">
+            <p class="kpi-value">{{ stats.total_annonces_actives }}</p>
+            <p class="kpi-label">Annonces actives</p>
+          </div>
+        </div>
+        <div class="kpi-card" style="--accent:#f97316">
+          <div class="kpi-accent"></div>
+          <div class="kpi-body">
+            <p class="kpi-value">{{ stats.total_annonces_vendues }}</p>
+            <p class="kpi-label">Annonces vendues</p>
+          </div>
+        </div>
+        <div class="kpi-card" style="--accent:#7c3aed">
+          <div class="kpi-accent"></div>
+          <div class="kpi-body">
+            <p class="kpi-value">{{ taux_conversion() }}</p>
+            <p class="kpi-label">Taux de conversion</p>
+          </div>
+        </div>
+        <div class="kpi-card" style="--accent:#1a2744">
+          <div class="kpi-accent"></div>
+          <div class="kpi-body">
+            <p class="kpi-value">{{ stats.total_messages }}</p>
+            <p class="kpi-label">Messages échangés</p>
+          </div>
+        </div>
+        <div class="kpi-card" style="--accent:#a16207">
+          <div class="kpi-accent"></div>
+          <div class="kpi-body">
+            <p class="kpi-value">{{ stats.total_avis }}</p>
+            <p class="kpi-label">Avis déposés</p>
+          </div>
+        </div>
+        <div class="kpi-card" style="--accent:#e74c3c">
+          <div class="kpi-accent"></div>
+          <div class="kpi-body">
+            <p class="kpi-value">{{ formatPrix(stats.prix_moyen_global) }}</p>
+            <p class="kpi-label">Prix moyen</p>
+          </div>
+        </div>
+        <div class="kpi-card" style="--accent:#6b7280">
+          <div class="kpi-accent"></div>
+          <div class="kpi-body">
+            <p class="kpi-value">{{ stats.total_annonces }}</p>
+            <p class="kpi-label">Total annonces</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+
+        <!-- Annonces par marque -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Annonces par marque</h3>
+            <span class="chart-sub">Top 10</span>
+          </div>
+          <div class="bar-chart">
+            <div *ngFor="let item of stats.annonces_par_marque" class="bar-row">
+              <span class="bar-label">{{ item.marque_nom }}</span>
+              <div class="bar-track">
+                <div class="bar" [style.width]="barWidth(item.count, stats.annonces_par_marque, 'count')"
+                     style="background:#f97316"></div>
+              </div>
+              <span class="bar-value">{{ item.count }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Annonces par mois -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Publications mensuelles</h3>
+            <span class="chart-sub">6 derniers mois</span>
+          </div>
+          <div class="bar-chart" *ngIf="stats.annonces_par_mois?.length; else noData">
+            <div *ngFor="let item of stats.annonces_par_mois" class="bar-row">
+              <span class="bar-label">{{ item.mois_label }}</span>
+              <div class="bar-track">
+                <div class="bar" [style.width]="barWidth(item.count, stats.annonces_par_mois, 'count')"
+                     style="background:#2563eb"></div>
+              </div>
+              <span class="bar-value">{{ item.count }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inscriptions par mois -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Nouvelles inscriptions</h3>
+            <span class="chart-sub">6 derniers mois</span>
+          </div>
+          <div class="bar-chart" *ngIf="stats.inscriptions_par_mois?.length; else noData">
+            <div *ngFor="let item of stats.inscriptions_par_mois" class="bar-row">
+              <span class="bar-label">{{ item.mois_label }}</span>
+              <div class="bar-track">
+                <div class="bar" [style.width]="barWidth(item.count, stats.inscriptions_par_mois, 'count')"
+                     style="background:#16a34a"></div>
+              </div>
+              <span class="bar-value">{{ item.count }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prix moyen par marque -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Prix moyen par marque</h3>
+            <span class="chart-sub">Top 10</span>
+          </div>
+          <div class="bar-chart">
+            <div *ngFor="let item of stats.prix_moyen_par_marque" class="bar-row">
+              <span class="bar-label">{{ item.marque_nom }}</span>
+              <div class="bar-track">
+                <div class="bar" [style.width]="barWidth(item.prix_moyen, stats.prix_moyen_par_marque, 'prix_moyen')"
+                     style="background:#7c3aed"></div>
+              </div>
+              <span class="bar-value">{{ formatPrix(item.prix_moyen) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Répartition carburant -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Répartition par énergie</h3>
+            <span class="chart-sub">Toutes annonces</span>
+          </div>
+          <div class="segment-list">
+            <div *ngFor="let item of stats.repartition_carburant" class="segment-row">
+              <div class="segment-meta">
+                <span class="segment-dot" [style.background]="carburantColor(item.carburant)"></span>
+                <span class="segment-label">{{ item.carburant }}</span>
+                <span class="segment-pct">{{ percent(item.count, stats.repartition_carburant, 'count') }}</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar" [style.width]="barWidth(item.count, stats.repartition_carburant, 'count')"
+                     [style.background]="carburantColor(item.carburant)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Répartition boîte -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Boîtes de vitesses</h3>
+            <span class="chart-sub">Toutes annonces</span>
+          </div>
+          <div class="segment-list">
+            <div *ngFor="let item of stats.repartition_boite; let i = index" class="segment-row">
+              <div class="segment-meta">
+                <span class="segment-dot" [style.background]="i % 2 === 0 ? '#f97316' : '#1a2744'"></span>
+                <span class="segment-label">{{ item.boite_vitesse }}</span>
+                <span class="segment-pct">{{ percent(item.count, stats.repartition_boite, 'count') }}</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar" [style.width]="barWidth(item.count, stats.repartition_boite, 'count')"
+                     [style.background]="i % 2 === 0 ? '#f97316' : '#1a2744'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Annonces par statut -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Annonces par statut</h3>
+          </div>
+          <div class="segment-list">
+            <div *ngFor="let item of stats.annonces_par_statut" class="segment-row">
+              <div class="segment-meta">
+                <span class="segment-dot" [style.background]="statutColor(item.statut)"></span>
+                <span class="segment-label">{{ item.statut | titlecase }}</span>
+                <span class="segment-pct">{{ percent(item.count, stats.annonces_par_statut, 'count') }}</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar" [style.width]="barWidth(item.count, stats.annonces_par_statut, 'count')"
+                     [style.background]="statutColor(item.statut)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top vendeurs -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Top vendeurs</h3>
+            <span class="chart-sub">Par nombre d'annonces</span>
+          </div>
+          <div class="vendeurs-list">
+            <div *ngFor="let v of stats.top_vendeurs; let i = index" class="vendeur-row">
+              <span class="vendeur-rank">{{ i + 1 }}</span>
+              <span class="vendeur-name">{{ v.prenom }} {{ v.nom }}</span>
+              <div class="bar-track">
+                <div class="bar" [style.width]="barWidth(v.nb_annonces, stats.top_vendeurs, 'nb_annonces')"
+                     style="background:#1a2744"></div>
+              </div>
+              <span class="bar-value">{{ v.nb_annonces }} ann.</span>
+              <span class="vendeur-vendu">{{ v.nb_vendues }} vendus</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <ng-template #noData><p class="chart-empty">Aucune donnée sur cette période</p></ng-template>
+
+    </ng-container>
+  </div>
+
+  <!-- ═══════════════════════════ UTILISATEURS ══════════════════════════════ -->
+  <div *ngIf="onglet === 'utilisateurs'">
+    <div class="table-toolbar">
+      <input type="text" [(ngModel)]="searchUser" (input)="filtrerUsers()"
+             placeholder="Rechercher par nom ou email..." class="search-input">
+      <span class="total-count">{{ utilisateursFiltres.length }} utilisateur(s)</span>
+    </div>
+
+    <div class="loading-block" *ngIf="loadingUsers"><p>Chargement...</p></div>
+
+    <div class="table-wrapper" *ngIf="!loadingUsers">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Nom</th><th>Prénom</th><th>Email</th><th>Rôle</th>
+            <th>Inscription</th><th>Annonces</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of utilisateursFiltres">
+            <td>{{ u.nom }}</td>
+            <td>{{ u.prenom }}</td>
+            <td class="email-cell">{{ u.email }}</td>
+            <td>
+              <select *ngIf="u.id_utilisateur !== currentUserId"
+                      [ngModel]="u.role" (ngModelChange)="updateRole(u, $event)"
+                      class="role-select">
+                <option value="particulier">Particulier</option>
+                <option value="entreprise">Professionnel</option>
+                <option value="admin">Admin</option>
+              </select>
+              <span *ngIf="u.id_utilisateur === currentUserId" class="role-badge-self">
+                {{ getRoleLabel(u.role) }} (vous)
+              </span>
+            </td>
+            <td>{{ u.date_inscription | date:'dd/MM/yyyy' }}</td>
+            <td class="center">{{ u.nb_annonces }}</td>
+            <td>
+              <button *ngIf="u.id_utilisateur !== currentUserId"
+                      class="btn-action btn-del" (click)="deleteUser(u.id_utilisateur)">
+                Supprimer
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ ANNONCES ══════════════════════════════════ -->
+  <div *ngIf="onglet === 'annonces'">
+    <div class="table-toolbar">
+      <input type="text" [(ngModel)]="searchAnnonce" (input)="filtrerAnnonces()"
+             placeholder="Rechercher par véhicule ou vendeur..." class="search-input">
+      <select [(ngModel)]="filtreStatut" (ngModelChange)="filtrerAnnonces()" class="statut-select">
+        <option value="">Tous les statuts</option>
+        <option value="active">Active</option>
+        <option value="pause">En pause</option>
+        <option value="vendu">Vendu</option>
+        <option value="suspendu">Suspendu</option>
+      </select>
+      <span class="total-count">{{ annoncesFiltrees.length }} annonce(s)</span>
+    </div>
+
+    <div class="loading-block" *ngIf="loadingAnnonces"><p>Chargement...</p></div>
+
+    <div class="table-wrapper" *ngIf="!loadingAnnonces">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Véhicule</th><th>Vendeur</th><th>Prix</th>
+            <th>Statut</th><th>Date</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of annoncesFiltrees">
+            <td class="center muted">{{ a.id_annonce }}</td>
+            <td>
+              <strong>{{ a.marque_nom }} {{ a.modele_nom }}</strong>
+              <small class="cell-sub">{{ a.version_nom }}</small>
+            </td>
+            <td>{{ a.vendeur_prenom }} {{ a.vendeur_nom }}</td>
+            <td>{{ formatPrix(a.prix) }}</td>
+            <td>
+              <span class="statut-badge" [ngClass]="'statut-' + a.statut">{{ a.statut }}</span>
+              <small class="cell-sub commentaire" *ngIf="a.commentaire_admin">{{ a.commentaire_admin }}</small>
+            </td>
+            <td>{{ (a.date_publication || a.date_creation) | date:'dd/MM/yyyy' }}</td>
+            <td class="actions-cell">
+              <button *ngIf="a.statut !== 'suspendu'" class="btn-action btn-suspend" (click)="suspendre(a)">Suspendre</button>
+              <button *ngIf="a.statut === 'suspendu'" class="btn-action btn-reactivate" (click)="reactiver(a)">Réactiver</button>
+              <button class="btn-action btn-del" (click)="deleteAnnonce(a.id_annonce)">Supprimer</button>
+
+              <div class="suspend-form" *ngIf="showCommentaire[a.id_annonce]">
+                <textarea [(ngModel)]="commentaireAdmin[a.id_annonce]"
+                          placeholder="Raison de la suspension (optionnel)" rows="2"></textarea>
+                <div class="suspend-btns">
+                  <button class="btn-action" (click)="showCommentaire[a.id_annonce] = false">Annuler</button>
+                  <button class="btn-action btn-suspend" (click)="confirmerSuspension(a)">Confirmer</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ AVIS ══════════════════════════════════════ -->
+  <div *ngIf="onglet === 'avis'">
+
+    <div class="table-toolbar">
+      <input type="text" [(ngModel)]="searchAvis" (input)="filtrerAvis()"
+             placeholder="Rechercher par auteur ou cible..." class="search-input">
+      <span class="total-count">
+        {{ avisVendeursFiltres.length + avisModelesFiltres.length }} avis
+      </span>
+    </div>
+
+    <div class="loading-block" *ngIf="loadingAvis"><p>Chargement...</p></div>
+
+    <ng-container *ngIf="!loadingAvis">
+
+      <div class="sub-tabs">
+        <button class="sub-tab" [class.active]="ongletAvis === 'vendeurs'" (click)="ongletAvis = 'vendeurs'">
+          Sur les vendeurs <span class="sub-count">{{ avisVendeursFiltres.length }}</span>
+        </button>
+        <button class="sub-tab" [class.active]="ongletAvis === 'modeles'" (click)="ongletAvis = 'modeles'">
+          Sur les modèles <span class="sub-count">{{ avisModelesFiltres.length }}</span>
+        </button>
+      </div>
+
+      <div class="table-wrapper" *ngIf="ongletAvis === 'vendeurs'">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Rédacteur</th><th>Vendeur noté</th><th>Note</th><th>Commentaire</th><th>Date</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let a of avisVendeursFiltres">
+              <td>{{ a.redacteur_prenom }} {{ a.redacteur_nom }}</td>
+              <td>{{ a.cible_nom }}</td>
+              <td><app-star-rating [rating]="a.note" [editable]="false"></app-star-rating></td>
+              <td class="contenu-cell">{{ a.contenu || '—' }}</td>
+              <td>{{ a.date_avis | date:'dd/MM/yyyy' }}</td>
+              <td><button class="btn-action btn-del" (click)="supprimerAvisVendeur(a.id)">Supprimer</button></td>
+            </tr>
+            <tr *ngIf="avisVendeursFiltres.length === 0">
+              <td colspan="6" class="empty-row">Aucun avis</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-wrapper" *ngIf="ongletAvis === 'modeles'">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Rédacteur</th><th>Modèle noté</th><th>Note</th><th>Commentaire</th><th>Date</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let a of avisModelesFiltres">
+              <td>{{ a.redacteur_prenom }} {{ a.redacteur_nom }}</td>
+              <td>{{ a.cible_nom }}</td>
+              <td><app-star-rating [rating]="a.note" [editable]="false"></app-star-rating></td>
+              <td class="contenu-cell">{{ a.contenu || '—' }}</td>
+              <td>{{ a.date_avis | date:'dd/MM/yyyy' }}</td>
+              <td><button class="btn-action btn-del" (click)="supprimerAvisModele(a.id)">Supprimer</button></td>
+            </tr>
+            <tr *ngIf="avisModelesFiltres.length === 0">
+              <td colspan="6" class="empty-row">Aucun avis</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </ng-container>
+  </div>
+
+</div>
