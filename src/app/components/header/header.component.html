@@ -12,6 +12,9 @@
                     <li class="nav-item"><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" routerLink="/register">S'inscrire</a></li>
                 </ng-container>
                 <ng-container *ngIf="authService.isLoggedIn()">
+                    <li class="nav-item" *ngIf="authService.getRole() === 'admin'">
+                      <a routerLink="/admin" class="admin-link" title="Dashboard Admin">Admin</a>
+                    </li>
                     <li class="nav-item"><a class="link-primary focus-ring rounded-2 text-decoration-none link-opacity-75 link-opacity-100-hover" routerLink="/mes-annonces">Mes annonces</a></li>
                     <li class="nav-item">
                       <a routerLink="/favoris" class="profil-icon-link" title="Mes favoris">

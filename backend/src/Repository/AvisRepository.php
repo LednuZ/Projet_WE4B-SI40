@@ -80,6 +80,40 @@ class AvisRepository
         )->execute(['id' => $id]);
     }
 
+    public function findAllVendeurAvis(): array
+    {
+        $stmt = $this->db->getConnection()->query('
+            SELECT
+                a.id_avis_utilisateur AS id, "vendeur" AS type,
+                a.note, a.contenu, a.date_avis,
+                r.nom AS redacteur_nom, r.prenom AS redacteur_prenom,
+                v.id_utilisateur AS cible_id,
+                CONCAT(v.prenom, " ", v.nom) AS cible_nom
+            FROM avis_utilisateur a
+            JOIN utilisateur r ON r.id_utilisateur = a.id_redacteur
+            JOIN utilisateur v ON v.id_utilisateur = a.id_vendeur
+            ORDER BY a.date_avis DESC
+        ');
+        return $stmt->fetchAll();
+    }
+
+    public function findAllModeleAvis(): array
+    {
+        $stmt = $this->db->getConnection()->query('
+            SELECT
+                am.id_avis_modele AS id, "modele" AS type,
+                am.note, am.contenu, am.date_avis,
+                u.nom AS redacteur_nom, u.prenom AS redacteur_prenom,
+                CONCAT(ma.nom, " ", mo.nom) AS cible_nom
+            FROM avis_modele am
+            JOIN utilisateur u ON u.id_utilisateur = am.id_redacteur
+            JOIN modele mo ON mo.id_modele = am.id_modele
+            JOIN marque ma ON ma.id_marque = mo.id_marque
+            ORDER BY am.date_avis DESC
+        ');
+        return $stmt->fetchAll();
+    }
+
     public function findByRedacteurVendeur(int $userId): array
     {
         $stmt = $this->db->getConnection()->prepare('

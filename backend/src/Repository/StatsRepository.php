@@ -84,6 +84,148 @@ class StatsRepository
         return $stmt->fetchAll();
     }
 
+    // ── STATS ADMIN ──────────────────────────────────────────────────────────
+
+    public function getAdminKpis(): array
+    {
+        $pdo = $this->db->getConnection();
+
+        $row = $pdo->query('
+            SELECT
+                (SELECT COUNT(*) FROM utilisateur) AS total_utilisateurs,
+                (SELECT COUNT(*) FROM annonce)     AS total_annonces,
+                (SELECT COUNT(*) FROM annonce WHERE statut = "active") AS total_annonces_actives,
+                (SELECT COUNT(*) FROM annonce WHERE statut = "vendu")  AS total_annonces_vendues,
+                (SELECT COUNT(*) FROM message)     AS total_messages,
+                (SELECT COUNT(*) FROM avis_utilisateur) + (SELECT COUNT(*) FROM avis_modele) AS total_avis
+        ')->fetch();
+
+        return $row;
+    }
+
+    public function getAnnoncesParMarque(): array
+    {
+        $stmt = $this->db->getConnection()->query('
+            SELECT ma.nom AS marque_nom, COUNT(a.id_annonce) AS count
+            FROM annonce a
+            JOIN version v    ON v.id_version    = a.id_version
+            JOIN generation g ON g.id_generation = v.id_generation
+            JOIN modele mo    ON mo.id_modele    = g.id_modele
+            JOIN marque ma    ON ma.id_marque    = mo.id_marque
+            GROUP BY ma.id_marque
+            ORDER BY count DESC
+            LIMIT 10
+        ');
+        return $stmt->fetchAll();
+    }
+
+    public function getAnnoncesParMois(): array
+    {
+        $stmt = $this->db->getConnection()->query('
+            SELECT DATE_FORMAT(date_creation, "%Y-%m") AS mois,
+                   DATE_FORMAT(date_creation, "%b %Y") AS mois_label,
+                   COUNT(*) AS count
+            FROM annonce
+            WHERE date_creation >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+            GROUP BY mois, mois_label
+            ORDER BY mois ASC
+        ');
+        return $stmt->fetchAll();
+    }
+
+    public function getInscriptionsParMois(): array
+    {
+        $stmt = $this->db->getConnection()->query('
+            SELECT DATE_FORMAT(date_inscription, "%Y-%m") AS mois,
+                   DATE_FORMAT(date_inscription, "%b %Y") AS mois_label,
+                   COUNT(*) AS count
+            FROM utilisateur
+            WHERE date_inscription >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+            GROUP BY mois, mois_label
+            ORDER BY mois ASC
+        ');
+        return $stmt->fetchAll();
+    }
+
+    public function getPrixMoyenParMarqueAdmin(): array
+    {
+        $stmt = $this->db->getConnection()->query('
+            SELECT ma.nom AS marque_nom, ROUND(AVG(a.prix), 0) AS prix_moyen
+            FROM annonce a
+            JOIN version v    ON v.id_version    = a.id_version
+            JOIN generation g ON g.id_generation = v.id_generation
+            JOIN modele mo    ON mo.id_modele    = g.id_modele
+            JOIN marque ma    ON ma.id_marque    = mo.id_marque
+            GROUP BY ma.id_marque
+            ORDER BY prix_moyen DESC
+            LIMIT 10
+        ');
+        return $stmt->fetchAll();
+    }
+
+    public function getRepartitionCarburant(): array
+    {
+        $stmt = $this->db->getConnection()->query('
+            SELECT r.type AS carburant, COUNT(a.id_annonce) AS count
+            FROM annonce a
+            JOIN version v    ON v.id_version    = a.id_version
+            LEFT JOIN reservoir r ON r.id_reservoir = v.id_reservoir
+            WHERE r.type IS NOT NULL
+            GROUP BY r.type
+            ORDER BY count DESC
+        ');
+        return $stmt->fetchAll();
+    }
+
+    public function getRepartitionBoite(): array
+    {
+        $stmt = $this->db->getConnection()->query('
+            SELECT v.boite_vitesse, COUNT(a.id_annonce) AS count
+            FROM annonce a
+            JOIN version v ON v.id_version = a.id_version
+            WHERE v.boite_vitesse IS NOT NULL
+            GROUP BY v.boite_vitesse
+            ORDER BY count DESC
+        ');
+        return $stmt->fetchAll();
+    }
+
+    public function getAnnoncesParStatut(): array
+    {
+        $stmt = $this->db->getConnection()->query('
+            SELECT statut, COUNT(*) AS count FROM annonce GROUP BY statut ORDER BY count DESC
+        ');
+        return $stmt->fetchAll();
+    }
+
+    public function getTopVendeurs(): array
+    {
+        $stmt = $this->db->getConnection()->query('
+            SELECT u.id_utilisateur, u.prenom, u.nom,
+                COUNT(a.id_annonce) AS nb_annonces,
+                COUNT(CASE WHEN a.statut = "vendu" THEN 1 END) AS nb_vendues,
+                ROUND(AVG(a.prix), 0) AS prix_moyen
+            FROM utilisateur u
+            JOIN annonce a ON a.id_utilisateur = u.id_utilisateur
+            GROUP BY u.id_utilisateur
+            ORDER BY nb_annonces DESC
+            LIMIT 8
+        ');
+        return $stmt->fetchAll();
+    }
+
+    public function getPrixMoyenGlobal(): array
+    {
+        $stmt = $this->db->getConnection()->query('
+            SELECT
+                ROUND(AVG(prix), 0) AS prix_moyen_global,
+                ROUND(AVG(kilometrage), 0) AS km_moyen
+            FROM annonce
+            WHERE statut = "active"
+        ');
+        return $stmt->fetch();
+    }
+
     // ── STATS PERSONNELLES (entreprise) ──────────────────────────────────────
 
     public function getStatsEntreprise(int $userId): array
