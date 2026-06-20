@@ -27,12 +27,29 @@
     <div class="photos-section">
       <div class="main-photo">
         <img [src]="selectedPhoto || 'assets/no-photo.svg'" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
+        
+        <!-- Navigation overlays when multiple photos exist -->
+        <ng-container *ngIf="annonce.photos && annonce.photos.length > 1">
+          <button class="slider-btn btn-prev" (click)="prevPhoto()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" class="slider-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button class="slider-btn btn-next" (click)="nextPhoto()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" class="slider-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+          <div class="photo-counter">
+            {{ activePhotoIndex + 1 }} / {{ annonce.photos.length }}
+          </div>
+        </ng-container>
       </div>
       <div class="thumbnails" *ngIf="annonce.photos && annonce.photos.length > 1">
-        <img *ngFor="let photo of annonce.photos"
+        <img *ngFor="let photo of annonce.photos; let i = index"
              [src]="getPhotoUrl(photo.url_photo)"
-             [class.active]="getPhotoUrl(photo.url_photo) === selectedPhoto"
-             (click)="selectPhoto(photo.url_photo)"
+             [class.active]="i === activePhotoIndex"
+             (click)="selectPhoto(photo.url_photo, i)"
              alt="Miniature">
       </div>
     </div>

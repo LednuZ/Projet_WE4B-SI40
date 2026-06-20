@@ -16,6 +16,7 @@ export class AnnonceDetailComponent implements OnInit {
   annonce: Annonce | null = null;
   loading = true;
   selectedPhoto = '';
+  activePhotoIndex = 0;
   error = '';
   isFavori = false;
   annoncesSimilaires: Annonce[] = [];
@@ -48,8 +49,10 @@ export class AnnonceDetailComponent implements OnInit {
         this.annonce = data;
         if (data.photos && data.photos.length > 0) {
           this.selectedPhoto = this.getPhotoUrl(data.photos[0].url_photo);
+          this.activePhotoIndex = 0;
         } else if (data.photo_principale) {
           this.selectedPhoto = this.getPhotoUrl(data.photo_principale);
+          this.activePhotoIndex = 0;
         }
         this.loading = false;
 
@@ -143,7 +146,22 @@ export class AnnonceDetailComponent implements OnInit {
     return 'http://localhost:8000' + path;
   }
 
-  selectPhoto(url: string): void { this.selectedPhoto = this.getPhotoUrl(url); }
+  selectPhoto(url: string, index: number): void {
+    this.selectedPhoto = this.getPhotoUrl(url);
+    this.activePhotoIndex = index;
+  }
+
+  prevPhoto(): void {
+    if (!this.annonce || !this.annonce.photos || this.annonce.photos.length <= 1) return;
+    this.activePhotoIndex = (this.activePhotoIndex - 1 + this.annonce.photos.length) % this.annonce.photos.length;
+    this.selectedPhoto = this.getPhotoUrl(this.annonce.photos[this.activePhotoIndex].url_photo);
+  }
+
+  nextPhoto(): void {
+    if (!this.annonce || !this.annonce.photos || this.annonce.photos.length <= 1) return;
+    this.activePhotoIndex = (this.activePhotoIndex + 1) % this.annonce.photos.length;
+    this.selectedPhoto = this.getPhotoUrl(this.annonce.photos[this.activePhotoIndex].url_photo);
+  }
 
   formatPrix(prix: number): string {
     return new Intl.NumberFormat('fr-FR', {
