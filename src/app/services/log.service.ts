@@ -37,7 +37,7 @@ export class LogService {
     const user = stored ? JSON.parse(stored) : null;
     const payload = {
       action,
-      userId:    user?.id    ?? null,
+      userId:    user?.id_utilisateur    ?? null,
       userEmail: user?.email ?? null,
       details
     };
