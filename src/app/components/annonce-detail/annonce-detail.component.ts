@@ -27,14 +27,6 @@ export class AnnonceDetailComponent implements OnInit {
   avisVendeurMsg = '';
   avisVendeurError = '';
 
-  // Avis modèle
-  avisModele: { avis: any[]; stats: any } = { avis: [], stats: null };
-  showFormModele = false;
-  noteModele = 0;
-  contenuModele = '';
-  avisModeleMsg = '';
-  avisModeleError = '';
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -66,7 +58,6 @@ export class AnnonceDetailComponent implements OnInit {
           });
         }
         if (data.vendeur_id)  this.loadAvisVendeur(data.vendeur_id);
-        if (data.id_modele)   this.loadAvisModele(data.id_modele);
       },
       error: () => { this.error = 'Annonce introuvable'; this.loading = false; }
     });
@@ -119,36 +110,7 @@ export class AnnonceDetailComponent implements OnInit {
     });
   }
 
-  // ── Avis modèle ──────────────────────────────────────────────────────────
 
-  loadAvisModele(modeleId: number): void {
-    this.avisService.getAvisModele(modeleId).subscribe({
-      next: (data: any) => { this.avisModele = data; },
-      error: () => {}
-    });
-  }
-
-  submitAvisModele(): void {
-    if (!this.annonce?.id_modele || this.noteModele < 1) return;
-    this.avisModeleError = '';
-    this.avisService.postAvisModele({
-      id_modele: this.annonce.id_modele,
-      note: this.noteModele,
-      contenu: this.contenuModele || undefined
-    }).subscribe({
-      next: () => {
-        this.avisModeleMsg = 'Avis envoyé, merci !';
-        this.showFormModele = false;
-        this.noteModele = 0;
-        this.contenuModele = '';
-        this.loadAvisModele(this.annonce!.id_modele!);
-        setTimeout(() => (this.avisModeleMsg = ''), 4000);
-      },
-      error: (err: any) => {
-        this.avisModeleError = err.error?.message || 'Erreur lors de l\'envoi';
-      }
-    });
-  }
 
   isMyAvis(avis: any): boolean {
     return this.authService.getCurrentUser()?.id_utilisateur === avis.redacteur_id;

@@ -102,11 +102,8 @@ export class DashboardAdminComponent implements OnInit, OnDestroy {
 
   // Avis
   avisVendeurs: any[] = [];
-  avisModeles: any[] = [];
   avisVendeursFiltres: any[] = [];
-  avisModelesFiltres: any[] = [];
   searchAvis = '';
-  ongletAvis: 'vendeurs' | 'modeles' = 'vendeurs';
   loadingAvis = true;
 
   constructor(
@@ -282,9 +279,7 @@ export class DashboardAdminComponent implements OnInit, OnDestroy {
     this.adminService.getAvis().subscribe({
       next: (data: { vendeurs: any[]; modeles: any[] }) => {
         this.avisVendeurs = data.vendeurs;
-        this.avisModeles  = data.modeles;
         this.avisVendeursFiltres = data.vendeurs;
-        this.avisModelesFiltres  = data.modeles;
         this.loadingAvis = false;
       },
       error: () => { this.loadingAvis = false; }
@@ -296,9 +291,6 @@ export class DashboardAdminComponent implements OnInit, OnDestroy {
     this.avisVendeursFiltres = this.avisVendeurs.filter(a =>
       (a.redacteur_nom + ' ' + a.redacteur_prenom + ' ' + a.cible_nom).toLowerCase().includes(q)
     );
-    this.avisModelesFiltres = this.avisModeles.filter(a =>
-      (a.redacteur_nom + ' ' + a.redacteur_prenom + ' ' + a.cible_nom).toLowerCase().includes(q)
-    );
   }
 
   supprimerAvisVendeur(avisId: number): void {
@@ -306,17 +298,6 @@ export class DashboardAdminComponent implements OnInit, OnDestroy {
     this.adminService.deleteAvisVendeur(avisId).subscribe({
       next: () => {
         this.avisVendeurs = this.avisVendeurs.filter(a => Number(a.id) !== avisId);
-        this.filtrerAvis();
-      },
-      error: (err: any) => alert(err.error?.message || 'Erreur lors de la suppression')
-    });
-  }
-
-  supprimerAvisModele(avisId: number): void {
-    if (!confirm('Supprimer cet avis ?')) return;
-    this.adminService.deleteAvisModele(avisId).subscribe({
-      next: () => {
-        this.avisModeles = this.avisModeles.filter(a => Number(a.id) !== avisId);
         this.filtrerAvis();
       },
       error: (err: any) => alert(err.error?.message || 'Erreur lors de la suppression')

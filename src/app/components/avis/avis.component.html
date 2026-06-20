@@ -4,21 +4,10 @@
     <h1>Mes avis</h1>
   </div>
 
-  <div class="tabs">
-    <button class="tab" [class.active]="onglet === 'vendeurs'" (click)="onglet = 'vendeurs'">
-      Avis sur les vendeurs
-      <span class="tab-count" *ngIf="!loading">{{ mesAvisVendeurs.length }}</span>
-    </button>
-    <button class="tab" [class.active]="onglet === 'modeles'" (click)="onglet = 'modeles'">
-      Avis sur les modèles
-      <span class="tab-count" *ngIf="!loading">{{ mesAvisModeles.length }}</span>
-    </button>
-  </div>
-
   <div class="loading" *ngIf="loading"><p>Chargement...</p></div>
 
   <!-- Avis vendeurs -->
-  <div *ngIf="!loading && onglet === 'vendeurs'">
+  <div *ngIf="!loading">
     <div class="empty" *ngIf="mesAvisVendeurs.length === 0">
       <p>Vous n'avez encore laissé aucun avis sur un vendeur.</p>
     </div>
@@ -34,27 +23,6 @@
         <p class="avis-contenu" *ngIf="a.contenu">{{ a.contenu }}</p>
         <p class="avis-contenu vide" *ngIf="!a.contenu"><em>Sans commentaire</em></p>
         <button class="btn-supprimer" (click)="supprimerVendeur(a.id_avis_utilisateur)">Supprimer</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Avis modèles -->
-  <div *ngIf="!loading && onglet === 'modeles'">
-    <div class="empty" *ngIf="mesAvisModeles.length === 0">
-      <p>Vous n'avez encore laissé aucun avis sur un modèle.</p>
-    </div>
-    <div class="avis-list">
-      <div class="avis-card" *ngFor="let a of mesAvisModeles">
-        <div class="avis-header">
-          <div>
-            <span class="avis-cible">{{ a.marque_nom }} {{ a.modele_nom }}</span>
-            <app-star-rating [rating]="a.note" [editable]="false"></app-star-rating>
-          </div>
-          <span class="avis-date">{{ a.date_avis | date:'dd/MM/yyyy' }}</span>
-        </div>
-        <p class="avis-contenu" *ngIf="a.contenu">{{ a.contenu }}</p>
-        <p class="avis-contenu vide" *ngIf="!a.contenu"><em>Sans commentaire</em></p>
-        <button class="btn-supprimer" (click)="supprimerModele(a.id_avis_modele)">Supprimer</button>
       </div>
     </div>
   </div>

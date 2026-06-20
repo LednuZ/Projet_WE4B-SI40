@@ -1,11 +1,14 @@
 <div class="catalogue-container">
 
-  <!-- Header -->
+  <!-- Header Section -->
   <div class="catalogue-header">
     <h1>Annonces</h1>
     <div class="header-actions">
-      <button class="btn-filter" (click)="toggleFilters()">
-        {{ showFilters ? 'Masquer les filtres' : 'Filtrer' }}
+      <button class="btn-filter" [class.active]="showFilters" (click)="toggleFilters()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="filter-icon" viewBox="0 0 24 24">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+        </svg>
+        <span>{{ showFilters ? 'Masquer les filtres' : 'Filtrer' }}</span>
       </button>
       <select class="sort-select" [ngModel]="sort" (ngModelChange)="onSortChange($event)">
         <option value="recent">Plus récentes</option>
@@ -17,56 +20,60 @@
     </div>
   </div>
 
-  <!-- Filtres -->
+  <!-- Filters Panel -->
   <div class="filters-panel" *ngIf="showFilters">
     <div class="filters-grid">
 
       <div class="filter-group">
-        <label>Marque</label>
-        <select [(ngModel)]="filters.marque_id" (ngModelChange)="onFilterChange()">
+        <label for="filter-marque">Marque</label>
+        <select id="filter-marque" [(ngModel)]="filters.marque_id" (ngModelChange)="onFilterChange()">
           <option value="">Toutes</option>
           <option *ngFor="let m of marques" [value]="m.id_marque">{{ m.nom }}</option>
         </select>
       </div>
 
       <div class="filter-group">
-        <label>Prix min (€)</label>
-        <input type="number" [(ngModel)]="filters.prix_min" (change)="onFilterChange()" placeholder="0">
+        <label for="filter-prix-min">Prix min (€)</label>
+        <input id="filter-prix-min" type="number" [(ngModel)]="filters.prix_min" (change)="onFilterChange()" placeholder="Ex: 5000">
       </div>
 
       <div class="filter-group">
-        <label>Prix max (€)</label>
-        <input type="number" [(ngModel)]="filters.prix_max" (change)="onFilterChange()" placeholder="100 000">
+        <label for="filter-prix-max">Prix max (€)</label>
+        <input id="filter-prix-max" type="number" [(ngModel)]="filters.prix_max" (change)="onFilterChange()" placeholder="Ex: 50000">
       </div>
 
       <div class="filter-group">
-        <label>Km max</label>
-        <input type="number" [(ngModel)]="filters.km_max" (change)="onFilterChange()" placeholder="200 000">
+        <label for="filter-km-max">Kilométrage max</label>
+        <input id="filter-km-max" type="number" [(ngModel)]="filters.km_max" (change)="onFilterChange()" placeholder="Ex: 100000">
       </div>
 
       <div class="filter-group">
-        <label>Année min</label>
-        <input type="number" [(ngModel)]="filters.annee_min" (change)="onFilterChange()" placeholder="2010">
+        <label for="filter-annee-min">Année min</label>
+        <input id="filter-annee-min" type="number" [(ngModel)]="filters.annee_min" (change)="onFilterChange()" placeholder="Ex: 2015">
       </div>
 
       <div class="filter-group">
-        <label>Année max</label>
-        <input type="number" [(ngModel)]="filters.annee_max" (change)="onFilterChange()" placeholder="2026">
+        <label for="filter-annee-max">Année max</label>
+        <input id="filter-annee-max" type="number" [(ngModel)]="filters.annee_max" (change)="onFilterChange()" placeholder="Ex: 2026">
       </div>
 
     </div>
-    <button class="btn-reset" (click)="resetFilters()">Réinitialiser</button>
+    <div class="filters-actions">
+      <button class="btn-reset" (click)="resetFilters()">Réinitialiser</button>
+    </div>
   </div>
 
-  <!-- Résultats -->
-  <p class="results-count" *ngIf="!loading">{{ annonces.length }} annonce{{ annonces.length > 1 ? 's' : '' }} trouvée{{ annonces.length > 1 ? 's' : '' }}</p>
+  <!-- Results Count -->
+  <p class="results-count" *ngIf="!loading">
+    {{ annonces.length }} annonce{{ annonces.length > 1 ? 's' : '' }} trouvée{{ annonces.length > 1 ? 's' : '' }}
+  </p>
 
-  <!-- Loading -->
+  <!-- Loading State -->
   <div class="loading" *ngIf="loading">
-    <p>Chargement des annonces...</p>
+    <p>Chargement des annonces en cours...</p>
   </div>
 
-  <!-- Liste des annonces -->
+  <!-- Listings Grid -->
   <div class="annonces-grid" *ngIf="!loading">
     <app-annonce-card *ngFor="let a of annonces"
                       [annonce]="a"
@@ -76,10 +83,10 @@
     </app-annonce-card>
   </div>
 
-  <!-- Aucun résultat -->
+  <!-- No Results Found -->
   <div class="no-results" *ngIf="!loading && annonces.length === 0">
-    <p>Aucune annonce ne correspond à vos critères.</p>
-    <button class="btn-reset" (click)="resetFilters()">Réinitialiser les filtres</button>
+    <p>Aucune annonce ne correspond à vos critères de recherche.</p>
+    <button class="btn-reset" (click)="resetFilters()">Réinitialiser tous les filtres</button>
   </div>
 
 </div>

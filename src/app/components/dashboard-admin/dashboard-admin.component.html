@@ -362,7 +362,7 @@
       <input type="text" [(ngModel)]="searchAvis" (input)="filtrerAvis()"
              placeholder="Rechercher par auteur ou cible..." class="search-input">
       <span class="total-count">
-        {{ avisVendeursFiltres.length + avisModelesFiltres.length }} avis
+        {{ avisVendeursFiltres.length }} avis
       </span>
     </div>
 
@@ -370,16 +370,7 @@
 
     <ng-container *ngIf="!loadingAvis">
 
-      <div class="sub-tabs">
-        <button class="sub-tab" [class.active]="ongletAvis === 'vendeurs'" (click)="ongletAvis = 'vendeurs'">
-          Sur les vendeurs <span class="sub-count">{{ avisVendeursFiltres.length }}</span>
-        </button>
-        <button class="sub-tab" [class.active]="ongletAvis === 'modeles'" (click)="ongletAvis = 'modeles'">
-          Sur les modèles <span class="sub-count">{{ avisModelesFiltres.length }}</span>
-        </button>
-      </div>
-
-      <div class="table-wrapper" *ngIf="ongletAvis === 'vendeurs'">
+      <div class="table-wrapper">
         <table class="admin-table">
           <thead>
             <tr><th>Rédacteur</th><th>Vendeur noté</th><th>Note</th><th>Commentaire</th><th>Date</th><th>Actions</th></tr>
@@ -394,27 +385,6 @@
               <td><button class="btn-action btn-del" (click)="supprimerAvisVendeur(a.id)">Supprimer</button></td>
             </tr>
             <tr *ngIf="avisVendeursFiltres.length === 0">
-              <td colspan="6" class="empty-row">Aucun avis</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="table-wrapper" *ngIf="ongletAvis === 'modeles'">
-        <table class="admin-table">
-          <thead>
-            <tr><th>Rédacteur</th><th>Modèle noté</th><th>Note</th><th>Commentaire</th><th>Date</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let a of avisModelesFiltres">
-              <td>{{ a.redacteur_prenom }} {{ a.redacteur_nom }}</td>
-              <td>{{ a.cible_nom }}</td>
-              <td><app-star-rating [rating]="a.note" [editable]="false"></app-star-rating></td>
-              <td class="contenu-cell">{{ a.contenu || '—' }}</td>
-              <td>{{ a.date_avis | date:'dd/MM/yyyy' }}</td>
-              <td><button class="btn-action btn-del" (click)="supprimerAvisModele(a.id)">Supprimer</button></td>
-            </tr>
-            <tr *ngIf="avisModelesFiltres.length === 0">
               <td colspan="6" class="empty-row">Aucun avis</td>
             </tr>
           </tbody>

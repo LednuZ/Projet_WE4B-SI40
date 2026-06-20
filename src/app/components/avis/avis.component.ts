@@ -8,9 +8,7 @@ import { AvisService } from '../../services/avis.service';
 })
 export class AvisComponent implements OnInit {
 
-  onglet: 'vendeurs' | 'modeles' = 'vendeurs';
   mesAvisVendeurs: any[] = [];
-  mesAvisModeles: any[] = [];
   loading = true;
 
   constructor(private avisService: AvisService) {}
@@ -19,7 +17,6 @@ export class AvisComponent implements OnInit {
     this.avisService.getMesAvis().subscribe({
       next: (data: { vendeurs: any[]; modeles: any[] }) => {
         this.mesAvisVendeurs = data.vendeurs;
-        this.mesAvisModeles  = data.modeles;
         this.loading = false;
       },
       error: () => { this.loading = false; }
@@ -29,13 +26,6 @@ export class AvisComponent implements OnInit {
   supprimerVendeur(avisId: number): void {
     this.avisService.deleteAvisVendeur(avisId).subscribe({
       next: () => { this.mesAvisVendeurs = this.mesAvisVendeurs.filter(a => a.id_avis_utilisateur !== avisId); },
-      error: (err: any) => console.error(err)
-    });
-  }
-
-  supprimerModele(avisId: number): void {
-    this.avisService.deleteAvisModele(avisId).subscribe({
-      next: () => { this.mesAvisModeles = this.mesAvisModeles.filter(a => a.id_avis_modele !== avisId); },
       error: (err: any) => console.error(err)
     });
   }

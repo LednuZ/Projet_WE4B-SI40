@@ -1,143 +1,266 @@
 .catalogue-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 40px 24px;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* Header */
+/* Header Section */
 .catalogue-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .catalogue-header h1 {
-  font-size: 28px;
-  color: #1a2744;
+  font-family: 'Manrope', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: #1a2744; /* Primary blue */
   margin: 0;
+  letter-spacing: -0.8px;
 }
 
 .header-actions {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   align-items: center;
 }
 
 .btn-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 10px 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
+  border: 1.5px solid rgba(26, 39, 68, 0.1);
+  border-radius: 12px;
+  background: #ffffff;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 600;
   color: #1a2744;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-filter:hover {
+  border-color: #f97316; /* Secondary theme color */
+  color: #f97316;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.06);
+}
+
+.btn-filter.active {
+  background: rgba(249, 115, 22, 0.08);
   border-color: #f97316;
   color: #f97316;
 }
 
+.filter-icon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.22s;
+}
+
+.btn-filter:hover .filter-icon {
+  transform: rotate(15deg);
+}
+
 .sort-select {
-  padding: 10px 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  padding: 10px 36px 10px 16px;
+  border: 1.5px solid rgba(26, 39, 68, 0.1);
+  border-radius: 12px;
   font-size: 14px;
-  background: #fff;
+  font-weight: 600;
+  background: #ffffff;
   color: #1a2744;
   cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%231a2744' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sort-select:hover {
+  border-color: #f97316;
 }
 
 .sort-select:focus {
   outline: none;
   border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
 }
 
-/* Filtres */
+/* Filters Panel */
 .filters-panel {
-  background: #f8f9fb;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 24px;
+  background: #ffffff;
+  border: 1.5px solid rgba(26, 39, 68, 0.06);
+  box-shadow: 0 10px 30px rgba(26, 39, 68, 0.03);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 32px;
+  animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .filters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .filter-group label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: #555;
-  margin-bottom: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #4b5563;
 }
 
 .filter-group input,
 .filter-group select {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  padding: 11px 14px;
+  border: 1.5px solid rgba(26, 39, 68, 0.1);
+  border-radius: 10px;
   font-size: 14px;
+  color: #1a2744;
+  background: #ffffff;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
-  background: #fff;
+}
+
+.filter-group input::placeholder {
+  color: #9ca3af;
+}
+
+.filter-group input:hover,
+.filter-group select:hover {
+  border-color: rgba(249, 115, 22, 0.5);
 }
 
 .filter-group input:focus,
 .filter-group select:focus {
   outline: none;
   border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.filters-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .btn-reset {
-  padding: 8px 16px;
-  background: none;
-  border: 1px solid #e74c3c;
-  color: #e74c3c;
-  border-radius: 8px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 1.5px solid #ef4444;
+  color: #ef4444;
+  font-weight: 600;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 13px;
-  transition: all 0.2s;
+  font-size: 13.5px;
+  transition: all 0.22s ease;
 }
 
 .btn-reset:hover {
-  background: #e74c3c;
-  color: #fff;
+  background: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
 }
 
-/* Résultats */
+/* Results Count */
 .results-count {
-  color: #777;
-  font-size: 14px;
-  margin-bottom: 16px;
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 24px;
 }
 
-/* Grille d'annonces */
+/* Vehicles Grid */
 .annonces-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 28px;
 }
 
-/* Responsive */
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 80px 0;
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* No Results Found block */
+.no-results {
+  text-align: center;
+  padding: 60px 24px;
+  background: #ffffff;
+  border: 1.5px solid rgba(26, 39, 68, 0.06);
+  border-radius: 16px;
+  color: #6b7280;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.no-results p {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Animations definitions */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive configurations */
 @media (max-width: 640px) {
   .catalogue-header {
     flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .catalogue-header h1 {
+    font-size: 26px;
+  }
+  
+  .header-actions {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .btn-filter, .sort-select {
+    flex: 1;
+    text-align: center;
   }
 
   .annonces-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .filters-grid {
     grid-template-columns: 1fr 1fr;
+    gap: 16px;
   }
-}
+  
+  .filters-actions {
+    justify-content: stretch;
+  }
+  
+  .btn-reset {
+    width: 100%;
+  }
+}
