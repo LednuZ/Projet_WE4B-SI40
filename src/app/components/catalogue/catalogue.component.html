@@ -68,58 +68,12 @@
 
   <!-- Liste des annonces -->
   <div class="annonces-grid" *ngIf="!loading">
-
-    <a *ngFor="let annonce of annonces"
-       [routerLink]="['/annonces', annonce.id_annonce]"
-       class="annonce-card">
-
-      <div class="card-image">
-        <img [src]="getPhotoUrl(annonce)" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
-        <span class="card-badge-energy" *ngIf="annonce.carburant"
-              [ngClass]="getCarburantClass(annonce.carburant)">
-          {{ annonce.carburant }}
-        </span>
-        <div class="card-price-overlay">{{ formatPrix(annonce.prix) }}</div>
-        <button *ngIf="authService.isLoggedIn()"
-                class="card-favori-btn"
-                [class.is-favori]="isFavori(annonce.id_annonce)"
-                (click)="toggleFavori(annonce.id_annonce, $event)"
-                [title]="isFavori(annonce.id_annonce) ? 'Retirer des favoris' : 'Ajouter aux favoris'">
-          {{ isFavori(annonce.id_annonce) ? '♥' : '♡' }}
-        </button>
-      </div>
-
-      <div class="card-body">
-        <h3 class="card-title">{{ annonce.marque_nom }} {{ annonce.modele_nom }}</h3>
-        <p class="card-version">{{ annonce.version_nom }}</p>
-
-        <div class="card-specs">
-          <span>{{ annonce.annee_circulation }}</span>
-          <span>{{ formatKm(annonce.kilometrage) }}</span>
-          <span *ngIf="annonce.puissance_DIN">{{ annonce.puissance_DIN }} ch</span>
-          <span *ngIf="annonce.boite_vitesse">{{ annonce.boite_vitesse }}</span>
-          <span *ngIf="annonce.transmission">{{ annonce.transmission }}</span>
-          <span *ngIf="annonce.etat" class="spec-etat">{{ annonce.etat }}</span>
-          <span *ngIf="annonce.nombre_proprietaire && annonce.nombre_proprietaire > 1">
-            {{ annonce.nombre_proprietaire }} prop.
-          </span>
-        </div>
-
-        <div class="card-footer">
-          <span class="card-location" *ngIf="annonce.localisation">📍 {{ annonce.localisation }}</span>
-          <span class="card-seller-inline" *ngIf="annonce.vendeur_note">
-            ★ {{ annonce.vendeur_note }}/5
-          </span>
-        </div>
-
-        <div class="card-seller" *ngIf="annonce.vendeur_prenom">
-          {{ annonce.vendeur_display }}
-          <span *ngIf="annonce.vendeur_note" class="seller-stars">★ {{ annonce.vendeur_note }}/5</span>
-        </div>
-      </div>
-
-    </a>
-
+    <app-annonce-card *ngFor="let a of annonces"
+                      [annonce]="a"
+                      [isLoggedIn]="authService.isLoggedIn()"
+                      [isFavori]="isFavori(a.id_annonce)"
+                      (toggleFavori)="toggleFavori($event)">
+    </app-annonce-card>
   </div>
 
   <!-- Aucun résultat -->

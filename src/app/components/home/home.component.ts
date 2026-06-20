@@ -14,6 +14,12 @@ export class HomeComponent implements OnInit {
   annoncesRecentes: Annonce[] = [];
   marques: any[] = [];
   selectedMarqueId: string = '';
+  
+  // Autocomplete search properties
+  searchQuery: string = '';
+  filteredMarques: any[] = [];
+  showSuggestions: boolean = false;
+  
   loading: boolean = true;
 
   constructor(
@@ -40,7 +46,47 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  onSearchInput(): void {
+    const q = (this.searchQuery ?? '').trim().toLowerCase();
+    if (!q) {
+      this.filteredMarques = [];
+      this.selectedMarqueId = '';
+      return;
+    }
+    this.filteredMarques = this.marques.filter(m => 
+      (m.nom ?? '').toLowerCase().includes(q)
+    );
+  }
+
+  selectMarque(marque: any): void {
+    this.searchQuery = marque.nom;
+    this.selectedMarqueId = marque.id_marque;
+    this.showSuggestions = false;
+  }
+
+  onBlur(): void {
+    // Delay hiding suggestions so click events on suggestions can fire first
+    setTimeout(() => {
+      this.showSuggestions = false;
+      const exactMatch = this.marques.find(m => 
+        (m.nom ?? '').toLowerCase() === this.searchQuery.trim().toLowerCase()
+      );
+      if (exactMatch) {
+        this.selectedMarqueId = exactMatch.id_marque;
+      } else if (!this.searchQuery.trim()) {
+        this.selectedMarqueId = '';
+      }
+    }, 200);
+  }
+
   triggerSearch(): void {
+    const exactMatch = this.marques.find(m => 
+      (m.nom ?? '').toLowerCase() === this.searchQuery.trim().toLowerCase()
+    );
+    if (exactMatch) {
+      this.selectedMarqueId = exactMatch.id_marque;
+    }
+
     if (this.selectedMarqueId) {
       this.router.navigate(['/annonces'], { queryParams: { marque_id: this.selectedMarqueId } });
     } else {

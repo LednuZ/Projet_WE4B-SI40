@@ -1,22 +1,31 @@
 <!-- Hero -->
 <section class="hero">
-  <div class="hero-glow-1"></div>
-  <div class="hero-glow-2"></div>
   <div class="hero-content">
     <h1>Trouvez votre prochaine voiture sur <span class="brand">AutoMarket</span></h1>
     <p>Des milliers d'annonces de véhicules d'occasion vérifiées par notre communauté.</p>
     
-    <!-- Quick Search Bar -->
+    <!-- Autocomplete Search Bar -->
     <div class="search-bar-hero">
-      <div class="search-select-wrapper">
+      <div class="search-input-wrapper">
         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"/>
           <line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <select [(ngModel)]="selectedMarqueId" class="search-select">
-          <option value="">Quelle marque recherchez-vous ?</option>
-          <option *ngFor="let marque of marques" [value]="marque.id_marque">{{ marque.nom }}</option>
-        </select>
+        <input type="text"
+               placeholder="Quelle marque recherchez-vous ? (ex: Peugeot, BMW...)"
+               class="search-input"
+               [(ngModel)]="searchQuery"
+               (input)="onSearchInput()"
+               (focus)="showSuggestions = true"
+               (blur)="onBlur()"
+               (keyup.enter)="triggerSearch()">
+               
+        <!-- Suggestions list -->
+        <ul class="suggestions-list shadow-lg" *ngIf="showSuggestions && filteredMarques.length > 0">
+          <li *ngFor="let m of filteredMarques" (click)="selectMarque(m)">
+            {{ m.nom }}
+          </li>
+        </ul>
       </div>
       <button class="btn-search-hero" (click)="triggerSearch()">
         <span>Trouver</span>
@@ -119,56 +128,15 @@
   </div>
 
   <div class="annonces-grid" *ngIf="!loading">
-    <a *ngFor="let annonce of annoncesRecentes"
-       [routerLink]="['/annonces', annonce.id_annonce]"
-       class="annonce-card">
-
-      <div class="card-image">
-        <img [src]="getPhotoUrl(annonce)" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
-        <div class="card-badges">
-          <span class="card-badge" *ngIf="annonce.premiere_main">1ère main</span>
-          <span class="card-badge-energy" *ngIf="annonce.carburant" [ngClass]="getCarburantClass(annonce.carburant)">
-            {{ annonce.carburant }}
-          </span>
-        </div>
-        <div class="card-price-overlay">{{ formatPrix(annonce.prix) }}</div>
-      </div>
-
-      <div class="card-body">
-        <h3 class="card-title">{{ annonce.marque_nom }} <span class="text-primary-gradient">{{ annonce.modele_nom }}</span></h3>
-        <p class="card-version">{{ annonce.version_nom || 'Modèle Standard' }}</p>
-        
-        <div class="card-specs">
-          <span class="spec-tag">{{ annonce.annee_circulation }}</span>
-          <span class="spec-tag">{{ formatKm(annonce.kilometrage) }}</span>
-          <span class="spec-tag" *ngIf="annonce.puissance_DIN">{{ annonce.puissance_DIN }} ch</span>
-          <span class="spec-tag" *ngIf="annonce.boite_vitesse">{{ annonce.boite_vitesse }}</span>
-        </div>
-        
-        <div class="card-footer-home">
-          <span class="card-location" *ngIf="annonce.localisation">
-            <svg class="location-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
-            <span>{{ annonce.localisation }}</span>
-          </span>
-          <span class="seller-note" *ngIf="annonce.vendeur_note">
-            <svg class="star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-            </svg>
-            <span>{{ annonce.vendeur_note }}/5</span>
-          </span>
-        </div>
-      </div>
-
-    </a>
+    <app-annonce-card *ngFor="let a of annoncesRecentes"
+                      [annonce]="a"
+                      [isLoggedIn]="false">
+    </app-annonce-card>
   </div>
 </section>
 
 <!-- CTA Section -->
 <section class="cta-section">
-  <div class="cta-glow"></div>
   <div class="cta-container">
     <h2>Vous vendez votre véhicule ?</h2>
     <p>Publiez votre annonce gratuitement et touchez des milliers d'acheteurs qualifiés à travers le pays.</p>

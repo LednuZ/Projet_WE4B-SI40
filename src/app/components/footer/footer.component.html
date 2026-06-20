@@ -1,97 +1,174 @@
-<footer class="py-2 px-5 text-white bg-primary z-2 border-top border-white border-opacity-25">
-        <div class="py-5 d-flex flex-row gap-5 text-white text-opacity-50">
-            <div class=""> <!-- 1ere colonne -->
-                <a routerLink="/" class="inline-block pb-5 text-white text-decoration-none">
-                    <h2 class="text-white pb-3">AutoMarket</h2>
-                </a>
-                <p class="text-white/70">
-                    L'expérience du Showroom Digital. Redéfinir la façon dont les passionnés achètent et vendent
-                    des chefs-d'œuvres automobiles avec intégrité éditoriale
-                </p>
-            </div>
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-grid">
+      
+      <!-- Brand Section -->
+      <div class="footer-brand">
+        <a routerLink="/" class="brand-logo-link">
+          <img src="assets/automarket_logo.svg" alt="AutoMarket Logo" class="brand-logo">
+          <span class="brand-name">AutoMarket</span>
+        </a>
+        <p class="brand-description">
+          L'expérience du Showroom Digital. Redéfinir la façon dont les passionnés achètent et vendent des chefs-d'œuvre automobiles avec intégrité et confiance.
+        </p>
+      </div>
 
-            <!-- 2eme colonne - Ecosystème -->
-            <div class="text-[15px] text-white text-opacity-50">
-                <ul class="list-unstyled">
-                    <li class="pb-3">
-                        <h3 class="text-[15px] font-bold text-secondary">ÉCOSYSTÈME</h3>
-                    </li>
-                    <li class="pb-3 "><a routerLink="" class="text-decoration-none link-light link-opacity-50 link-opacity-100-hover">Annonces</a></li> <!--TODO : Implémenter le href-->
-                    <li class="pb-3"><a routerLink="" class="text-decoration-none link-light link-opacity-50 link-opacity-100-hover">Vendre ma voiture</a></li> <!--TODO : Implémenter le href-->
-                </ul>
-            </div>
+      <!-- Links Grid - Ecosystem -->
+      <div class="footer-links-group">
+        <h3 class="footer-title">Écosystème</h3>
+        <ul class="footer-links">
+          <li>
+            <a routerLink="/annonces" class="footer-link">
+              <span class="link-text">Explorer les Annonces</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/annonces/new" class="footer-link">
+              <span class="link-text">Vendre un Véhicule</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/favoris" class="footer-link">
+              <span class="link-text">Mes Favoris</span>
+            </a>
+          </li>
+        </ul>
+      </div>
 
-            <!-- 3eme colonne - Entreprise -->
-            <div class="text-[15px] text-white/70"> 
-                <ul class="list-unstyled">
-                    <li class="pb-3">
-                        <h3 class="text-[15px] font-bold text-secondary">ENTREPRISE</h3>
-                    </li>
-                    <li class="pb-3">
-                        <a routerLink="" class="text-decoration-none link-light link-opacity-50 link-opacity-100-hover">Politique de confidentialité</a> <!--TODO : Implémenter le lien-->
-                    </li>
-                    <li class="pb-3">
-                        <a routerLink="" class="text-decoration-none link-light link-opacity-50 link-opacity-100-hover">Conditions d'utilisations</a> <!--TODO : Implémenter le lien-->
-                    </li>
-                    <li class="pb-3">
-                        <a routerLink="" class="text-decoration-none link-light link-opacity-50 link-opacity-100-hover">Politique de Cookies</a> <!--TODO : Implémenter le lien-->
-                    </li>
-                    <li class="pb-3">
-                        <a routerLink="" class="text-decoration-none link-light link-opacity-50 link-opacity-100-hover">Contactez-nous</a> <!--TODO : Implémenter le lien-->
-                    </li>
-                </ul>
-            </div>
+      <!-- Links Grid - Legal & Info -->
+      <div class="footer-links-group">
+        <h3 class="footer-title">Entreprise</h3>
+        <ul class="footer-links">
+          <li>
+            <button (click)="openLegalModal('privacy')" class="footer-link" type="button">
+              <span class="link-text">Politique de confidentialité</span>
+            </button>
+          </li>
+          <li>
+            <button (click)="openLegalModal('terms')" class="footer-link" type="button">
+              <span class="link-text">Conditions d'utilisation</span>
+            </button>
+          </li>
+          <li>
+            <button (click)="openLegalModal('cookies')" class="footer-link" type="button">
+              <span class="link-text">Politique des Cookies</span>
+            </button>
+          </li>
+          <li>
+            <button (click)="openLegalModal('contact')" class="footer-link" type="button">
+              <span class="link-text">Contactez-nous</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Newsletter Section -->
+      <div class="footer-newsletter">
+        <h3 class="footer-title">Rejoindre le club</h3>
+        <p class="newsletter-text">
+          Recevez le briefing hebdomadaire sur les tendances du marché automobile et accédez en exclusivité à nos ventes privées.
+        </p>
+        
+        <form (ngSubmit)="subscribeNewsletter(newsletterForm)" #newsletterForm="ngForm" class="newsletter-form" novalidate>
+          <div class="input-wrapper">
+            <input 
+              type="email" 
+              name="email"
+              [(ngModel)]="emailAddress" 
+              required
+              email
+              #emailInput="ngModel"
+              class="newsletter-input" 
+              placeholder="votre.email@exemple.com" 
+              aria-label="Adresse email pour la newsletter"
+              [class.is-invalid]="emailInput.invalid && emailInput.touched"
+              [disabled]="newsletterStatus === 'success' || newsletterStatus === 'loading'"
+            />
             
-            <!-- 4eme colonne - Rejoindre le club -->
-            <div class="flex-1 text-[15px] text-white/70">
-                <ul class="list-unstyled">
-                    <li class="pb-3">
-                        <h3 class="text-[15px] font-bold text-secondary">REJOINDRE LE CLUB</h3>
-                    </li>
-                    <li class="pb-3">
-                        <p>Recevez le briefing éditorial hebdomadaire sur les tendances du marché et un
-                        accès anticipé exclusif aux annonces rares</p>
-                    </li>
-                    <li class="pb-3">
-                        <form class="flex gap-3"> <!-- Implémenter le formulaire d'inscription à la newsletter -->
-                            <div class="input-group">
-                                <input type="email" 
-                                class="form-control bg-white bg-opacity-50 border-white border-opacity-10 text-white placeholder-white-50 shadow-none py-3 px-4" 
-                                placeholder="Adresse email" 
-                                aria-label="Adresse email"
-                                style="border-top-left-radius: 12px; border-bottom-left-radius: 12px;"/>
-                
-                                <button class="btn btn-secondary px-4 fw-bold text-dark d-flex align-items-center justify-content-center transition-all" 
-                                        type="submit"
-                                        style="border-top-right-radius: 12px; border-bottom-right-radius: 12px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-                                </svg>
-                                </button>
-                            </div>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </div>
+            <button 
+              type="submit" 
+              class="newsletter-btn" 
+              [disabled]="newsletterForm.invalid || newsletterStatus === 'success' || newsletterStatus === 'loading'"
+              [class.loading]="newsletterStatus === 'loading'"
+              [class.success]="newsletterStatus === 'success'"
+            >
+              <ng-container *ngIf="newsletterStatus !== 'loading' && newsletterStatus !== 'success'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                </svg>
+              </ng-container>
+              <ng-container *ngIf="newsletterStatus === 'loading'">
+                <span class="spinner"></span>
+              </ng-container>
+              <ng-container *ngIf="newsletterStatus === 'success'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+                </svg>
+              </ng-container>
+            </button>
+          </div>
+          
+          <div *ngIf="emailInput.invalid && emailInput.touched" class="feedback-msg error">
+            Veuillez entrer une adresse email valide.
+          </div>
+          <div *ngIf="newsletterStatus === 'success'" class="feedback-msg success">
+            Merci de rejoindre le Club AutoMarket !
+          </div>
+          <div *ngIf="newsletterStatus === 'error'" class="feedback-msg error">
+            Une erreur est survenue, veuillez réessayer.
+          </div>
+        </form>
+      </div>
 
-        <!-- Dernière ligne -->
-        <div class="border-top border-white border-opacity-10 pt-3 mt-3">
-            <div class="d-flex flex-row gap-5 justify-content-between list-unstyled w-100">
-                <div class="text-white text-opacity-50">
-                    © 2026 AUTOMARKET. Tous droits réservés
-                </div>
-                <ul class="d-flex flex-row list-unstyled gap-5">
-                    <li class="">
-                        <a href="https://www.instagram.com" class="text-decoration-none link-light link-opacity-50 link-opacity-100-hover">INSTAGRAM</a>
-                    </li>
-                    <li class="">
-                        <a href="https://www.x.com" class="text-decoration-none link-light link-opacity-50 link-opacity-100-hover">X | TWITTER</a>
-                    </li>
-                    <li class="">
-                        <a href="https://www.linkedin.com" class="text-decoration-none link-light link-opacity-50 link-opacity-100-hover">LINKEDIN</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+    </div>
+
+    <!-- Bottom Section: Copyright & Social Links -->
+    <div class="footer-bottom">
+      <div class="copyright">
+        © 2026 AUTOMARKET. Tous droits réservés
+      </div>
+      <div class="socials">
+        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="social-link instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.999 0zm1.919 1.586c.764.035 1.162.162 1.438.27.366.143.627.315.902.59.276.275.448.536.59.902.108.276.235.674.27 1.438.035.764.04 1.001.04 3.149 0 2.148-.005 2.386-.04 3.149-.035.763-.162 1.162-.27 1.438a2.9 2.9 0 0 1-.59.902 2.9 2.9 0 0 1-.902.59c-.276.108-.674.236-1.438.27-.764.035-1.001.04-3.149.04-2.148 0-2.386-.005-3.149-.04-.763-.035-1.162-.162-1.438-.27a2.9 2.9 0 0 1-.902-.59 2.9 2.9 0 0 1-.59-.902c-.108-.276-.236-.674-.27-1.438C1.586 10.443 1.581 10.172 1.581 8c0-2.172.005-2.408.041-3.17.036-.762.162-1.16.27-1.436.143-.366.315-.628.59-.903.275-.276.536-.448.903-.59.275-.108.673-.235 1.436-.27.762-.036 1.002-.041 3.17-.041h.004zM8 3.89A4.11 4.11 0 1 0 8 12.11 4.11 4.11 0 0 0 8 3.89zM8 10.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm5.02-7.103a1.21 1.21 0 1 1-2.42 0 1.21 1.21 0 0 1 2.42 0z"/>
+          </svg>
+          <span class="social-name">Instagram</span>
+        </a>
+        <a href="https://www.x.com" target="_blank" rel="noopener noreferrer" class="social-link twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
+          </svg>
+          <span class="social-name">X</span>
+        </a>
+        <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" class="social-link linkedin">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 0 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/>
+          </svg>
+          <span class="social-name">LinkedIn</span>
+        </a>
+      </div>
+    </div>
+    
+  </div>
+
+  <!-- Interactive Legal Modal -->
+  <div class="legal-modal-backdrop" *ngIf="activeLegalModal" (click)="closeLegalModal()">
+    <div class="legal-modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ getLegalTitle() }}</h4>
+        <button class="close-btn" (click)="closeLegalModal()" aria-label="Fermer la modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body scrollable">
+        <div [innerHTML]="getLegalBody()"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-action-btn" (click)="closeLegalModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
 </footer>

@@ -82,9 +82,7 @@ export class CatalogueComponent implements OnInit {
 
   isFavori(id: number): boolean { return this.favorisIds.has(id); }
 
-  toggleFavori(annonceId: number, event: Event): void {
-    event.preventDefault();
-    event.stopPropagation();
+  toggleFavori(annonceId: number): void {
     if (!this.authService.isLoggedIn()) return;
 
     if (this.favorisIds.has(annonceId)) {
@@ -98,29 +96,5 @@ export class CatalogueComponent implements OnInit {
         error: (err: any) => console.error(err)
       });
     }
-  }
-
-  getPhotoUrl(annonce: any): string {
-    return annonce.photo_principale
-      ? 'http://localhost:8000' + annonce.photo_principale
-      : 'assets/no-photo.svg';
-  }
-
-  formatPrix(prix: number): string {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency', currency: 'EUR', maximumFractionDigits: 0
-    }).format(prix);
-  }
-
-  formatKm(km: number): string {
-    return new Intl.NumberFormat('fr-FR').format(km) + ' km';
-  }
-
-  getCarburantClass(carburant: string): string {
-    const c = (carburant ?? '').toLowerCase();
-    if (c.includes('électr') || c.includes('electr')) return 'energy-elec';
-    if (c.includes('hybride'))                          return 'energy-hybrid';
-    if (c.includes('diesel'))                           return 'energy-diesel';
-    return 'energy-essence';
   }
 }

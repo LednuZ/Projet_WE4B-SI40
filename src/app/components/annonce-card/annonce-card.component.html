@@ -1,0 +1,59 @@
+<a [routerLink]="['/annonces', annonce.id_annonce]" class="annonce-card">
+  
+  <div class="card-image">
+    <img [src]="getPhotoUrl()" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
+    
+    <div class="card-badges">
+      <span class="card-badge" *ngIf="annonce.premiere_main">1ère main</span>
+      <span class="card-badge-energy" *ngIf="annonce.carburant" [ngClass]="getCarburantClass(annonce.carburant)">
+        {{ annonce.carburant }}
+      </span>
+    </div>
+    
+    <div class="card-price-overlay">{{ formatPrix(annonce.prix) }}</div>
+    
+    <!-- Favori Button -->
+    <button *ngIf="isLoggedIn"
+            class="card-favori-btn"
+            [class.is-favori]="isFavori"
+            (click)="onToggleFavoriClick($event)"
+            [title]="isFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" [attr.fill]="isFavori ? 'currentColor' : 'none'"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="card-body">
+    <h3 class="card-title">
+      {{ annonce.marque_nom }} 
+      <span class="modele-title">{{ annonce.modele_nom }}</span>
+    </h3>
+    <p class="card-version">{{ annonce.version_nom || 'Modèle Standard' }}</p>
+    
+    <div class="card-specs">
+      <span class="spec-tag">{{ annonce.annee_circulation }}</span>
+      <span class="spec-tag">{{ formatKm(annonce.kilometrage) }}</span>
+      <span class="spec-tag" *ngIf="annonce.puissance_DIN">{{ annonce.puissance_DIN }} ch</span>
+      <span class="spec-tag" *ngIf="annonce.boite_vitesse">{{ annonce.boite_vitesse }}</span>
+    </div>
+    
+    <div class="card-footer">
+      <span class="card-location" *ngIf="annonce.localisation">
+        <svg class="location-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span>{{ annonce.localisation }}</span>
+      </span>
+      <span class="seller-note" *ngIf="annonce.vendeur_note">
+        <svg class="star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        <span>{{ annonce.vendeur_note }}/5</span>
+      </span>
+    </div>
+  </div>
+
+</a>

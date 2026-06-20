@@ -23,6 +23,7 @@ import { FavorisComponent } from './components/favoris/favoris.component';
 import { StarRatingComponent } from './components/shared/star-rating/star-rating.component';
 import { VendeurComponent } from './components/vendeur/vendeur.component';
 import { DashboardProComponent } from './components/dashboard-pro/dashboard-pro.component';
+import { AnnonceCardComponent } from './components/annonce-card/annonce-card.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { DashboardProComponent } from './components/dashboard-pro/dashboard-pro.
     StarRatingComponent,
     VendeurComponent,
     DashboardProComponent,
+    AnnonceCardComponent,
   ],
   imports: [
     BrowserModule,

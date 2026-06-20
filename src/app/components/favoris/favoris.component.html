@@ -16,47 +16,12 @@
   </div>
 
   <div class="annonces-grid" *ngIf="!loading && favoris.length > 0">
-
-    <div *ngFor="let f of favoris" class="annonce-card-wrapper">
-      <a [routerLink]="['/annonces', f.id_annonce]" class="annonce-card">
-
-        <div class="card-image">
-          <img [src]="getPhotoUrl(f)" [alt]="f.marque_nom + ' ' + f.modele_nom">
-          <span class="card-badge" *ngIf="f.premiere_main">1ère main</span>
-          <span class="card-badge-energy" *ngIf="f.carburant" [ngClass]="getCarburantClass(f.carburant)">
-            {{ f.carburant }}
-          </span>
-          <div class="card-price-overlay">{{ formatPrix(f.prix) }}</div>
-        </div>
-
-        <div class="card-body">
-          <h3 class="card-title">{{ f.marque_nom }} {{ f.modele_nom }}</h3>
-          <p class="card-version">{{ f.version_nom }}</p>
-
-          <div class="card-specs">
-            <span>{{ f.annee_circulation }}</span>
-            <span>{{ formatKm(f.kilometrage) }}</span>
-            <span *ngIf="f.boite_vitesse">{{ f.boite_vitesse }}</span>
-            <span *ngIf="f.transmission">{{ f.transmission }}</span>
-            <span *ngIf="f.etat" class="spec-etat">{{ f.etat }}</span>
-          </div>
-
-          <div class="card-footer">
-            <span class="card-location" *ngIf="f.localisation">📍 {{ f.localisation }}</span>
-            <span class="card-seller" *ngIf="f.vendeur_prenom">
-              {{ f.vendeur_display }}
-              <span *ngIf="f.vendeur_note" class="seller-note">★ {{ f.vendeur_note }}/5</span>
-            </span>
-          </div>
-        </div>
-
-      </a>
-
-      <button class="btn-retirer" (click)="retirer(f.id_annonce, $event)" title="Retirer des favoris">
-        ♥ Retirer
-      </button>
-    </div>
-
+    <app-annonce-card *ngFor="let f of favoris"
+                      [annonce]="f"
+                      [isLoggedIn]="true"
+                      [isFavori]="true"
+                      (toggleFavori)="retirer($event)">
+    </app-annonce-card>
   </div>
 
 </div>

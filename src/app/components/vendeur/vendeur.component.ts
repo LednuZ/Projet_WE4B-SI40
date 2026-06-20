@@ -43,22 +43,6 @@ export class VendeurComponent implements OnInit {
     });
   }
 
-  getPhotoUrl(annonce: any): string {
-    return annonce.photo_principale
-      ? 'http://localhost:8000' + annonce.photo_principale
-      : 'assets/no-photo.svg';
-  }
-
-  formatPrix(prix: number): string {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency', currency: 'EUR', maximumFractionDigits: 0
-    }).format(prix);
-  }
-
-  formatKm(km: number): string {
-    return new Intl.NumberFormat('fr-FR').format(km) + ' km';
-  }
-
   formatDate(date: string): string {
     return new Date(date).toLocaleDateString('fr-FR', {
       day: '2-digit', month: 'long', year: 'numeric'
@@ -70,13 +54,5 @@ export class VendeurComponent implements OnInit {
       admin: 'Administrateur', particulier: 'Particulier', entreprise: 'Professionnel'
     };
     return map[role] || role;
-  }
-
-  getCarburantClass(carburant: string): string {
-    const c = (carburant ?? '').toLowerCase();
-    if (c.includes('électr') || c.includes('electr')) return 'energy-elec';
-    if (c.includes('hybride'))                          return 'energy-hybrid';
-    if (c.includes('diesel'))                           return 'energy-diesel';
-    return 'energy-essence';
   }
 }

@@ -38,31 +38,10 @@
       </div>
 
       <div class="annonces-grid" *ngIf="annonces.length > 0">
-        <a *ngFor="let a of annonces"
-           [routerLink]="['/annonces', a.id_annonce]"
-           class="annonce-card">
-
-          <div class="card-image">
-            <img [src]="getPhotoUrl(a)" [alt]="a.marque_nom + ' ' + a.modele_nom">
-            <span class="card-badge-energy" *ngIf="a.carburant" [ngClass]="getCarburantClass(a.carburant)">
-              {{ a.carburant }}
-            </span>
-            <div class="card-price-overlay">{{ formatPrix(a.prix) }}</div>
-          </div>
-
-          <div class="card-body">
-            <h3>{{ a.marque_nom }} {{ a.modele_nom }}</h3>
-            <p class="card-version">{{ a.version_nom }}</p>
-            <div class="card-specs">
-              <span>{{ a.annee_circulation }}</span>
-              <span>{{ formatKm(a.kilometrage) }}</span>
-              <span *ngIf="a.boite_vitesse">{{ a.boite_vitesse }}</span>
-              <span *ngIf="a.etat">{{ a.etat }}</span>
-            </div>
-            <p class="card-location" *ngIf="a.localisation">📍 {{ a.localisation }}</p>
-          </div>
-
-        </a>
+        <app-annonce-card *ngFor="let a of annonces"
+                          [annonce]="a"
+                          [isLoggedIn]="false">
+        </app-annonce-card>
       </div>
     </section>
 
