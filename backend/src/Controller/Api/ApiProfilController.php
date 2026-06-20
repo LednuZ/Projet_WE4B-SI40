@@ -22,6 +22,7 @@ class ApiProfilController extends AbstractController
 
         return $this->json([
             'id_utilisateur'   => $user->getId(),
+            'username'         => $user->getUsername(),
             'nom'              => $user->getNom(),
             'prenom'           => $user->getPrenom(),
             'email'            => $user->getEmail(),
@@ -59,14 +60,24 @@ class ApiProfilController extends AbstractController
             }
         }
 
-        $stmt = $pdo->prepare(
-            'UPDATE utilisateur SET nom = ?, prenom = ?, email = ?, numero_phone = ? WHERE id_utilisateur = ?'
-        );
-        $stmt->execute([
-            $data['nom'],
-            $data['prenom'],
-            $data['email'],
-            $data['numero_phone'] ?? null,
+        $username = isset($data['username']) ? trim($data['username']) : null;
+        if ($username !== null && $username !== '' && $username !== $user->getUsername()) {
+            if (strlen($username) < 3 || strlen($username) > 50) {
+                return $this->json(['message' => 'Le nom d\'utilisateur doit contenir entre 3 et 50 caractères'], 400);
+            }
+            $stmt = $pdo->prepare('SELECT id_utilisateur FROM utilisateur WHERE username = ? AND id_utilisateur != ?');
+            $stmt->execute([$username, $user->getId()]);
+            if ($stmt->fetch()) {
+                return $this->json(['message' => 'Ce nom d\'utilisateur est déjà pris'], 409);
+            }
+        }
+        if ($username === '') $username = null;
+
+        $pdo->prepare(
+            'UPDATE utilisateur SET nom = ?, prenom = ?, username = ?, email = ?, numero_phone = ? WHERE id_utilisateur = ?'
+        )->execute([
+            $data['nom'], $data['prenom'], $username,
+            $data['email'], $data['numero_phone'] ?? null,
             $user->getId(),
         ]);
 

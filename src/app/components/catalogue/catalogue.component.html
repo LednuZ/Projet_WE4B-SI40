@@ -113,7 +113,7 @@
         </div>
 
         <div class="card-seller" *ngIf="annonce.vendeur_prenom">
-          {{ annonce.vendeur_prenom }} {{ annonce.vendeur_nom }}
+          {{ annonce.vendeur_display }}
           <span *ngIf="annonce.vendeur_note" class="seller-stars">★ {{ annonce.vendeur_note }}/5</span>
         </div>
       </div>

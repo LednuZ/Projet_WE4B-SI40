@@ -15,6 +15,7 @@ class FavorisRepository
             mo.nom AS modele_nom,
             t.nom  AS type_nom,
             ma.nom AS marque_nom,
+            COALESCE(NULLIF(u.username,""), CONCAT(u.prenom," ",u.nom)) AS vendeur_display,
             u.prenom AS vendeur_prenom, u.nom AS vendeur_nom,
             (SELECT ROUND(AVG(au.note), 1) FROM avis_utilisateur au WHERE au.id_vendeur = u.id_utilisateur) AS vendeur_note,
             (SELECT url_photo FROM photo p WHERE p.id_annonce = a.id_annonce ORDER BY p.id_photo LIMIT 1) AS photo_principale,

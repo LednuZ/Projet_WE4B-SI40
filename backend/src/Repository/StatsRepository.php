@@ -257,6 +257,7 @@ class StatsRepository
     {
         $stmt = $this->db->getConnection()->prepare('
             SELECT a.id_avis_utilisateur, a.note, a.contenu, a.date_avis,
+                   COALESCE(NULLIF(u.username,""), CONCAT(u.prenom," ",u.nom)) AS redacteur_display,
                    u.nom AS redacteur_nom, u.prenom AS redacteur_prenom
             FROM avis_utilisateur a
             JOIN utilisateur u ON u.id_utilisateur = a.id_redacteur

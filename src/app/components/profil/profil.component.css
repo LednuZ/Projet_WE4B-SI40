@@ -48,6 +48,12 @@
 .info-details h2 {
   font-size: 22px;
   color: #1a2744;
+  margin: 0 0 2px;
+}
+
+.info-real-name {
+  font-size: 13px;
+  color: #999;
   margin: 0 0 6px;
 }
 

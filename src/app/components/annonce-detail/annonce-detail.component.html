@@ -106,7 +106,7 @@
         <div class="seller-info">
           <h3>
             <a [routerLink]="['/vendeur', annonce.vendeur_id]" class="vendeur-link">
-              {{ annonce.vendeur_prenom }} {{ annonce.vendeur_nom }}
+              {{ annonce.vendeur_display }}
             </a>
           </h3>
           <div class="seller-note-line" *ngIf="avisVendeur.stats?.note_moyenne">
@@ -151,7 +151,7 @@
           <div class="avis-item" *ngFor="let a of avisVendeur.avis | slice:0:3">
             <div class="avis-item-header">
               <div>
-                <span class="avis-auteur">{{ a.redacteur_prenom }} {{ a.redacteur_nom }}</span>
+                <span class="avis-auteur">{{ a.redacteur_display }}</span>
                 <app-star-rating [rating]="a.note" [editable]="false"></app-star-rating>
               </div>
               <span class="avis-date">{{ a.date_avis | date:'dd/MM/yyyy' }}</span>
@@ -333,7 +333,7 @@
       <div class="avis-item" *ngFor="let a of avisModele.avis | slice:0:3">
         <div class="avis-item-header">
           <div>
-            <span class="avis-auteur">{{ a.redacteur_prenom }} {{ a.redacteur_nom }}</span>
+            <span class="avis-auteur">{{ a.redacteur_display }}</span>
             <app-star-rating [rating]="a.note" [editable]="false"></app-star-rating>
           </div>
           <span class="avis-date">{{ a.date_avis | date:'dd/MM/yyyy' }}</span>

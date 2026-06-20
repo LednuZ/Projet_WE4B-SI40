@@ -13,6 +13,7 @@ class MessagerieRepository
         $sql = '
             SELECT
                 u.id_utilisateur AS interlocuteur_id,
+                COALESCE(NULLIF(u.username,""), CONCAT(u.prenom," ",u.nom)) AS display_name,
                 u.nom,
                 u.prenom,
                 u.email,
@@ -76,7 +77,7 @@ class MessagerieRepository
     public function findUtilisateur(int $id): ?array
     {
         $stmt = $this->db->getConnection()->prepare(
-            'SELECT id_utilisateur, nom, prenom, email FROM utilisateur WHERE id_utilisateur = :id'
+            'SELECT id_utilisateur, COALESCE(NULLIF(username,""), CONCAT(prenom," ",nom)) AS display_name, nom, prenom, email FROM utilisateur WHERE id_utilisateur = :id'
         );
         $stmt->execute(['id' => $id]);
         return $stmt->fetch() ?: null;

@@ -85,6 +85,7 @@ export interface Annonce {
 
   // Vendeur
   vendeur_id?: number;
+  vendeur_display?: string;
   vendeur_prenom?: string;
   vendeur_nom?: string;
   vendeur_note?: number;

@@ -44,7 +44,7 @@
           <div class="card-footer">
             <span class="card-location" *ngIf="f.localisation">📍 {{ f.localisation }}</span>
             <span class="card-seller" *ngIf="f.vendeur_prenom">
-              {{ f.vendeur_prenom }} {{ f.vendeur_nom }}
+              {{ f.vendeur_display }}
               <span *ngIf="f.vendeur_note" class="seller-note">★ {{ f.vendeur_note }}/5</span>
             </span>
           </div>

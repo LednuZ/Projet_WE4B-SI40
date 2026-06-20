@@ -19,6 +19,7 @@ export class RegisterComponent implements OnInit {
     this.registerForm = this.formBuilder.group({
       nom: ['', [Validators.required]],
       prenom: ['', [Validators.required]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       numero_phone: [''],
       role: ['particulier', [Validators.required]],
@@ -43,8 +44,8 @@ export class RegisterComponent implements OnInit {
       return;
     }
     this.loading = true;
-    const { nom, prenom, email, numero_phone, role, password } = this.registerForm.value;
-    this.http.post<any>(`${this.apiUrl}/auth/register`, { nom, prenom, email, numero_phone, role, mdp: password }).subscribe({
+    const { nom, prenom, username, email, numero_phone, role, password } = this.registerForm.value;
+    this.http.post<any>(`${this.apiUrl}/auth/register`, { nom, prenom, username, email, numero_phone, role, mdp: password }).subscribe({
       next: () => {
         this.router.navigate(['/login']);
       },

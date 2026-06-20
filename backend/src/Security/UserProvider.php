@@ -48,6 +48,7 @@ class UserProvider implements UserProviderInterface
         $user->setEmail($row['email']);
         $user->setMdp($row['mdp']);
         $user->setRole($row['role']);
+        $user->setUsername($row['username'] ?? null);
         $user->setNumeroPhone($row['numero_phone']);
         $user->setDateInscription(new \DateTime($row['date_inscription']));
         return $user;
