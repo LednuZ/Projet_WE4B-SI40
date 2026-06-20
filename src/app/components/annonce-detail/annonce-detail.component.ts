@@ -155,7 +155,7 @@ export class AnnonceDetailComponent implements OnInit {
     return new Intl.NumberFormat('fr-FR').format(km) + ' km';
   }
 
-  goBack(): void { this.router.navigate(['/']); }
+  goBack(): void { this.router.navigate(['/annonces']); }
 
   contacterVendeur(): void {
     if (!this.authService.isLoggedIn()) { this.router.navigate(['/login']); return; }

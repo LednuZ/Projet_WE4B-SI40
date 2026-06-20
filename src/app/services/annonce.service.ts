@@ -11,6 +11,8 @@ import { FileMetadataService } from './file-metadata.service';
 export class AnnonceService {
 
   private apiUrl = 'http://localhost:8000/api/annonces';
+  public lastFilters: any = null;
+  public lastSort: string = 'recent';
 
   constructor(private http: HttpClient, private logService: LogService, private fileMeta: FileMetadataService) {}
 

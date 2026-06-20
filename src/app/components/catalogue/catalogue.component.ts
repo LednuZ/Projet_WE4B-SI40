@@ -39,12 +39,17 @@ export class CatalogueComponent implements OnInit {
   ngOnInit(): void {
     this.loadMarques();
     
+    // Check if we have saved filters in the service
+    if (this.annonceService.lastFilters) {
+      this.filters = { ...this.annonceService.lastFilters };
+      this.sort = this.annonceService.lastSort;
+    }
+
     // Subscribe to query parameters to catch searches from the homepage
     this.route.queryParams.subscribe(params => {
       if (params['marque_id']) {
         this.filters.marque_id = Number(params['marque_id']);
-      } else {
-        this.filters.marque_id = '';
+        this.annonceService.lastFilters = { ...this.filters };
       }
       this.loadAnnonces();
     });
@@ -74,8 +79,16 @@ export class CatalogueComponent implements OnInit {
     });
   }
 
-  onFilterChange(): void  { this.loadAnnonces(); }
-  onSortChange(s: string): void { this.sort = s; this.loadAnnonces(); }
+  onFilterChange(): void  { 
+    this.annonceService.lastFilters = { ...this.filters };
+    this.loadAnnonces(); 
+  }
+  
+  onSortChange(s: string): void { 
+    this.sort = s; 
+    this.annonceService.lastSort = s;
+    this.loadAnnonces(); 
+  }
 
   resetFilters(): void {
     this.filters = {
@@ -88,6 +101,8 @@ export class CatalogueComponent implements OnInit {
       carburant: ''
     };
     this.sort = 'recent';
+    this.annonceService.lastFilters = null;
+    this.annonceService.lastSort = 'recent';
     this.loadAnnonces();
   }
 
