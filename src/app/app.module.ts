@@ -11,6 +11,7 @@ import { ProfilComponent } from './components/profil/profil.component';
 import { MessagerieComponent } from './components/messagerie/messagerie.component';
 import { AvisComponent } from './components/avis/avis.component';
 import { DashboardAdminComponent } from './components/dashboard-admin/dashboard-admin.component';
+import { AdminCatalogueComponent } from './components/dashboard-admin/admin-catalogue/admin-catalogue.component';
 import { VitrineComponent } from './vitrine/vitrine.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -38,6 +39,7 @@ import { RangeSliderComponent } from './components/shared/range-slider/range-sli
     MessagerieComponent,
     AvisComponent,
     DashboardAdminComponent,
+    AdminCatalogueComponent,
     FooterComponent,
     MesAnnoncesComponent,
     VitrineComponent,

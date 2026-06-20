@@ -2,20 +2,20 @@
   background: #fff;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
-  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.02);
+  border: 1px solid rgba(226, 232, 240, 0.7);
   text-decoration: none;
   color: inherit;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
 .annonce-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-  border-color: #e2e8f0;
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 .card-image {
@@ -30,11 +30,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .annonce-card:hover .card-image img {
-  transform: scale(1.02);
+  transform: scale(1.05);
 }
 
 .card-badges {
@@ -200,4 +200,32 @@
 .star-icon {
   width: 14px;
   height: 14px;
+}
+
+@media (max-width: 768px) {
+  .card-title {
+    font-size: 19.5px;
+  }
+  .card-version {
+    font-size: 14px;
+  }
+  .spec-tag {
+    font-size: 13px;
+    padding: 4px 10px;
+  }
+  .card-price-overlay {
+    font-size: 22px;
+    padding: 30px 14px 12px;
+  }
+  .card-location {
+    font-size: 14px;
+  }
+  .card-badge {
+    font-size: 12px;
+    padding: 4px 12px;
+  }
+  .card-badge-energy {
+    font-size: 11.5px;
+    padding: 4px 10px;
+  }
 }

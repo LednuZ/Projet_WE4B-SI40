@@ -404,14 +404,50 @@
 /* Responsive */
 @media (max-width: 768px) {
   .hero {
-    padding: 60px 20px;
+    padding: 70px 20px;
   }
   
   .hero h1 {
-    font-size: 32px;
+    font-size: 38px;
+    letter-spacing: -1px;
   }
 
   .hero p {
+    font-size: 18px;
+    margin-bottom: 28px;
+  }
+
+  .search-bar-hero {
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .search-input-wrapper {
+    width: 100%;
+    padding-left: 6px;
+  }
+
+  .search-input {
+    font-size: 16.5px;
+  }
+
+  .suggestions-list {
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .suggestions-list li {
+    font-size: 16px;
+    padding: 12px 18px;
+  }
+
+  .btn-search-hero {
+    width: 100%;
+    padding: 14px;
     font-size: 16px;
   }
 
@@ -421,6 +457,15 @@
 
   .stat-card {
     min-width: 100%;
+    padding: 24px 20px;
+  }
+
+  .stat-number {
+    font-size: 38px;
+  }
+
+  .stat-label {
+    font-size: 15px;
   }
 
   .steps-grid {
@@ -431,6 +476,15 @@
   .step-card {
     max-width: 100%;
     width: 100%;
+    padding: 28px 24px;
+  }
+
+  .step-card h3 {
+    font-size: 21px;
+  }
+
+  .step-card p {
+    font-size: 16px;
   }
 
   .section-header {
@@ -440,7 +494,11 @@
   }
 
   .header-left h2 {
-    font-size: 26px;
+    font-size: 28px;
+  }
+
+  .link-all {
+    font-size: 16px;
   }
 
   .annonces-grid {

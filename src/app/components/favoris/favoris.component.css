@@ -58,6 +58,6 @@
   gap: 20px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .annonces-grid { grid-template-columns: 1fr; }
 }

@@ -13,6 +13,7 @@ import { MessageService } from '../../services/message.service';
 export class HeaderComponent implements OnInit, OnDestroy {
 
   nonLus = 0;
+  isMenuOpen = false;
   private sub = new Subscription();
 
   constructor(
@@ -21,6 +22,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private messageService: MessageService
   ) {}
 
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
   ngOnInit(): void {
     this.chargerNonLus();
 
@@ -28,7 +33,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.sub.add(
       this.router.events.pipe(
         filter(e => e instanceof NavigationEnd)
-      ).subscribe(() => this.chargerNonLus())
+      ).subscribe(() => {
+        this.chargerNonLus();
+        this.isMenuOpen = false;
+      })
     );
   }
 

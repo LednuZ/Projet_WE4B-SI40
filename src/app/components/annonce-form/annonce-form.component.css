@@ -6,9 +6,10 @@
 
 .form-card {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 40px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px rgba(26, 39, 68, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .form-card h2 {

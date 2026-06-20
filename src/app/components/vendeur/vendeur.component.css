@@ -177,7 +177,7 @@
 .avis-contenu { font-size: 14px; color: #444; margin: 0; line-height: 1.6; }
 .avis-contenu.vide { color: #bbb; }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .profil-header { flex-direction: column; align-items: flex-start; }
   .annonces-grid { grid-template-columns: 1fr; }
 }

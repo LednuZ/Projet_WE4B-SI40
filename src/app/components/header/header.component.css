@@ -241,3 +241,252 @@
 .animate-spin-slow:hover {
   animation: spin-slow 8s linear infinite;
 }
+
+/* Hide mobile labels on desktop */
+.mobile-nav-label {
+  display: none;
+}
+
+.nav-menu-wrapper {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  width: auto;
+}
+
+/* Toggler button for mobile */
+.navbar-toggler {
+  display: none;
+  background: transparent;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  z-index: 1010;
+  border-radius: 0;
+  transition: opacity 0.2s;
+}
+
+.navbar-toggler:hover {
+  background: transparent;
+  opacity: 0.8;
+}
+
+.toggler-icon {
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  background: #1a2744;
+  position: relative;
+  transition: background 0.2s ease;
+}
+
+.toggler-icon::before,
+.toggler-icon::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  background: #1a2744;
+  position: absolute;
+  left: 0;
+  transition: transform 0.2s ease, top 0.2s ease;
+}
+
+.toggler-icon::before {
+  top: -7px;
+}
+
+.toggler-icon::after {
+  top: 7px;
+}
+
+/* Open states for toggler */
+.toggler-icon.open {
+  background: transparent;
+}
+
+.toggler-icon.open::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.toggler-icon.open::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+
+@media (max-width: 992px) {
+  .navbar-toggler {
+    display: block;
+  }
+
+  .nav-content {
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 16px;
+  }
+
+  .nav-menu-wrapper {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 2px solid rgba(26, 39, 68, 0.06);
+    display: none;
+    flex-direction: column;
+    padding: 24px;
+    gap: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+  }
+
+  .nav-menu-wrapper.active {
+    display: flex;
+    animation: slideDownMenu 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes slideDownMenu {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .nav-menu {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .nav-menu.user-menu {
+    margin-top: 20px !important;
+    padding-top: 20px;
+    border-top: 1px solid rgba(229, 231, 235, 0.8);
+  }
+
+  .nav-link-custom {
+    font-size: 18.5px;
+    font-weight: 600;
+    padding: 14px 20px;
+    width: 100%;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid rgba(26, 39, 68, 0.03);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-link-custom:hover {
+    color: #1e3a8a;
+    background: rgba(30, 58, 138, 0.08);
+  }
+
+  .nav-icon {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  /* Sell button styling on mobile */
+  .sell-button {
+    background: linear-gradient(135deg, #f97316, #ea580c) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
+  }
+
+  .sell-button:hover {
+    background: linear-gradient(135deg, #ea580c, #c2410c) !important;
+  }
+
+  .sell-button .nav-icon {
+    color: #ffffff !important;
+  }
+
+  /* Auth Buttons in mobile */
+  .login-btn {
+    background: #ffffff !important;
+    border: 1.5px solid #d1d5db !important;
+    color: #374151 !important;
+  }
+
+  .register-btn {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6) !important;
+    color: #ffffff !important;
+    border: none !important;
+  }
+
+  .logout-btn {
+    color: #ef4444 !important;
+    background: #fef2f2 !important;
+    border: 1px solid #fca5a5 !important;
+  }
+
+  .logout-btn:hover {
+    background: #fee2e2 !important;
+  }
+
+  /* Account menu buttons on mobile */
+  .icon-btn-custom {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    padding: 14px 20px;
+    gap: 12px;
+    color: #4b5563;
+    background: #f8fafc;
+    border: 1px solid rgba(26, 39, 68, 0.03);
+    box-sizing: border-box;
+  }
+
+  .icon-btn-custom:hover {
+    color: #1e3a8a;
+    background: rgba(30, 58, 138, 0.05);
+    transform: none;
+  }
+
+  .icon-svg-custom {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .mobile-nav-label {
+    display: inline !important;
+    font-size: 18.5px;
+    font-weight: 600;
+  }
+
+  .badge-custom {
+    position: static;
+    display: inline-flex;
+    margin-left: auto;
+    box-shadow: none;
+    font-size: 13px;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 6px;
+  }
+
+  /* Pro & Admin badges */
+  .admin-link-custom {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 18.5px;
+    box-sizing: border-box;
+    gap: 12px;
+  }
+}
