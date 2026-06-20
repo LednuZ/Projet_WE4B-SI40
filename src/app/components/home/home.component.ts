@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AnnonceService } from '../../services/annonce.service';
 import { Annonce } from '../../models/annonce.model';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -10,11 +12,17 @@ import { Annonce } from '../../models/annonce.model';
 export class HomeComponent implements OnInit {
 
   annoncesRecentes: Annonce[] = [];
+  marques: any[] = [];
+  selectedMarqueId: string = '';
   loading: boolean = true;
 
-  constructor(private annonceService: AnnonceService) {}
+  constructor(
+    private annonceService: AnnonceService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    // Load recent announcements
     this.annonceService.getAnnonces({}, 'recent').subscribe({
       next: (data) => {
         this.annoncesRecentes = data.slice(0, 6);
@@ -22,6 +30,22 @@ export class HomeComponent implements OnInit {
       },
       error: () => this.loading = false
     });
+
+    // Load brands for search
+    this.annonceService.getMarques().subscribe({
+      next: (data) => {
+        this.marques = data;
+      },
+      error: () => {}
+    });
+  }
+
+  triggerSearch(): void {
+    if (this.selectedMarqueId) {
+      this.router.navigate(['/annonces'], { queryParams: { marque_id: this.selectedMarqueId } });
+    } else {
+      this.router.navigate(['/annonces']);
+    }
   }
 
   getPhotoUrl(annonce: any): string {

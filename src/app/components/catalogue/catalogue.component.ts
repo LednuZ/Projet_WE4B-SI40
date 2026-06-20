@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { AnnonceService } from '../../services/annonce.service';
 import { AuthService } from '../../services/auth.service';
 import { FavoriService } from '../../services/favori.service';
@@ -26,12 +27,23 @@ export class CatalogueComponent implements OnInit {
   constructor(
     private annonceService: AnnonceService,
     public authService: AuthService,
-    private favoriService: FavoriService
+    private favoriService: FavoriService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.loadMarques();
-    this.loadAnnonces();
+    
+    // Subscribe to query parameters to catch searches from the homepage
+    this.route.queryParams.subscribe(params => {
+      if (params['marque_id']) {
+        this.filters.marque_id = Number(params['marque_id']);
+      } else {
+        this.filters.marque_id = '';
+      }
+      this.loadAnnonces();
+    });
+
     if (this.authService.isLoggedIn()) {
       this.favoriService.getFavoris().subscribe({
         next: (favs: any[]) => {

@@ -1,46 +1,98 @@
 <!-- Hero -->
 <section class="hero">
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
   <div class="hero-content">
     <h1>Trouvez votre prochaine voiture sur <span class="brand">AutoMarket</span></h1>
     <p>Des milliers d'annonces de véhicules d'occasion vérifiées par notre communauté.</p>
-    <a routerLink="/annonces" class="btn-hero">Voir les annonces</a>
+    
+    <!-- Quick Search Bar -->
+    <div class="search-bar-hero">
+      <div class="search-select-wrapper">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <select [(ngModel)]="selectedMarqueId" class="search-select">
+          <option value="">Quelle marque recherchez-vous ?</option>
+          <option *ngFor="let marque of marques" [value]="marque.id_marque">{{ marque.nom }}</option>
+        </select>
+      </div>
+      <button class="btn-search-hero" (click)="triggerSearch()">
+        <span>Trouver</span>
+      </button>
+    </div>
+
+    <a routerLink="/annonces" class="btn-hero">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+        <circle cx="7" cy="17" r="2"/>
+        <path d="M9 17h6"/>
+        <circle cx="17" cy="17" r="2"/>
+      </svg>
+      <span>Voir les annonces</span>
+    </a>
   </div>
 </section>
 
 <!-- Stats -->
 <section class="stats-bar">
-  <div class="stat">
-    <span class="stat-number">{{ annoncesRecentes.length }}+</span>
-    <span class="stat-label">Annonces en ligne</span>
-  </div>
-  <div class="stat">
-    <span class="stat-number">100%</span>
-    <span class="stat-label">Gratuit</span>
-  </div>
-  <div class="stat">
-    <span class="stat-number">24/7</span>
-    <span class="stat-label">Disponible</span>
+  <div class="stats-container">
+    <div class="stat-card">
+      <span class="stat-number">{{ annoncesRecentes.length || 0 }}+</span>
+      <span class="stat-label">Annonces en ligne</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">100%</span>
+      <span class="stat-label">Gratuit & sans frais</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">24h/24</span>
+      <span class="stat-label">Service client & audit</span>
+    </div>
   </div>
 </section>
 
 <!-- Comment ça marche -->
 <section class="how-it-works">
-  <h2>Comment ça marche ?</h2>
-  <div class="steps">
-    <div class="step">
-      <div class="step-icon">🔍</div>
-      <h3>Cherchez</h3>
-      <p>Parcourez nos annonces et utilisez les filtres pour trouver le véhicule idéal.</p>
-    </div>
-    <div class="step">
-      <div class="step-icon">💬</div>
-      <h3>Contactez</h3>
-      <p>Échangez directement avec le vendeur via notre messagerie intégrée.</p>
-    </div>
-    <div class="step">
-      <div class="step-icon">🚗</div>
-      <h3>Achetez</h3>
-      <p>Rencontrez le vendeur, vérifiez le véhicule et concluez la vente en toute sérénité.</p>
+  <div class="container-custom">
+    <h2>Comment ça marche ?</h2>
+    <div class="steps-grid">
+      
+      <div class="step-card">
+        <div class="step-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <h3>1. Recherchez</h3>
+        <p>Parcourez nos annonces vérifiées et utilisez nos filtres intelligents pour dénicher le véhicule parfait.</p>
+      </div>
+      
+      <div class="step-card">
+        <div class="step-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <h3>2. Échangez</h3>
+        <p>Discutez directement en toute sécurité avec le vendeur ou l'acheteur depuis notre messagerie instantanée.</p>
+      </div>
+      
+      <div class="step-card">
+        <div class="step-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13" rx="2" ry="2"/>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <h3>3. Achetez</h3>
+        <p>Rencontrez le vendeur, essayez le véhicule et finalisez la transaction en toute sérénité.</p>
+      </div>
+      
     </div>
   </div>
 </section>
@@ -48,12 +100,22 @@
 <!-- Annonces récentes -->
 <section class="recent-section">
   <div class="section-header">
-    <h2>Annonces récentes</h2>
-    <a routerLink="/annonces" class="link-all">Voir toutes les annonces →</a>
+    <div class="header-left">
+      <span class="sub-title">Le marché en direct</span>
+      <h2>Dernières opportunités</h2>
+    </div>
+    <a routerLink="/annonces" class="link-all">
+      <span>Toutes les annonces</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </a>
   </div>
 
-  <div class="loading" *ngIf="loading">
-    <p>Chargement...</p>
+  <div class="loading-wrapper" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Chargement des opportunités...</p>
   </div>
 
   <div class="annonces-grid" *ngIf="!loading">
@@ -63,28 +125,40 @@
 
       <div class="card-image">
         <img [src]="getPhotoUrl(annonce)" [alt]="annonce.marque_nom + ' ' + annonce.modele_nom">
-        <span class="card-badge" *ngIf="annonce.premiere_main">1ère main</span>
-        <span class="card-badge-energy" *ngIf="annonce.carburant"
-              [ngClass]="getCarburantClass(annonce.carburant)">
-          {{ annonce.carburant }}
-        </span>
+        <div class="card-badges">
+          <span class="card-badge" *ngIf="annonce.premiere_main">1ère main</span>
+          <span class="card-badge-energy" *ngIf="annonce.carburant" [ngClass]="getCarburantClass(annonce.carburant)">
+            {{ annonce.carburant }}
+          </span>
+        </div>
         <div class="card-price-overlay">{{ formatPrix(annonce.prix) }}</div>
       </div>
 
       <div class="card-body">
-        <h3>{{ annonce.marque_nom }} {{ annonce.modele_nom }}</h3>
-        <p class="card-version">{{ annonce.version_nom }}</p>
+        <h3 class="card-title">{{ annonce.marque_nom }} <span class="text-primary-gradient">{{ annonce.modele_nom }}</span></h3>
+        <p class="card-version">{{ annonce.version_nom || 'Modèle Standard' }}</p>
+        
         <div class="card-specs">
-          <span>{{ annonce.annee_circulation }}</span>
-          <span>{{ formatKm(annonce.kilometrage) }}</span>
-          <span *ngIf="annonce.puissance_DIN">{{ annonce.puissance_DIN }} ch</span>
-          <span *ngIf="annonce.boite_vitesse">{{ annonce.boite_vitesse }}</span>
-          <span *ngIf="annonce.transmission">{{ annonce.transmission }}</span>
-          <span *ngIf="annonce.etat">{{ annonce.etat }}</span>
+          <span class="spec-tag">{{ annonce.annee_circulation }}</span>
+          <span class="spec-tag">{{ formatKm(annonce.kilometrage) }}</span>
+          <span class="spec-tag" *ngIf="annonce.puissance_DIN">{{ annonce.puissance_DIN }} ch</span>
+          <span class="spec-tag" *ngIf="annonce.boite_vitesse">{{ annonce.boite_vitesse }}</span>
         </div>
+        
         <div class="card-footer-home">
-          <span class="card-location" *ngIf="annonce.localisation">📍 {{ annonce.localisation }}</span>
-          <span class="seller-note" *ngIf="annonce.vendeur_note">★ {{ annonce.vendeur_note }}/5</span>
+          <span class="card-location" *ngIf="annonce.localisation">
+            <svg class="location-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>{{ annonce.localisation }}</span>
+          </span>
+          <span class="seller-note" *ngIf="annonce.vendeur_note">
+            <svg class="star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <span>{{ annonce.vendeur_note }}/5</span>
+          </span>
         </div>
       </div>
 
@@ -92,9 +166,18 @@
   </div>
 </section>
 
-<!-- CTA -->
+<!-- CTA Section -->
 <section class="cta-section">
-  <h2>Vous vendez votre véhicule ?</h2>
-  <p>Publiez votre annonce gratuitement et touchez des milliers d'acheteurs potentiels.</p>
-  <a routerLink="/annonces/new" class="btn-cta">Publier une annonce</a>
+  <div class="cta-glow"></div>
+  <div class="cta-container">
+    <h2>Vous vendez votre véhicule ?</h2>
+    <p>Publiez votre annonce gratuitement et touchez des milliers d'acheteurs qualifiés à travers le pays.</p>
+    <a routerLink="/annonces/new" class="btn-cta">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      <span>Publier une annonce</span>
+    </a>
+  </div>
 </section>
