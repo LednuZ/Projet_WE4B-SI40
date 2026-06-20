@@ -1,66 +1,89 @@
 <div class="auth-container">
   <div class="auth-card">
-    <h2>Inscription</h2>
 
-    <div class="error-message" *ngIf="errorMessage">
-      {{ errorMessage }}
+    <div class="auth-brand">
+      <a routerLink="/"><img src="assets/automarket_logo.svg" alt="AutoMarket" class="auth-logo-img"></a>
     </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="nom">Nom</label>
-        <input type="text" id="nom" formControlName="nom" placeholder="Votre nom">
-        <small *ngIf="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched" style="color:red">Le nom est requis</small>
-      </div>
+    <h2>Créer un compte</h2>
+    <p class="auth-subtitle">Rejoignez la communauté AutoMarket</p>
 
-      <div class="form-group">
-        <label for="prenom">Prénom</label>
-        <input type="text" id="prenom" formControlName="prenom" placeholder="Votre prénom">
-        <small *ngIf="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched" style="color:red">Le prénom est requis</small>
+    <div class="alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="prenom">Prénom *</label>
+          <input type="text" id="prenom" formControlName="prenom" placeholder="Jean">
+          <span class="field-error" *ngIf="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched">
+            Le prénom est requis
+          </span>
+        </div>
+        <div class="form-group">
+          <label for="nom">Nom *</label>
+          <input type="text" id="nom" formControlName="nom" placeholder="Dupont">
+          <span class="field-error" *ngIf="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched">
+            Le nom est requis
+          </span>
+        </div>
       </div>
 
       <div class="form-group">
         <label for="username">Nom d'utilisateur ou d'entreprise *</label>
-        <input type="text" id="username" formControlName="username" placeholder="Affiché sur le site (ex: GarageMartin)" required>
-        <small *ngIf="registerForm.get('username')?.errors?.['required'] && registerForm.get('username')?.touched" style="color:red">Le nom d'utilisateur est requis</small>
-        <small *ngIf="registerForm.get('username')?.errors?.['minlength'] && registerForm.get('username')?.touched" style="color:red">3 caractères minimum</small>
-        <small style="color:#777; font-size:11px">Visible par les autres utilisateurs · vous pouvez mettre le nom de votre entreprise</small>
+        <input type="text" id="username" formControlName="username" placeholder="Ex : GarageMartin, JeanAuto…" required>
+        <span class="field-error" *ngIf="registerForm.get('username')?.errors?.['required'] && registerForm.get('username')?.touched">
+          Ce champ est obligatoire
+        </span>
+        <span class="field-error" *ngIf="registerForm.get('username')?.errors?.['minlength'] && registerForm.get('username')?.touched">
+          3 caractères minimum
+        </span>
+        <span class="field-hint">Visible par les autres utilisateurs · vous pouvez mettre le nom de votre entreprise</span>
       </div>
 
       <div class="form-group">
         <label for="role">Vous êtes</label>
         <select id="role" formControlName="role">
           <option value="particulier">Particulier</option>
-          <option value="entreprise">Professionnel</option>
+          <option value="entreprise">Professionnel / Entreprise</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" formControlName="email" placeholder="Votre email">
-        <small *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" style="color:red">Email invalide</small>
+        <label for="email">Adresse email *</label>
+        <input type="email" id="email" formControlName="email" placeholder="jean@exemple.fr">
+        <span class="field-error" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+          Adresse email invalide
+        </span>
       </div>
 
-      <div class="form-group">
-        <label for="mdp">Mot de passe</label>
-        <input type="password" id="mdp" formControlName="password" placeholder="••••••">
-        <small *ngIf="registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched" style="color:red">8 caractères minimum</small>
-        <small *ngIf="registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.touched" style="color:red">Le mot de passe est requis</small>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label for="mdp">Mot de passe *</label>
+          <input type="password" id="mdp" formControlName="password" placeholder="8 caractères minimum">
+          <span class="field-error" *ngIf="registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.touched">
+            Requis
+          </span>
+          <span class="field-error" *ngIf="registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched">
+            8 caractères minimum
+          </span>
+        </div>
+        <div class="form-group">
+          <label for="confirmMdp">Confirmer *</label>
+          <input type="password" id="confirmMdp" formControlName="confirmPassword" placeholder="Répétez le mot de passe">
+          <span class="field-error" *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched">
+            Les mots de passe ne correspondent pas
+          </span>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="confirmMdp">Confirmer le mot de passe</label>
-        <input type="password" id="confirmMdp" formControlName="confirmPassword" placeholder="••••••">
-        <small *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched" style="color:red">Les mots de passe ne correspondent pas</small>
-      </div>
-
-      <button type="submit" [disabled]="loading">
-        {{ loading ? 'Inscription...' : "S'inscrire" }}
+      <button type="submit" class="btn-submit" [disabled]="loading">
+        {{ loading ? 'Inscription en cours…' : "Créer mon compte" }}
       </button>
     </form>
+
     <p class="auth-link">
       Déjà un compte ? <a routerLink="/login">Se connecter</a>
     </p>
   </div>
-</div>      
-
+</div>
