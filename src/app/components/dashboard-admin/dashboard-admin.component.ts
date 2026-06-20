@@ -1,16 +1,68 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { forkJoin } from 'rxjs';
+import { Chart, registerables } from 'chart.js';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
+import { LogService, LogEntry, LogAction } from '../../services/log.service';
+import { FileMetadataService, FileMetadata } from '../../services/file-metadata.service';
+import { AnalyticsService, Indicateurs } from '../../services/analytics.service';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard-admin',
   templateUrl: './dashboard-admin.component.html',
   styleUrls: ['./dashboard-admin.component.css']
 })
-export class DashboardAdminComponent implements OnInit {
+export class DashboardAdminComponent implements OnInit, OnDestroy {
 
-  onglet: 'stats' | 'utilisateurs' | 'annonces' | 'avis' | 'catalogue' = 'stats';
+  onglet: 'stats' | 'utilisateurs' | 'annonces' | 'avis' | 'catalogue' | 'logs' | 'fichiers' | 'analyses' = 'stats';
+
+  // ── Analyses (Charts) ─────────────────────────────────────────────────────
+  @ViewChild('chartActivite')  chartActiviteRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('chartActions')   chartActionsRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('chartHeures')    chartHeuresRef!: ElementRef<HTMLCanvasElement>;
+
+  indicateurs: Indicateurs | null = null;
+  analysesLoading = false;
+  periodeJours = 30;
+
+  private charts: Chart[] = [];
+
+  // ── Logs (MongoDB) ────────────────────────────────────────────────────────
+  logs: LogEntry[] = [];
+  logsTotal = 0;
+  logsPage = 1;
+  readonly logsPageSize = 20;
+  logsLoading = false;
+  selectedAction = '';
+  statsTotal = 0;
+  statsByAction: { _id: string; count: number }[] = [];
+
+  readonly allActions: LogAction[] = [
+    'LOGIN', 'LOGOUT', 'REGISTER',
+    'VIEW_ANNONCE', 'CREATE_ANNONCE', 'UPDATE_ANNONCE', 'DELETE_ANNONCE',
+    'PAUSE_ANNONCE', 'RESUME_ANNONCE', 'SOLD_ANNONCE', 'UPLOAD_PHOTO',
+    'ADD_FAVORI', 'REMOVE_FAVORI', 'SEND_MESSAGE'
+  ];
+
+  readonly keyStats = [
+    { label: 'Connexions',          action: 'LOGIN' },
+    { label: 'Inscriptions',        action: 'REGISTER' },
+    { label: 'Annonces créées',     action: 'CREATE_ANNONCE' },
+    { label: 'Annonces supprimées', action: 'DELETE_ANNONCE' },
+    { label: 'Photos uploadées',    action: 'UPLOAD_PHOTO' },
+    { label: 'Messages envoyés',    action: 'SEND_MESSAGE' },
+  ];
+
+  // ── Fichiers (MongoDB) ────────────────────────────────────────────────────
+  files: FileMetadata[] = [];
+  filesTotal = 0;
+  filesPage = 1;
+  readonly filesPageSize = 20;
+  filesLoading = false;
+  filesStatsTotal = 0;
+  filesByType: { _id: string; count: number; totalSize: number }[] = [];
   currentUserId = 0;
 
   // Stats
@@ -59,7 +111,10 @@ export class DashboardAdminComponent implements OnInit {
 
   constructor(
     private adminService: AdminService,
-    private authService: AuthService
+    private authService: AuthService,
+    private logService: LogService,
+    private fileMetaService: FileMetadataService,
+    private analyticsService: AnalyticsService
   ) {}
 
   ngOnInit(): void {
@@ -68,6 +123,10 @@ export class DashboardAdminComponent implements OnInit {
     this.loadUsers();
     this.loadAnnonces();
     this.loadAvis();
+    this.loadLogStats();
+    this.loadLogs();
+    this.loadFileStats();
+    this.loadFiles();
   }
 
   // Stats
@@ -619,5 +678,174 @@ export class DashboardAdminComponent implements OnInit {
     return new Intl.NumberFormat('fr-FR', {
       style: 'currency', currency: 'EUR', maximumFractionDigits: 0
     }).format(prix);
+  }
+
+  // ── Logs MongoDB ──────────────────────────────────────────────────────────
+
+  loadLogStats(): void {
+    this.logService.getStats().subscribe({
+      next: data => { this.statsTotal = data.total; this.statsByAction = data.byAction; },
+      error: () => {}
+    });
+  }
+
+  loadLogs(): void {
+    this.logsLoading = true;
+    this.logService.getLogs({
+      action: this.selectedAction || undefined,
+      limit:  this.logsPageSize,
+      skip:   (this.logsPage - 1) * this.logsPageSize
+    }).subscribe({
+      next: data => { this.logs = data.logs; this.logsTotal = data.total; this.logsLoading = false; },
+      error: () => { this.logsLoading = false; }
+    });
+  }
+
+  onFilterChange(): void { this.logsPage = 1; this.loadLogs(); }
+  resetFilter(): void { this.selectedAction = ''; this.onFilterChange(); }
+
+  get logsTotalPages(): number { return Math.ceil(this.logsTotal / this.logsPageSize); }
+  prevLogsPage(): void { if (this.logsPage > 1) { this.logsPage--; this.loadLogs(); } }
+  nextLogsPage(): void { if (this.logsPage < this.logsTotalPages) { this.logsPage++; this.loadLogs(); } }
+
+  getStatCount(action: string): number {
+    return this.statsByAction.find(s => s._id === action)?.count ?? 0;
+  }
+
+  formatDetails(details: Record<string, any>): string {
+    if (!details || Object.keys(details).length === 0) return '—';
+    return Object.entries(details).map(([k, v]) => `${k}: ${v}`).join(' | ');
+  }
+
+  // ── Fichiers MongoDB ──────────────────────────────────────────────────────
+
+  loadFileStats(): void {
+    this.fileMetaService.getStats().subscribe({
+      next: data => { this.filesStatsTotal = data.total; this.filesByType = data.byType; },
+      error: () => {}
+    });
+  }
+
+  loadFiles(): void {
+    this.filesLoading = true;
+    this.fileMetaService.getFiles({ limit: this.filesPageSize, skip: (this.filesPage - 1) * this.filesPageSize }).subscribe({
+      next: data => { this.files = data.files; this.filesTotal = data.total; this.filesLoading = false; },
+      error: () => { this.filesLoading = false; }
+    });
+  }
+
+  get filesTotalPages(): number { return Math.ceil(this.filesTotal / this.filesPageSize); }
+  prevFilesPage(): void { if (this.filesPage > 1) { this.filesPage--; this.loadFiles(); } }
+  nextFilesPage(): void { if (this.filesPage < this.filesTotalPages) { this.filesPage++; this.loadFiles(); } }
+
+  formatSize(bytes: number): string {
+    if (bytes < 1024)        return bytes + ' o';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' Ko';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' Mo';
+  }
+
+  // ── Analyses ──────────────────────────────────────────────────────────────
+
+  ngOnDestroy(): void {
+    this.charts.forEach(c => c.destroy());
+  }
+
+  chargerAnalyses(): void {
+    this.analysesLoading = true;
+    this.charts.forEach(c => c.destroy());
+    this.charts = [];
+
+    forkJoin([
+      this.analyticsService.getIndicateurs(),
+      this.analyticsService.getActivite(this.periodeJours),
+      this.analyticsService.getHeures()
+    ]).subscribe({
+      next: ([indicateurs, activite, heures]) => {
+        this.indicateurs = indicateurs;
+        this.analysesLoading = false;
+        setTimeout(() => {
+          this.buildChartActivite(activite);
+          this.buildChartActions(indicateurs);
+          this.buildChartHeures(heures);
+        }, 50);
+      },
+      error: () => { this.analysesLoading = false; }
+    });
+  }
+
+  private buildChartActivite(data: any): void {
+    const ctx = this.chartActiviteRef?.nativeElement;
+    if (!ctx) return;
+    const couleurs: Record<string, string> = {
+      LOGIN:           '#2563eb',
+      VIEW_ANNONCE:    '#7c3aed',
+      CREATE_ANNONCE:  '#16a34a',
+      SOLD_ANNONCE:    '#ca8a04',
+      UPLOAD_PHOTO:    '#db2777',
+      SEND_MESSAGE:    '#0891b2',
+    };
+    const labels: Record<string, string> = {
+      LOGIN: 'Connexions', VIEW_ANNONCE: 'Consultations',
+      CREATE_ANNONCE: 'Publications', SOLD_ANNONCE: 'Ventes',
+      UPLOAD_PHOTO: 'Photos', SEND_MESSAGE: 'Messages',
+    };
+    const datasets = Object.entries(data.series).map(([action, values]) => ({
+      label: labels[action] ?? action,
+      data: values as number[],
+      borderColor: couleurs[action] ?? '#6b7280',
+      backgroundColor: (couleurs[action] ?? '#6b7280') + '22',
+      fill: true,
+      tension: 0.3,
+      pointRadius: 2,
+    }));
+    this.charts.push(new Chart(ctx, {
+      type: 'line',
+      data: { labels: data.dates, datasets },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' }, title: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+      }
+    }));
+  }
+
+  private buildChartActions(ind: Indicateurs): void {
+    const ctx = this.chartActionsRef?.nativeElement;
+    if (!ctx) return;
+    this.charts.push(new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Connexions', 'Consultations', 'Publications', 'Ventes', 'Messages', 'Favoris', 'Photos'],
+        datasets: [{
+          data: [ind.connexions, ind.consultations, ind.publications, ind.ventes, ind.messages, ind.favorisAjoutes, ind.photosUploadees],
+          backgroundColor: ['#2563eb','#7c3aed','#16a34a','#ca8a04','#0891b2','#f97316','#db2777'],
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'right' } }
+      }
+    }));
+  }
+
+  private buildChartHeures(data: any): void {
+    const ctx = this.chartHeuresRef?.nativeElement;
+    if (!ctx) return;
+    this.charts.push(new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: data.heures.map((h: any) => h.heure),
+        datasets: [{
+          label: 'Actions',
+          data: data.heures.map((h: any) => h.count),
+          backgroundColor: data.heures.map((_: any, i: number) => i >= 8 && i <= 22 ? '#2563eb99' : '#2563eb33'),
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+      }
+    }));
   }
 }
