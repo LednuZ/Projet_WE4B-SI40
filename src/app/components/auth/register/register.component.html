@@ -42,11 +42,15 @@
       </div>
 
       <div class="form-group">
-        <label for="role">Vous êtes</label>
-        <select id="role" formControlName="role">
+        <label for="role">Vous êtes *</label>
+        <select id="role" formControlName="role" required>
+          <option value="" disabled>Veuillez choisir votre rôle</option>
           <option value="particulier">Particulier</option>
           <option value="entreprise">Professionnel / Entreprise</option>
         </select>
+        <span class="field-error" *ngIf="registerForm.get('role')?.invalid && registerForm.get('role')?.touched">
+          Ce champ est obligatoire
+        </span>
       </div>
 
       <div class="form-group">
