@@ -2,7 +2,13 @@
 
   <!-- Header Section -->
   <div class="catalogue-header">
-    <h1>Annonces</h1>
+    <h1 class="title-with-count">
+      Annonces
+      <span class="badge-count" [class.loading-badge]="loading">
+        <ng-container *ngIf="!loading">{{ annonces.length }}</ng-container>
+        <span class="badge-spinner" *ngIf="loading"></span>
+      </span>
+    </h1>
     <div class="header-actions">
       <button class="btn-filter" [class.active]="showFilters" (click)="toggleFilters()">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="filter-icon" viewBox="0 0 24 24">
@@ -79,10 +85,7 @@
     </div>
   </div>
 
-  <!-- Results Count -->
-  <p class="results-count" *ngIf="!loading">
-    {{ annonces.length }} annonce{{ annonces.length > 1 ? 's' : '' }} trouvée{{ annonces.length > 1 ? 's' : '' }}
-  </p>
+
 
   <!-- Loading State -->
   <div class="loading" *ngIf="loading">
