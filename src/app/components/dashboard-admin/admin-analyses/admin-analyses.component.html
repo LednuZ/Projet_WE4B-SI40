@@ -1,0 +1,86 @@
+<div class="table-toolbar" style="margin-bottom:1.5rem">
+  <label style="font-weight:600">Période :</label>
+  <select class="filter-select" [ngModel]="state?.jours || 30" (ngModelChange)="onJoursChange($event)">
+    <option [value]="7">7 derniers jours</option>
+    <option [value]="30">30 derniers jours</option>
+    <option [value]="90">90 derniers jours</option>
+  </select>
+  <span style="margin-left:auto;display:flex;gap:.5rem">
+    <a class="action-btn" href="http://localhost:3000/export/logs.csv"       target="_blank">Export logs</a>
+    <a class="action-btn" href="http://localhost:3000/export/fichiers.csv"   target="_blank">Export fichiers</a>
+    <a class="action-btn" href="http://localhost:3000/export/analytique.csv" target="_blank">Export analytique</a>
+  </span>
+</div>
+
+<div class="loading-block" *ngIf="state?.loading"><p>Calcul des analyses…</p></div>
+
+<ng-container *ngIf="!state?.loading && state?.indicateurs">
+
+  <div class="kpi-grid" style="margin-bottom:2rem">
+    <div class="kpi-card" style="--accent:#2563eb">
+      <div class="kpi-accent"></div>
+      <div class="kpi-body">
+        <p class="kpi-value">{{ state?.indicateurs?.consultations }}</p>
+        <p class="kpi-label">Consultations d'annonces</p>
+      </div>
+    </div>
+    <div class="kpi-card" style="--accent:#16a34a">
+      <div class="kpi-accent"></div>
+      <div class="kpi-body">
+        <p class="kpi-value">{{ state?.indicateurs?.publications }}</p>
+        <p class="kpi-label">Annonces publiées</p>
+      </div>
+    </div>
+    <div class="kpi-card" style="--accent:#ca8a04">
+      <div class="kpi-accent"></div>
+      <div class="kpi-body">
+        <p class="kpi-value">{{ state?.indicateurs?.ventes }}</p>
+        <p class="kpi-label">Ventes réalisées</p>
+      </div>
+    </div>
+    <div class="kpi-card" style="--accent:#7c3aed">
+      <div class="kpi-accent"></div>
+      <div class="kpi-body">
+        <p class="kpi-value">{{ state?.indicateurs?.tauxConversion }}%</p>
+        <p class="kpi-label">Taux de conversion</p>
+      </div>
+    </div>
+    <div class="kpi-card" style="--accent:#0891b2">
+      <div class="kpi-accent"></div>
+      <div class="kpi-body">
+        <p class="kpi-value">{{ state?.indicateurs?.messages }}</p>
+        <p class="kpi-label">Messages envoyés</p>
+      </div>
+    </div>
+    <div class="kpi-card" style="--accent:#db2777">
+      <div class="kpi-accent"></div>
+      <div class="kpi-body">
+        <p class="kpi-value">{{ formatSize(state?.indicateurs?.totalTaille ?? 0) }}</p>
+        <p class="kpi-label">Stockage médias ({{ state?.indicateurs?.totalFichiers }} fichiers)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-card" style="margin-bottom:2rem">
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem">
+      Activité quotidienne — {{ state?.jours }} derniers jours
+    </h3>
+    <canvas #chartActivite style="max-height:320px"></canvas>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem">
+    <div class="table-card">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem">Répartition des actions</h3>
+      <canvas #chartActions style="max-height:280px"></canvas>
+    </div>
+    <div class="table-card">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:1rem">Pics d'activité par heure</h3>
+      <canvas #chartHeures style="max-height:280px"></canvas>
+    </div>
+  </div>
+
+</ng-container>
+
+<p *ngIf="!state?.loading && !state?.indicateurs" class="empty-msg">
+  Aucune donnée analytique disponible.
+</p>

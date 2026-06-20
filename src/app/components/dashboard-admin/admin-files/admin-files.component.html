@@ -1,0 +1,56 @@
+<div class="kpi-grid" style="margin-bottom:1.5rem">
+  <div class="kpi-card" style="--accent:#16a34a">
+    <div class="kpi-accent"></div>
+    <div class="kpi-body">
+      <p class="kpi-value">{{ filesStatsTotal }}</p>
+      <p class="kpi-label">Fichiers uploadés</p>
+    </div>
+  </div>
+  <div class="kpi-card" style="--accent:#f97316" *ngFor="let t of filesByType">
+    <div class="kpi-accent"></div>
+    <div class="kpi-body">
+      <p class="kpi-value">{{ t.count }}</p>
+      <p class="kpi-label">{{ t._id }} — {{ formatSize(t.totalSize) }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="loading-block" *ngIf="filesLoading"><p>Chargement…</p></div>
+  <p *ngIf="!filesLoading && files.length === 0" class="empty-msg">Aucun fichier enregistré.</p>
+
+  <div class="table-responsive" *ngIf="!filesLoading && files.length > 0">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Nom original</th>
+          <th>Type MIME</th>
+          <th>Taille</th>
+          <th>Annonce</th>
+          <th>Utilisateur</th>
+          <th>Aperçu</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let f of files">
+          <td class="text-muted">{{ f.uploadedAt | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ f.originalName }}</td>
+          <td><span class="role-badge">{{ f.mimeType }}</span></td>
+          <td class="text-muted">{{ formatSize(f.size) }}</td>
+          <td class="text-muted">#{{ f.annonceId ?? '—' }}</td>
+          <td class="text-muted">{{ f.userEmail || '—' }}</td>
+          <td>
+            <a href="http://localhost:8000{{ f.url }}" target="_blank" class="action-btn">Voir</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination" *ngIf="!filesLoading && filesTotalPages > 1">
+    <button class="btn-outline" [disabled]="filesPage === 1" (click)="prevFilesPage()">‹ Précédent</button>
+    <span>Page {{ filesPage }} / {{ filesTotalPages }}</span>
+    <button class="btn-outline" [disabled]="filesPage === filesTotalPages" (click)="nextFilesPage()">Suivant ›</button>
+  </div>
+</div>

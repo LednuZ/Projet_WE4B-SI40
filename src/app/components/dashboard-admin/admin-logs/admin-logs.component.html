@@ -1,0 +1,52 @@
+<div class="kpi-grid" style="margin-bottom:1.5rem">
+  <div class="kpi-card" style="--accent:#2563eb" *ngFor="let s of keyStats">
+    <div class="kpi-accent"></div>
+    <div class="kpi-body">
+      <p class="kpi-value">{{ getStatCount(s.action) }}</p>
+      <p class="kpi-label">{{ s.label }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-toolbar">
+    <select class="filter-select" [(ngModel)]="selectedAction" (change)="onFilterChange()">
+      <option value="">Toutes les actions</option>
+      <option *ngFor="let a of allActions" [value]="a">{{ a }}</option>
+    </select>
+    <button *ngIf="selectedAction" class="btn-outline" (click)="resetFilter()">Réinitialiser</button>
+    <span class="result-count">{{ logsTotal }} résultat(s)</span>
+  </div>
+
+  <div class="loading-block" *ngIf="logsLoading"><p>Chargement…</p></div>
+  <p *ngIf="!logsLoading && logs.length === 0" class="empty-msg">Aucun log trouvé.</p>
+
+  <div class="table-responsive" *ngIf="!logsLoading && logs.length > 0">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Date / Heure</th>
+          <th>Action</th>
+          <th>Utilisateur</th>
+          <th>Détails</th>
+          <th>IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs">
+          <td class="text-muted">{{ log.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+          <td><span class="badge-action" [attr.data-action]="log.action">{{ log.action }}</span></td>
+          <td>{{ log.userEmail || 'Anonyme' }}<span *ngIf="log.userId" class="text-muted"> (#{{ log.userId }})</span></td>
+          <td class="text-muted">{{ formatDetails(log.details) }}</td>
+          <td class="text-muted">{{ log.ip || '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination" *ngIf="!logsLoading && logsTotalPages > 1">
+    <button class="btn-outline" [disabled]="logsPage === 1" (click)="prevLogsPage()">‹ Précédent</button>
+    <span>Page {{ logsPage }} / {{ logsTotalPages }}</span>
+    <button class="btn-outline" [disabled]="logsPage === logsTotalPages" (click)="nextLogsPage()">Suivant ›</button>
+  </div>
+</div>
