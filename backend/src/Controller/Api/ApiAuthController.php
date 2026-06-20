@@ -16,15 +16,17 @@ class ApiAuthController extends AbstractController
     #[Route('/login', methods: ['POST'])]
     public function login(Request $request, DatabaseService $db, UserPasswordHasherInterface $hasher): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode($request->getContent(), true) ?? [];
+        $email = trim($data['email'] ?? '');
+        $mdp = trim($data['mdp'] ?? '');
 
-        if (empty($data['email']) || empty($data['mdp'])) {
+        if (empty($email) || empty($mdp)) {
             return $this->json(['message' => 'Email et mot de passe requis'], 400);
         }
 
         $pdo  = $db->getConnection();
         $stmt = $pdo->prepare('SELECT * FROM utilisateur WHERE email = ?');
-        $stmt->execute([$data['email']]);
+        $stmt->execute([$email]);
         $row = $stmt->fetch();
 
         if (!$row) {
@@ -34,7 +36,7 @@ class ApiAuthController extends AbstractController
         $user = new User();
         $user->setMdp($row['mdp']);
 
-        if (!$hasher->isPasswordValid($user, $data['mdp'])) {
+        if (!$hasher->isPasswordValid($user, $mdp)) {
             return $this->json(['message' => 'Email ou mot de passe incorrect'], 401);
         }
 
