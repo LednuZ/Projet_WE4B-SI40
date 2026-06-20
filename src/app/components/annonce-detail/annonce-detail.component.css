@@ -4,19 +4,39 @@
   padding: 24px 16px;
 }
 
-/* Retour */
 .btn-back {
-  background: none;
-  border: none;
-  color: #555;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 8px 16px;
   font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
   margin-bottom: 20px;
-  padding: 0;
 }
 
 .btn-back:hover {
   color: #f97316;
+  border-color: #fca5a5;
+  background-color: #fef2f2;
+  box-shadow: 0 4px 8px rgba(249, 115, 22, 0.08);
+  transform: translateX(-2px);
+}
+
+.btn-back .back-icon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.btn-back:hover .back-icon {
+  transform: translateX(-2px);
 }
 
 /* Layout principal */
@@ -77,64 +97,118 @@
   gap: 20px;
 }
 
-.info-header {
+.details-mini-zone {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.mini-zone-left {
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
+}
+
+.mini-zone-brand-badge {
+  display: inline-block;
+  background: #eef2f6;
+  color: #1a2744;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.mini-zone-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1a2744;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.mini-zone-version {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.mini-zone-right {
+  display: flex;
+  align-items: center;
   gap: 16px;
 }
 
-.info-header h1 {
-  font-size: 28px;
-  color: #1a2744;
-  margin: 0;
-}
-
-.version-name {
-  color: #777;
-  font-size: 15px;
-  margin: 4px 0 0;
-}
-
-.price-block {
+.mini-zone-price-block {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 8px;
 }
 
-.btn-favori {
-  background: none;
-  border: 2px solid #dde1e9;
+.price-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.price-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #f97316;
+  white-space: nowrap;
+  line-height: 1.1;
+}
+
+.btn-favori-new {
+  background: #ffffff;
+  border: 1.5px solid #dde1e9;
   border-radius: 50%;
-  width: 42px;
-  height: 42px;
-  font-size: 20px;
-  color: #bbb;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
+  color: #9ca3af;
+  padding: 0;
 }
 
-.btn-favori:hover {
-  border-color: #e74c3c;
-  color: #e74c3c;
+.btn-favori-new:hover {
+  transform: scale(1.08);
+  border-color: #ef4444;
+  color: #ef4444;
+  background-color: #fef2f2;
 }
 
-.btn-favori.is-favori {
-  border-color: #e74c3c;
-  color: #e74c3c;
+.btn-favori-new .heart-icon {
+  width: 20px;
+  height: 20px;
+  transition: fill 0.2s, stroke 0.2s, transform 0.1s;
+}
+
+.btn-favori-new:active .heart-icon {
+  transform: scale(0.85);
+}
+
+.btn-favori-new.is-favori {
   background: #fef2f2;
-}
-
-.price {
-  font-size: 28px;
-  font-weight: 700;
-  color: #f97316;
-  white-space: nowrap;
+  border-color: #fca5a5;
+  color: #ef4444;
 }
 
 /* Badges */
@@ -501,8 +575,22 @@
     height: 280px;
   }
 
-  .info-header {
+  .details-mini-zone {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .mini-zone-right {
+    width: 100%;
+    justify-content: space-between;
+    border-top: 1px solid rgba(26, 39, 68, 0.08);
+    padding-top: 12px;
+  }
+
+  .mini-zone-price-block {
+    align-items: flex-start;
   }
 
   .seller-card {
@@ -513,5 +601,35 @@
 
   .specs-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Similar listings Section */
+.similar-section {
+  margin-top: 52px;
+  border-top: 1px solid rgba(26, 39, 68, 0.08);
+  padding-top: 36px;
+  width: 100%;
+}
+
+.similar-section h2 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #1a2744;
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.similar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 640px) {
+  .similar-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }

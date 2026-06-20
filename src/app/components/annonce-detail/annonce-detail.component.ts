@@ -18,6 +18,8 @@ export class AnnonceDetailComponent implements OnInit {
   selectedPhoto = '';
   error = '';
   isFavori = false;
+  annoncesSimilaires: Annonce[] = [];
+  favorisIds: Set<number> = new Set();
 
   // Avis vendeur
   avisVendeur: { avis: any[]; stats: any } = { avis: [], stats: null };
@@ -52,12 +54,16 @@ export class AnnonceDetailComponent implements OnInit {
         this.loading = false;
 
         if (this.authService.isLoggedIn()) {
-          this.favoriService.checkFavori(id).subscribe({
-            next: (res: { isFavori: boolean }) => { this.isFavori = res.isFavori; },
+          this.favoriService.getFavoris().subscribe({
+            next: (favs: any[]) => {
+              this.favorisIds = new Set(favs.map((f: any) => Number(f.id_annonce)));
+              this.isFavori = this.favorisIds.has(id);
+            },
             error: () => {}
           });
         }
         if (data.vendeur_id)  this.loadAvisVendeur(data.vendeur_id);
+        if (data.id_marque)   this.loadAnnoncesSimilaires(data.id_marque, data.id_annonce);
       },
       error: () => { this.error = 'Annonce introuvable'; this.loading = false; }
     });
@@ -70,11 +76,21 @@ export class AnnonceDetailComponent implements OnInit {
     const id = this.annonce.id_annonce;
     if (this.isFavori) {
       this.favoriService.removeFavori(id).subscribe({
-        next: () => { this.isFavori = false; }, error: (err: any) => console.error(err)
+        next: () => { 
+          this.isFavori = false; 
+          this.favorisIds.delete(id);
+          this.favorisIds = new Set(this.favorisIds);
+        }, 
+        error: (err: any) => console.error(err)
       });
     } else {
       this.favoriService.addFavori(id).subscribe({
-        next: () => { this.isFavori = true; }, error: (err: any) => console.error(err)
+        next: () => { 
+          this.isFavori = true; 
+          this.favorisIds.add(id);
+          this.favorisIds = new Set(this.favorisIds);
+        }, 
+        error: (err: any) => console.error(err)
       });
     }
   }
@@ -146,5 +162,44 @@ export class AnnonceDetailComponent implements OnInit {
     this.router.navigate(['/messagerie'], {
       queryParams: { annonce: this.annonce?.id_annonce, destinataire: this.annonce?.vendeur_id }
     });
+  }
+
+  // ── Annonces Similaires ───────────────────────────────────────────────────
+
+  loadAnnoncesSimilaires(marqueId: number, currentAnnonceId: number): void {
+    this.annonceService.getAnnonces({ marque_id: marqueId }).subscribe({
+      next: (res: Annonce[]) => {
+        this.annoncesSimilaires = res
+          .filter(a => a.id_annonce !== currentAnnonceId)
+          .slice(0, 4);
+      },
+      error: () => {}
+    });
+  }
+
+  isFavoriSimilar(id: number): boolean {
+    return this.favorisIds.has(id);
+  }
+
+  toggleFavoriSimilar(annonceId: number): void {
+    if (!this.authService.isLoggedIn()) { this.router.navigate(['/login']); return; }
+
+    if (this.favorisIds.has(annonceId)) {
+      this.favoriService.removeFavori(annonceId).subscribe({
+        next: () => { 
+          this.favorisIds.delete(annonceId); 
+          this.favorisIds = new Set(this.favorisIds); 
+        },
+        error: (err: any) => console.error(err)
+      });
+    } else {
+      this.favoriService.addFavori(annonceId).subscribe({
+        next: () => { 
+          this.favorisIds.add(annonceId); 
+          this.favorisIds = new Set(this.favorisIds); 
+        },
+        error: (err: any) => console.error(err)
+      });
+    }
   }
 }

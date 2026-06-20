@@ -14,7 +14,12 @@
 <div class="detail-container" *ngIf="!loading">
 
   <!-- Retour -->
-  <button class="btn-back" (click)="goBack()">← Retour</button>
+  <button class="btn-back" (click)="goBack()">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" class="back-icon">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+    <span>Retour</span>
+  </button>
 
   <div class="detail-layout">
 
@@ -35,19 +40,29 @@
     <!-- Colonne droite : infos principales -->
     <div class="info-section">
 
-      <div class="info-header">
-        <div>
-          <h1>{{ annonce.marque_nom }} {{ annonce.modele_nom }}</h1>
-          <p class="version-name">{{ annonce.version_nom }}</p>
+      <!-- Mini Zone Header -->
+      <div class="details-mini-zone">
+        <div class="mini-zone-left">
+          <span class="mini-zone-brand-badge">{{ annonce.marque_nom }}</span>
+          <h1 class="mini-zone-title">
+            {{ annonce.modele_nom }}
+            <span class="mini-zone-version" *ngIf="annonce.version_nom">{{ annonce.version_nom }}</span>
+          </h1>
         </div>
-        <div class="price-block">
-          <span class="price">{{ formatPrix(annonce.prix) }}</span>
+        <div class="mini-zone-right">
+          <div class="mini-zone-price-block">
+            <span class="price-label">Prix</span>
+            <span class="price-value">{{ formatPrix(annonce.prix) }}</span>
+          </div>
           <button *ngIf="authService.isLoggedIn()"
-                  class="btn-favori"
+                  class="btn-favori-new"
                   [class.is-favori]="isFavori"
                   (click)="toggleFavori()"
                   [title]="isFavori ? 'Retirer des favoris' : 'Ajouter aux favoris'">
-            {{ isFavori ? '♥' : '♡' }}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" [attr.fill]="isFavori ? 'currentColor' : 'none'"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="heart-icon">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
           </button>
         </div>
       </div>
@@ -296,8 +311,18 @@
 
     </div>
   </div>
-
-
+  <!-- Similar listings Section -->
+  <div class="similar-section" *ngIf="annoncesSimilaires.length > 0">
+    <h2>Annonces similaires</h2>
+    <div class="similar-grid">
+      <app-annonce-card *ngFor="let a of annoncesSimilaires"
+                        [annonce]="a"
+                        [isLoggedIn]="authService.isLoggedIn()"
+                        [isFavori]="isFavoriSimilar(a.id_annonce)"
+                        (toggleFavori)="toggleFavoriSimilar($event)">
+      </app-annonce-card>
+    </div>
+  </div>
 
 </div>
 </ng-container>
