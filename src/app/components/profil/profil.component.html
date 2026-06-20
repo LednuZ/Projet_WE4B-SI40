@@ -16,7 +16,8 @@
         {{ utilisateur.prenom.charAt(0).toUpperCase() }}{{ utilisateur.nom.charAt(0).toUpperCase() }}
       </div>
       <div class="info-details">
-        <h2>{{ utilisateur.prenom }} {{ utilisateur.nom }}</h2>
+        <h2>{{ utilisateur.username || (utilisateur.prenom + ' ' + utilisateur.nom) }}</h2>
+        <p class="info-real-name" *ngIf="utilisateur.username">{{ utilisateur.prenom }} {{ utilisateur.nom }}</p>
         <span class="role-badge">{{ getRoleLabel(utilisateur.role) }}</span>
         <p class="info-meta">
           <span>{{ utilisateur.email }}</span>
@@ -44,7 +45,7 @@
         <div class="avis-item-profil" *ngFor="let a of avisRecus">
           <div class="avis-item-top">
             <div>
-              <span class="avis-auteur-profil">{{ a.redacteur_prenom }} {{ a.redacteur_nom }}</span>
+              <span class="avis-auteur-profil">{{ a.redacteur_display }}</span>
               <app-star-rating [rating]="a.note" [editable]="false"></app-star-rating>
             </div>
             <span class="avis-date-profil">{{ a.date_avis | date:'dd/MM/yyyy' }}</span>
@@ -65,6 +66,19 @@
       </div>
 
       <form [formGroup]="profilForm" (ngSubmit)="updateProfil()">
+        <div class="form-group">
+          <label for="username">Nom d'utilisateur public</label>
+          <input id="username" type="text" formControlName="username"
+                 placeholder="Affiché sur le site (ex: GarageMartin)">
+          <span class="field-error"
+                *ngIf="profilForm.get('username')?.invalid && profilForm.get('username')?.touched">
+            3 caractères minimum
+          </span>
+          <small style="color:#999; font-size:12px; margin-top:4px; display:block">
+            Visible par les autres utilisateurs. Laissez vide pour afficher votre prénom + nom.
+          </small>
+        </div>
+
         <div class="form-row">
           <div class="form-group">
             <label for="prenom">Prénom</label>

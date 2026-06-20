@@ -62,6 +62,17 @@ export class AnnonceFormComponent implements OnInit {
       error: () => this.errorMessage = 'Erreur lors du chargement du catalogue'
     });
 
+    // Quand "première main" est coché, bloquer nombre_proprietaire à 1
+    this.annonceForm.get('premiere_main')!.valueChanges.subscribe((val: boolean) => {
+      const ctrl = this.annonceForm.get('nombre_proprietaire')!;
+      if (val) {
+        ctrl.setValue(1);
+        ctrl.disable();
+      } else {
+        ctrl.enable();
+      }
+    });
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEdit = true;
@@ -109,6 +120,11 @@ export class AnnonceFormComponent implements OnInit {
         });
 
         this.existingPhotos = annonce.photos || [];
+
+        // Appliquer l'état disabled si première main est coché
+        if (annonce.premiere_main) {
+          this.annonceForm.get('nombre_proprietaire')!.disable();
+        }
       },
       error: () => this.errorMessage = 'Annonce introuvable'
     });
@@ -187,7 +203,7 @@ export class AnnonceFormComponent implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
-    const { marque_id, modele_id, generation_id, ...formData } = this.annonceForm.value;
+    const { marque_id, modele_id, generation_id, ...formData } = this.annonceForm.getRawValue();
 
     if (this.isEdit && this.annonceId) {
       this.annonceService.updateAnnonce(this.annonceId, formData).subscribe({

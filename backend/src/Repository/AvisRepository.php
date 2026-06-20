@@ -17,6 +17,7 @@ class AvisRepository
                 a.contenu,
                 a.date_avis,
                 u.id_utilisateur AS redacteur_id,
+                COALESCE(NULLIF(u.username,""), CONCAT(u.prenom," ",u.nom)) AS redacteur_display,
                 u.nom            AS redacteur_nom,
                 u.prenom         AS redacteur_prenom
             FROM avis_utilisateur a
@@ -86,9 +87,10 @@ class AvisRepository
             SELECT
                 a.id_avis_utilisateur AS id, "vendeur" AS type,
                 a.note, a.contenu, a.date_avis,
+                COALESCE(NULLIF(r.username,""), CONCAT(r.prenom," ",r.nom)) AS redacteur_display,
                 r.nom AS redacteur_nom, r.prenom AS redacteur_prenom,
                 v.id_utilisateur AS cible_id,
-                CONCAT(v.prenom, " ", v.nom) AS cible_nom
+                COALESCE(NULLIF(v.username,""), CONCAT(v.prenom," ",v.nom)) AS cible_nom
             FROM avis_utilisateur a
             JOIN utilisateur r ON r.id_utilisateur = a.id_redacteur
             JOIN utilisateur v ON v.id_utilisateur = a.id_vendeur
@@ -103,6 +105,7 @@ class AvisRepository
             SELECT
                 am.id_avis_modele AS id, "modele" AS type,
                 am.note, am.contenu, am.date_avis,
+                COALESCE(NULLIF(u.username,""), CONCAT(u.prenom," ",u.nom)) AS redacteur_display,
                 u.nom AS redacteur_nom, u.prenom AS redacteur_prenom,
                 CONCAT(ma.nom, " ", mo.nom) AS cible_nom
             FROM avis_modele am
@@ -158,7 +161,8 @@ class AvisRepository
     public function findVendeurPublic(int $id): ?array
     {
         $stmt = $this->db->getConnection()->prepare(
-            'SELECT id_utilisateur, nom, prenom, role, date_inscription
+            'SELECT id_utilisateur, role, date_inscription,
+             COALESCE(NULLIF(username,""), CONCAT(prenom," ",nom)) AS display_name
              FROM utilisateur WHERE id_utilisateur = :id'
         );
         $stmt->execute(['id' => $id]);
@@ -176,6 +180,7 @@ class AvisRepository
                 am.contenu,
                 am.date_avis,
                 u.id_utilisateur AS redacteur_id,
+                COALESCE(NULLIF(u.username,""), CONCAT(u.prenom," ",u.nom)) AS redacteur_display,
                 u.nom            AS redacteur_nom,
                 u.prenom         AS redacteur_prenom
             FROM avis_modele am

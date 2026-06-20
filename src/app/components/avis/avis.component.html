@@ -26,7 +26,7 @@
       <div class="avis-card" *ngFor="let a of mesAvisVendeurs">
         <div class="avis-header">
           <div>
-            <span class="avis-cible">{{ a.vendeur_prenom }} {{ a.vendeur_nom }}</span>
+            <span class="avis-cible">{{ a.vendeur_display || (a.vendeur_prenom + ' ' + a.vendeur_nom) }}</span>
             <app-star-rating [rating]="a.note" [editable]="false"></app-star-rating>
           </div>
           <span class="avis-date">{{ a.date_avis | date:'dd/MM/yyyy' }}</span>

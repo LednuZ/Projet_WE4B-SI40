@@ -13,6 +13,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $email;
     private string $mdp;
     private string $role; // 'admin' | 'particulier' | 'entreprise'
+    private ?string $username;
     private ?string $numeroPhone;
     private \DateTimeInterface $dateInscription;
 
@@ -33,6 +34,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRole(): string { return $this->role; }
     public function setRole(string $role): void { $this->role = $role; }
+
+    public function getUsername(): ?string { return $this->username; }
+    public function setUsername(?string $username): void { $this->username = $username; }
 
     public function getNumeroPhone(): ?string { return $this->numeroPhone; }
     public function setNumeroPhone(?string $phone): void { $this->numeroPhone = $phone; }

@@ -43,6 +43,7 @@ export class ProfilComponent implements OnInit {
 
   ngOnInit(): void {
     this.profilForm = this.fb.group({
+      username:     ['', [Validators.minLength(3)]],
       nom:          ['', Validators.required],
       prenom:       ['', Validators.required],
       email:        ['', [Validators.required, Validators.email]],
@@ -64,6 +65,7 @@ export class ProfilComponent implements OnInit {
         this.utilisateur = user;
         this.loading = false;
         this.profilForm.patchValue({
+          username:     user.username ?? '',
           nom:          user.nom,
           prenom:       user.prenom,
           email:        user.email,

@@ -12,10 +12,10 @@
     <!-- En-tête profil -->
     <div class="profil-header">
       <div class="profil-avatar">
-        {{ utilisateur.prenom?.charAt(0).toUpperCase() }}{{ utilisateur.nom?.charAt(0).toUpperCase() }}
+        {{ utilisateur.display_name?.charAt(0).toUpperCase() }}
       </div>
       <div class="profil-info">
-        <h1>{{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+        <h1>{{ utilisateur.display_name }}</h1>
         <span class="role-badge">{{ getRoleLabel(utilisateur.role) }}</span>
         <p class="membre-depuis">Membre depuis le {{ formatDate(utilisateur.date_inscription) }}</p>
       </div>
@@ -78,7 +78,7 @@
         <div class="avis-card" *ngFor="let av of avis">
           <div class="avis-header">
             <div>
-              <span class="avis-auteur">{{ av.redacteur_prenom }} {{ av.redacteur_nom }}</span>
+              <span class="avis-auteur">{{ av.redacteur_display }}</span>
               <app-star-rating [rating]="av.note" [editable]="false"></app-star-rating>
             </div>
             <span class="avis-date">{{ av.date_avis | date:'dd/MM/yyyy' }}</span>

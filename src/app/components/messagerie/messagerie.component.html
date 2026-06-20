@@ -23,7 +23,7 @@
         <div class="conv-avatar">{{ initiales(conv.nom, conv.prenom) }}</div>
         <div class="conv-info">
           <div class="conv-top">
-            <span class="conv-name">{{ conv.prenom }} {{ conv.nom }}</span>
+            <span class="conv-name">{{ conv.display_name }}</span>
             <span class="conv-date">{{ formatDate(conv.date_dernier_message) }}</span>
           </div>
           <p class="conv-annonce">{{ conv.annonce_titre }}</p>
@@ -40,7 +40,7 @@
         <div class="conv-avatar">{{ initiales(selectedConv.nom, selectedConv.prenom) }}</div>
         <div class="conv-info">
           <div class="conv-top">
-            <span class="conv-name">{{ selectedConv.prenom }} {{ selectedConv.nom }}</span>
+            <span class="conv-name">{{ selectedConv.display_name }}</span>
           </div>
           <p class="conv-annonce">{{ selectedConv.annonce_titre }}</p>
           <p class="conv-preview">Nouvelle conversation</p>
@@ -85,7 +85,7 @@
         <!-- Interlocuteur -->
         <div class="msg-header-user">
           <div class="msg-header-avatar">{{ initiales(selectedConv.nom, selectedConv.prenom) }}</div>
-          <span class="msg-header-name">{{ selectedConv.prenom }} {{ selectedConv.nom }}</span>
+          <span class="msg-header-name">{{ selectedConv.display_name }}</span>
         </div>
       </div>
 
