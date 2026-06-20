@@ -22,6 +22,7 @@ import { HomeComponent } from './components/home/home.component';
 import { FavorisComponent } from './components/favoris/favoris.component';
 import { StarRatingComponent } from './components/shared/star-rating/star-rating.component';
 import { VendeurComponent } from './components/vendeur/vendeur.component';
+import { DashboardProComponent } from './components/dashboard-pro/dashboard-pro.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { VendeurComponent } from './components/vendeur/vendeur.component';
     FavorisComponent,
     StarRatingComponent,
     VendeurComponent,
+    DashboardProComponent,
   ],
   imports: [
     BrowserModule,

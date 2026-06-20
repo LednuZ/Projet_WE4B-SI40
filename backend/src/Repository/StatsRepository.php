@@ -226,6 +226,88 @@ class StatsRepository
         return $stmt->fetch();
     }
 
+    // ── STATS PRO ────────────────────────────────────────────────────────────
+
+    public function getAnnoncesParMarquePro(int $userId): array
+    {
+        $stmt = $this->db->getConnection()->prepare('
+            SELECT ma.nom AS marque_nom, COUNT(a.id_annonce) AS count
+            FROM annonce a
+            JOIN version v    ON v.id_version    = a.id_version
+            JOIN generation g ON g.id_generation = v.id_generation
+            JOIN modele mo    ON mo.id_modele    = g.id_modele
+            JOIN marque ma    ON ma.id_marque    = mo.id_marque
+            WHERE a.id_utilisateur = :uid
+            GROUP BY ma.id_marque ORDER BY count DESC LIMIT 10
+        ');
+        $stmt->execute(['uid' => $userId]);
+        return $stmt->fetchAll();
+    }
+
+    public function getRepartitionStatutPro(int $userId): array
+    {
+        $stmt = $this->db->getConnection()->prepare(
+            'SELECT statut, COUNT(*) AS count FROM annonce WHERE id_utilisateur = :uid GROUP BY statut'
+        );
+        $stmt->execute(['uid' => $userId]);
+        return $stmt->fetchAll();
+    }
+
+    public function getDerniersAvisPro(int $userId): array
+    {
+        $stmt = $this->db->getConnection()->prepare('
+            SELECT a.id_avis_utilisateur, a.note, a.contenu, a.date_avis,
+                   u.nom AS redacteur_nom, u.prenom AS redacteur_prenom
+            FROM avis_utilisateur a
+            JOIN utilisateur u ON u.id_utilisateur = a.id_redacteur
+            WHERE a.id_vendeur = :uid
+            ORDER BY a.date_avis DESC LIMIT 5
+        ');
+        $stmt->execute(['uid' => $userId]);
+        return $stmt->fetchAll();
+    }
+
+    public function getTopAnnoncesPro(int $userId): array
+    {
+        $stmt = $this->db->getConnection()->prepare('
+            SELECT a.id_annonce, a.prix, a.statut,
+                   ma.nom AS marque_nom, mo.nom AS modele_nom, v.nom AS version_nom,
+                   (SELECT url_photo FROM photo p WHERE p.id_annonce = a.id_annonce ORDER BY p.id_photo LIMIT 1) AS photo_principale,
+                   (SELECT COUNT(*) FROM message m WHERE m.id_annonce = a.id_annonce) AS nb_messages,
+                   (SELECT COUNT(*) FROM favorie f WHERE f.id_annonce = a.id_annonce) AS nb_favoris
+            FROM annonce a
+            JOIN version v    ON v.id_version    = a.id_version
+            JOIN generation g ON g.id_generation = v.id_generation
+            JOIN modele mo    ON mo.id_modele    = g.id_modele
+            JOIN marque ma    ON ma.id_marque    = mo.id_marque
+            WHERE a.id_utilisateur = :uid AND a.statut = "active"
+            ORDER BY a.prix DESC LIMIT 5
+        ');
+        $stmt->execute(['uid' => $userId]);
+        return $stmt->fetchAll();
+    }
+
+    public function getAnnoncesPro(int $userId): array
+    {
+        $stmt = $this->db->getConnection()->prepare('
+            SELECT a.id_annonce, a.prix, a.statut, a.date_publication, a.date_creation,
+                   a.kilometrage, a.annee_circulation, a.commentaire_admin,
+                   ma.nom AS marque_nom, mo.nom AS modele_nom, v.nom AS version_nom,
+                   (SELECT url_photo FROM photo p WHERE p.id_annonce = a.id_annonce ORDER BY p.id_photo LIMIT 1) AS photo_principale,
+                   (SELECT COUNT(*) FROM message m WHERE m.id_annonce = a.id_annonce AND m.id_destinataire = :uid) AS nb_messages,
+                   (SELECT COUNT(*) FROM favorie f WHERE f.id_annonce = a.id_annonce) AS nb_favoris
+            FROM annonce a
+            JOIN version v    ON v.id_version    = a.id_version
+            JOIN generation g ON g.id_generation = v.id_generation
+            JOIN modele mo    ON mo.id_modele    = g.id_modele
+            JOIN marque ma    ON ma.id_marque    = mo.id_marque
+            WHERE a.id_utilisateur = :uid
+            ORDER BY a.date_creation DESC
+        ');
+        $stmt->execute(['uid' => $userId]);
+        return $stmt->fetchAll();
+    }
+
     // ── STATS PERSONNELLES (entreprise) ──────────────────────────────────────
 
     public function getStatsEntreprise(int $userId): array

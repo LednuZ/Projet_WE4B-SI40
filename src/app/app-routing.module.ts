@@ -13,6 +13,7 @@ import { DashboardAdminComponent } from './components/dashboard-admin/dashboard-
 import { MesAnnoncesComponent } from './components/mes-annonces/mes-annonces.component';
 import { FavorisComponent } from './components/favoris/favoris.component';
 import { VendeurComponent } from './components/vendeur/vendeur.component';
+import { DashboardProComponent } from './components/dashboard-pro/dashboard-pro.component';
 
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
@@ -37,6 +38,9 @@ const routes: Routes = [
   { path: 'annonces/edit/:id', component: AnnonceFormComponent, canActivate: [AuthGuard] },
   { path: 'annonces/:id', component: AnnonceDetailComponent },
   { path: 'vendeur/:id', component: VendeurComponent },
+
+  // Espace Pro
+  { path: 'pro', component: DashboardProComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['entreprise'] } },
 
   // Admin
   { path: 'admin', component: DashboardAdminComponent, canActivate: [AuthGuard, RoleGuard], data: { roles: ['admin'] } },
