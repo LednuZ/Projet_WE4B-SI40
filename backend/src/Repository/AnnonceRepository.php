@@ -150,6 +150,10 @@ class AnnonceRepository
             $where[]  = 'a.annee_circulation <= ?';
             $params[] = (int) $filters['annee_max'];
         }
+        if (!empty($filters['carburant'])) {
+            $where[]  = 'r.type = ?';
+            $params[] = $filters['carburant'];
+        }
         if (!empty($filters['vendeur_id'])) {
             $where[]  = 'a.id_utilisateur = ?';
             $params[] = (int) $filters['vendeur_id'];

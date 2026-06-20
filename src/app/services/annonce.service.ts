@@ -24,6 +24,7 @@ export class AnnonceService {
     if (filters.km_max) params = params.set('km_max', filters.km_max);
     if (filters.annee_min) params = params.set('annee_min', filters.annee_min);
     if (filters.annee_max) params = params.set('annee_max', filters.annee_max);
+    if (filters.carburant) params = params.set('carburant', filters.carburant);
 
     return this.http.get<Annonce[]>(this.apiUrl, { params });
   }

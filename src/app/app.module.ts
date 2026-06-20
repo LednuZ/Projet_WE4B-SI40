@@ -24,6 +24,7 @@ import { StarRatingComponent } from './components/shared/star-rating/star-rating
 import { VendeurComponent } from './components/vendeur/vendeur.component';
 import { DashboardProComponent } from './components/dashboard-pro/dashboard-pro.component';
 import { AnnonceCardComponent } from './components/annonce-card/annonce-card.component';
+import { RangeSliderComponent } from './components/shared/range-slider/range-slider.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { AnnonceCardComponent } from './components/annonce-card/annonce-card.com
     VendeurComponent,
     DashboardProComponent,
     AnnonceCardComponent,
+    RangeSliderComponent,
   ],
   imports: [
     BrowserModule,

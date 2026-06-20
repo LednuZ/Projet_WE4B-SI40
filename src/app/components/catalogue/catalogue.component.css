@@ -116,6 +116,10 @@
   gap: 8px;
 }
 
+.filter-group-slider {
+  grid-column: span 2;
+}
+
 .filter-group label {
   font-size: 13.5px;
   font-weight: 600;

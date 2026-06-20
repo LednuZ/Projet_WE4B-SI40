@@ -1,0 +1,59 @@
+<div class="range-slider-container">
+  <label class="slider-label">{{ label }}</label>
+  
+  <div class="slider-wrapper">
+    <div class="slider-track"></div>
+    <div class="slider-active-track" [style.left.%]="leftPercent" [style.right.%]="rightPercent"></div>
+    
+    <input 
+      type="range" 
+      [min]="min" 
+      [max]="max" 
+      [step]="step" 
+      [value]="minValue !== undefined ? minValue : min" 
+      (input)="onMinSliderChange($any($event.target).value)"
+      class="range-input min-range"
+      aria-label="Valeur minimale"
+    />
+    <input 
+      type="range" 
+      [min]="min" 
+      [max]="max" 
+      [step]="step" 
+      [value]="maxValue !== undefined ? maxValue : max" 
+      (input)="onMaxSliderChange($any($event.target).value)"
+      class="range-input max-range"
+      aria-label="Valeur maximale"
+    />
+  </div>
+
+  <div class="inputs-row">
+    <div class="input-field-wrapper">
+      <span class="prefix">Min</span>
+      <input 
+        type="number" 
+        [min]="min" 
+        [max]="max" 
+        [ngModel]="minValue !== undefined ? minValue : min"
+        (ngModelChange)="onMinInputChange($event)"
+        aria-label="Champs de saisie valeur minimale"
+      />
+      <span *ngIf="unit" class="unit-span">{{ unit }}</span>
+    </div>
+    
+    <span class="inputs-separator">-</span>
+    
+    <div class="input-field-wrapper">
+      <span class="prefix">Max</span>
+      <input 
+        type="number" 
+        [min]="min" 
+        [max]="max" 
+        [ngModel]="maxValue !== undefined ? maxValue : max"
+        (ngModelChange)="onMaxInputChange($event)"
+        aria-label="Champs de saisie valeur maximale"
+      />
+      <span *ngIf="unit" class="unit-span">{{ unit }}</span>
+    </div>
+  </div>
+</div>

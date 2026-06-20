@@ -19,8 +19,13 @@ export class CatalogueComponent implements OnInit {
   favorisIds: Set<number> = new Set();
 
   filters: any = {
-    marque_id: '', prix_min: '', prix_max: '',
-    km_max: '', annee_min: '', annee_max: ''
+    marque_id: '', 
+    prix_min: 0, 
+    prix_max: 150000,
+    km_max: '', 
+    annee_min: 1990, 
+    annee_max: 2026,
+    carburant: ''
   };
   sort = 'recent';
 
@@ -73,7 +78,15 @@ export class CatalogueComponent implements OnInit {
   onSortChange(s: string): void { this.sort = s; this.loadAnnonces(); }
 
   resetFilters(): void {
-    this.filters = { marque_id: '', prix_min: '', prix_max: '', km_max: '', annee_min: '', annee_max: '' };
+    this.filters = {
+      marque_id: '',
+      prix_min: 0,
+      prix_max: 150000,
+      km_max: '',
+      annee_min: 1990,
+      annee_max: 2026,
+      carburant: ''
+    };
     this.sort = 'recent';
     this.loadAnnonces();
   }

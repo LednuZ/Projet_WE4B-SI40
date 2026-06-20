@@ -33,13 +33,14 @@
       </div>
 
       <div class="filter-group">
-        <label for="filter-prix-min">Prix min (€)</label>
-        <input id="filter-prix-min" type="number" [(ngModel)]="filters.prix_min" (change)="onFilterChange()" placeholder="Ex: 5000">
-      </div>
-
-      <div class="filter-group">
-        <label for="filter-prix-max">Prix max (€)</label>
-        <input id="filter-prix-max" type="number" [(ngModel)]="filters.prix_max" (change)="onFilterChange()" placeholder="Ex: 50000">
+        <label for="filter-carburant">Motorisation</label>
+        <select id="filter-carburant" [(ngModel)]="filters.carburant" (ngModelChange)="onFilterChange()">
+          <option value="">Toutes</option>
+          <option value="Essence">Essence</option>
+          <option value="Diesel">Diesel</option>
+          <option value="Hybride">Hybride</option>
+          <option value="Électrique">Électrique</option>
+        </select>
       </div>
 
       <div class="filter-group">
@@ -47,14 +48,29 @@
         <input id="filter-km-max" type="number" [(ngModel)]="filters.km_max" (change)="onFilterChange()" placeholder="Ex: 100000">
       </div>
 
-      <div class="filter-group">
-        <label for="filter-annee-min">Année min</label>
-        <input id="filter-annee-min" type="number" [(ngModel)]="filters.annee_min" (change)="onFilterChange()" placeholder="Ex: 2015">
+      <div class="filter-group-slider">
+        <app-range-slider 
+          label="Budget" 
+          [min]="0" 
+          [max]="150000" 
+          [step]="1000" 
+          unit="€"
+          [(minValue)]="filters.prix_min" 
+          [(maxValue)]="filters.prix_max" 
+          (filterChange)="onFilterChange()"
+        ></app-range-slider>
       </div>
 
-      <div class="filter-group">
-        <label for="filter-annee-max">Année max</label>
-        <input id="filter-annee-max" type="number" [(ngModel)]="filters.annee_max" (change)="onFilterChange()" placeholder="Ex: 2026">
+      <div class="filter-group-slider">
+        <app-range-slider 
+          label="Année de circulation" 
+          [min]="1990" 
+          [max]="2026" 
+          [step]="1" 
+          [(minValue)]="filters.annee_min" 
+          [(maxValue)]="filters.annee_max" 
+          (filterChange)="onFilterChange()"
+        ></app-range-slider>
       </div>
 
     </div>

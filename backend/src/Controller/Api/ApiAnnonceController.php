@@ -23,6 +23,7 @@ class ApiAnnonceController extends AbstractController
             'km_max'    => $request->query->get('km_max'),
             'annee_min' => $request->query->get('annee_min'),
             'annee_max' => $request->query->get('annee_max'),
+            'carburant' => $request->query->get('carburant'),
         ];
 
         $sort = $request->query->get('sort', 'recent');
