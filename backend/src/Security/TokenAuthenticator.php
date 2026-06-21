@@ -15,6 +15,8 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 class TokenAuthenticator extends AbstractAuthenticator
 {
+    public function __construct(private \App\Service\JwtService $jwt) {}
+
     public function supports(Request $request): ?bool
     {
         return $request->headers->has('Authorization');
@@ -28,12 +30,13 @@ class TokenAuthenticator extends AbstractAuthenticator
         }
 
         $token = substr($authHeader, 7);
-        $decoded = base64_decode($token, true);
-        if (!$decoded || !str_contains($decoded, ':')) {
-            throw new CustomUserMessageAuthenticationException('Token invalide');
+        $payload = $this->jwt->validateToken($token);
+
+        if (!$payload || empty($payload['email'])) {
+            throw new CustomUserMessageAuthenticationException('Token invalide ou expiré');
         }
 
-        [, $email] = explode(':', $decoded, 2);
+        $email = $payload['email'];
 
         if (empty($email)) {
             throw new CustomUserMessageAuthenticationException('Token invalide');

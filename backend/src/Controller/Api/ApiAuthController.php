@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class ApiAuthController extends AbstractController
 {
     #[Route('/login', methods: ['POST'])]
-    public function login(Request $request, DatabaseService $db, UserPasswordHasherInterface $hasher): JsonResponse
+    public function login(Request $request, DatabaseService $db, UserPasswordHasherInterface $hasher, \App\Service\JwtService $jwt): JsonResponse
     {
         $data = json_decode($request->getContent(), true) ?? [];
         $email = trim($data['email'] ?? '');
@@ -40,7 +40,10 @@ class ApiAuthController extends AbstractController
             return $this->json(['message' => 'Email ou mot de passe incorrect'], 401);
         }
 
-        $token = base64_encode($row['id_utilisateur'] . ':' . $row['email']);
+        $token = $jwt->generateToken([
+            'id' => $row['id_utilisateur'],
+            'email' => $row['email']
+        ]);
         unset($row['mdp']);
 
         return $this->json([
